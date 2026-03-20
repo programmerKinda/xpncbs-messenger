@@ -1,15 +1,9 @@
-import styles from './styles/App.module.css'
-
 function App() {
-  return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Пример с CSS Modules</h1>
-      <p className={styles.text}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-      <p className={styles.text}>
-        В нормальной IDE теперь должны появляться автоподсказки для styles.container, styles.title и
-        styles.text.
-      </p>
-    </div>
-  )
+  return <>
+  <div className="flex">
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi veniam harum neque obcaecati odit dolorem voluptatum repellendus, sit vel aperiam labore. Distinctio unde eos rem voluptatum et quidem numquam ratione?</p>
+    <p>Perferendis est cum iusto repellat suscipit qui maxime nesciunt nisi non. Veniam ratione quas, dolores, ullam aut quia temporibus error consequuntur sit, veritatis ducimus neque corrupti illo quasi. Animi, repellat.</p>
+  </div>
+  </>
 }
 export default App
