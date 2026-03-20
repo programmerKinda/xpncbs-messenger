@@ -1,0 +1,21 @@
+﻿/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx,vue}'],
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          50: '#eef2ff',
+          100: '#e0e7ff',
+          500: '#6366f1',
+          700: '#4338ca',
+        },
+      },
+      boxShadow: {
+        soft: '0 4px 15px rgba(0,0,0,.08)',
+      },
+    },
+  },
+  plugins: [],
+}
