@@ -4,7 +4,7 @@ function App() {
     <Message
       message={{
         uuid: '1',
-        content: '<b>Привет, мир!</b>',
+        content: 'Привет, мир!',
         type: 'text',
         createdAt: new Date(),
         updated: true,
