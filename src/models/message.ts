@@ -1,11 +1,17 @@
 export const messageTypes = ['text', 'voice'] as const
 
 export type MessageType = (typeof messageTypes)[number]
+export type MessageVoiceContent = {
+  duration: number
+  waveform: number[]
+  content: string
+}
+export type MessageContentType = string | MessageVoiceContent
 
 export type Message = {
   uuid: string
   type: MessageType
-  content: string
+  content: MessageContentType
   createdAt: Date
   updated: boolean
   watched: boolean

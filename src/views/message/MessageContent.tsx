@@ -1,11 +1,9 @@
 import { MessageText } from './MessageText'
-import { getDataUrl } from '@/utils/getDataUrl'
-
+import { MessageVoice } from './MessageVoice'
+import { type MessageVoiceContent } from '@/models/message'
 const MessageContent = {
   text: ({ content }: { content: string }) => <MessageText content={content} />,
-  voice: ({ content }: { content: string }) => (
-    <audio src={getDataUrl(content, 'audio/webm')} controls />
-  ),
-}
+  voice: ({ content }: { content: MessageVoiceContent }) => <MessageVoice content={content} />,
+} as const
 
 export default MessageContent

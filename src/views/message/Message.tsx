@@ -8,7 +8,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
       {/* <header className='message__header'></header> */}
       <div className="message-content">
         {messageTypes.includes(message.type) &&
-          MessageContent[message.type]({ content: message.content as string })}
+          MessageContent[message.type]({ content: message.content as any })}
       </div>
       <footer className="message__footer">
         {message.updated && <span>Изменено</span>}
