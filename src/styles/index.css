@@ -6,3 +6,7 @@
   --color-background: #ffffff;
   --color-text: #111827;
 }
+
+.message__footer {
+  @apply flex;
+}

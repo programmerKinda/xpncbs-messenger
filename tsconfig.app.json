@@ -22,7 +22,19 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    "paths": {
+      "@/*": ["./src/*"],
+      "@views/*": ["./src/views/*"],
+      "@controllers/*": ["./src/controllers/*"],
+      "@models/*": ["./src/models/*"],
+       "@utils/*": ["./src/utils/*"],
+       "@api/*": ["./src/api/*"],
+       "@routes/*": ["./src/routes/*"],
+       "@hooks/*": ["./src/hooks/*"],
+       "@shared/*": ["./src/shared/*"]
+    }
   },
   "include": ["src"]
 }
