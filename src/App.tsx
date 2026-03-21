@@ -4,8 +4,7 @@ function App() {
     <Message
       message={{
         uuid: '1',
-        content:
-          'Привет, мир! https://github.com/programmerKinda/xpncbs-messenger/tree/feat/message',
+        content: '<b>Привет, мир!</b>',
         type: 'text',
         createdAt: new Date(),
         updated: true,
