@@ -1,6 +1,7 @@
-import React, { useState, useRef, useMemo } from 'react'
+import React, { useState, useRef, useMemo, useEffect } from 'react'
 import { getDataUrl } from '@/utils/getDataUrl'
 import { type MessageVoiceContent } from '@/models/message'
+import { useMediaStore } from '@/controllers/mediaPlayController'
 
 export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ content }) => {
   const [isPlaying, setIsPlaying] = useState(false)
@@ -10,6 +11,22 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
   const audioRef = useRef<HTMLAudioElement>(null)
   const progressContainerRef = useRef<HTMLDivElement>(null)
 
+  // Подписываемся на контроллер
+  const activeId = useMediaStore((state) => state.activeId)
+  const playAudio = useMediaStore((state) => state.playAudio)
+  const stopAudio = useMediaStore((state) => state.stopAudio)
+
+  // Контроллер: следим за тем, кто должен играть
+  useEffect(() => {
+    const isCurrentActive = activeId === content.id
+
+    if (!isCurrentActive && isPlaying) {
+      // Если в сторе другой ID, а мы играем — ПРИНУДИТЕЛЬНАЯ ПАУЗА
+      audioRef.current?.pause()
+      setIsPlaying(false)
+    }
+  }, [activeId, content.id, isPlaying])
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
     const secs = Math.floor(seconds % 60)
@@ -17,10 +34,18 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
   }
 
   const togglePlay = () => {
+    if (!audioRef.current) return
+
     if (isPlaying) {
-      audioRef.current?.pause()
+      audioRef.current.pause()
+      setIsPlaying(false)
+      stopAudio(content.id)
     } else {
-      audioRef.current?.play()
+      // Сначала уведомляем контроллер (это остановит другие плееры)
+      playAudio(content.id)
+      // Затем запускаем текущий
+      audioRef.current.play()
+      setIsPlaying(true)
     }
   }
 
@@ -28,7 +53,6 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
     if (audioRef.current) {
       const current = audioRef.current.currentTime
       const duration = audioRef.current.duration || content.duration
-
       setCurrentTime(current)
       setProgress((current / duration) * 100)
     }
@@ -40,7 +64,6 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
       const clickX = e.clientX - rect.left
       const width = rect.width
       const duration = audioRef.current.duration || content.duration
-
       const newTime = (clickX / width) * duration
 
       audioRef.current.currentTime = newTime
@@ -53,6 +76,7 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
     setIsPlaying(false)
     setProgress(0)
     setCurrentTime(0)
+    stopAudio(content.id)
   }
 
   const bars = useMemo(() => {
@@ -62,48 +86,53 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
   }, [content.waveform])
 
   return (
-    <div className="voice-message-container">
+    <div
+      className="voice-message-container"
+      style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+    >
       <audio
         ref={audioRef}
         src={getDataUrl(content.content, 'audio/webm')}
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleEnded}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
+        // Убрали onPlay/onPause, так как управляем ими вручную через togglePlay и useEffect
       />
 
       <button className="voice-play-btn" onClick={togglePlay} type="button">
         {isPlaying ? (
-          <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current">
-            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor" />
           </svg>
         ) : (
-          <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current translate-x-0.5">
-            <path d="M8 5v14l11-7z" />
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <path d="M8 5v14l11-7z" fill="currentColor" />
           </svg>
         )}
       </button>
 
-      <div className="voice-content">
+      <div className="voice-content" style={{ flexGrow: 1 }}>
         <div
           className="voice-waveform-wrapper"
           ref={progressContainerRef}
           onClick={handleSeek}
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: 'pointer', position: 'relative', height: '24px' }}
         >
           <svg
             className="voice-waveform-svg"
             preserveAspectRatio="none"
             viewBox={`0 0 ${bars.length * 4} 24`}
+            style={{ width: '100%', height: '100%' }}
           >
-            <g className="waveform-bg" style={{ opacity: 0.3 }}>
+            {/* Фоновая волна */}
+            <g className="waveform-bg" style={{ opacity: 0.3, fill: '#888' }}>
               {bars.map((height, i) => (
                 <rect key={i} x={i * 4} y={12 - height / 2} width="2" height={height} rx="1" />
               ))}
             </g>
 
+            {/* Прогресс волны */}
             <svg width={`${progress}%`} height="100%" overflow="hidden">
-              <g className="waveform-progress">
+              <g className="waveform-progress" style={{ fill: '#007bff' }}>
                 {bars.map((height, i) => (
                   <rect key={i} x={i * 4} y={12 - height / 2} width="2" height={height} rx="1" />
                 ))}
@@ -112,9 +141,9 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
           </svg>
         </div>
 
-        <span className="voice-duration">
+        <div style={{ fontSize: '12px', marginTop: '4px', color: '#666' }}>
           {formatTime(currentTime)} / {formatTime(content.duration)}
-        </span>
+        </div>
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-import Message from "./views/message/Message"
+import Message from './views/message/Message'
 function App() {
   return (
     <>

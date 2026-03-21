@@ -2,6 +2,7 @@ export const messageTypes = ['text', 'voice'] as const
 
 export type MessageType = (typeof messageTypes)[number]
 export type MessageVoiceContent = {
+  id: string
   duration: number
   waveform: number[]
   content: string
