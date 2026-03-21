@@ -5,10 +5,10 @@ function App() {
       message={{
         uuid: '1',
         content: 'Привет, мир!',
-        type: 'text',
+        type: 'voice',
         createdAt: new Date(),
-        updated: false,
-        watched: false,
+        updated: true,
+        watched: true,
       }}
     />
   )

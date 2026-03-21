@@ -1,12 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@layer base, components, utilities;
 
-:root {
-  --color-background: #ffffff;
-  --color-text: #111827;
-}
-
-.message__footer {
-  @apply flex;
-}
+/* Компонентные модули */
+@import './components/message.css';

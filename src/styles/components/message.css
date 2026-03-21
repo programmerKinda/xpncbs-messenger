@@ -1,0 +1,69 @@
+/* Базовый контейнер сообщения */
+.message {
+  @apply relative w-fit max-w-[85%] sm:max-w-[480px] mb-2 px-3 py-[7px] min-h-[34px] rounded-[18px] text-[15px] shadow-sm leading-[1.35] flex flex-col justify-center;
+}
+
+/* ИСХОДЯЩЕЕ (зеленое) */
+.message--outgoing {
+  @apply self-end ml-auto bg-[#effdde] text-[#1d2022] rounded-br-none border border-[#d4e9bc] mr-2;
+}
+
+/* Ножка для исходящего */
+.message--outgoing::after {
+  content: '';
+  @apply absolute bottom-0 -right-[5px] w-[10px] h-[15px] bg-[#effdde];
+  clip-path: polygon(0 0, 0 100%, 100% 100%, 15% 45%);
+}
+
+/* ВХОДЯЩЕЕ (белое) */
+.message--incoming {
+  @apply self-start mr-auto bg-white text-[#1d2022] rounded-bl-none border border-gray-100 ml-2;
+}
+
+/* Ножка для входящего */
+.message--incoming::before {
+  content: '';
+  @apply absolute bottom-0 -left-[5px] w-[10px] h-[15px] bg-white;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%, 85% 45%);
+}
+
+/* Контентная часть */
+.message-content {
+  @apply block w-full;
+}
+
+/* Текстовый блок */
+.message-text {
+  @apply m-0 inline align-middle text-[15px] leading-[1.35] break-words whitespace-pre-wrap text-inherit;
+}
+
+/* Резерв места под метаданные (Изменено + Время + Статус) */
+/* w-[95px] — безопасное расстояние, чтобы текст не налезал на инфо-блок */
+.message-text::after {
+  content: '';
+  @apply inline-block w-[95px] h-0;
+}
+
+/* Футер (Изменено, Время, Галочки) */
+.message__footer {
+  /* Отрицательный margin поднимает футер в строку текста */
+  @apply float-right mt-[-14px] ml-auto flex items-center flex-nowrap gap-1 text-[11px] text-[#5db05b] font-medium leading-none select-none relative z-10 h-[14px] self-end;
+}
+
+/* Специфичный цвет времени для входящих (обычно серый) */
+.message--incoming .message__footer {
+  @apply text-gray-400;
+}
+
+.message__time {
+  @apply opacity-80 leading-none whitespace-nowrap;
+}
+.message__status-icon {
+  @apply relative;
+}
+.tick-1 {
+  @apply relative top-0 left-0;
+}
+.tick-2 {
+  @apply absolute top-0 left-[3px];
+}
