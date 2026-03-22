@@ -1,4 +1,6 @@
 @layer base, components, utilities;
 
+@import './ui/messageCircleWaves.css';
+
 /* Компонентные модули */
 @import './components/message.css';

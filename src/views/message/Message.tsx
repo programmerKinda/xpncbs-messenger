@@ -4,7 +4,7 @@ import MessageContent from './MessageContent'
 const Message: React.FC<MessageProps> = ({ message }) => {
   const timeString = formatTime(message.createdAt)
   return (
-    <div className="message message--outgoing ">
+    <div className={`message message--outgoing${message.type === 'circle' ? ' circle' : ''}`}>
       {/* <header className='message__header'></header> */}
       <div className="message-content">
         {messageTypes.includes(message.type) &&
@@ -14,18 +14,20 @@ const Message: React.FC<MessageProps> = ({ message }) => {
         {message.updated && <span>Изменено</span>}
         <div className="message__meta">
           <span className="message__time">{timeString}</span>
-          <span className="message__status-icon">
-            {message.watched ? (
-              <>
-                <span className="tick-1">✓</span>
-                <span className="tick-2">✓</span>
-              </>
-            ) : (
-              <>
-                <span className="tick-1">✓</span>
-              </>
-            )}
-          </span>
+          {message.type !== 'circle' && (
+            <span className="message__status-icon">
+              {message.watched ? (
+                <>
+                  <span className="tick-1">✓</span>
+                  <span className="tick-2">✓</span>
+                </>
+              ) : (
+                <>
+                  <span className="tick-1">✓</span>
+                </>
+              )}
+            </span>
+          )}
         </div>
       </footer>
     </div>

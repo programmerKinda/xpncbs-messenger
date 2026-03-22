@@ -1,4 +1,4 @@
-export const messageTypes = ['text', 'voice'] as const
+export const messageTypes = ['text', 'voice', 'circle', 'file'] as const
 
 export type MessageType = (typeof messageTypes)[number]
 export type MessageVoiceContent = {
@@ -7,7 +7,13 @@ export type MessageVoiceContent = {
   waveform: number[]
   content: string
 }
-export type MessageContentType = string | MessageVoiceContent
+export type MessageCircleContent = {
+  id: string
+  duration: number
+  content: string
+  watched: boolean
+}
+export type MessageContentType = string | MessageVoiceContent | MessageCircleContent
 
 export type Message = {
   uuid: string
