@@ -2,6 +2,8 @@ import { SearchInput } from '@/shared'
 import { LogoWitchTitle } from '@/shared'
 import { ChatsMenuButton } from './ChatsMenuButton'
 import ChatFolders from './ChatFolders'
+import { ChatsResizer } from './ChatsResizer'
+import { useChatsWidthStore } from '@/controllers/chatsWidthController'
 export default function Chats() {
   const chatFolders = [
     { id: 1, name: 'Все' },
@@ -9,9 +11,11 @@ export default function Chats() {
     { id: 3, name: 'Личные' },
     { id: 4, name: 'Избранные' },
   ]
+  const chatsWidth = useChatsWidthStore((state) => state.chatsWidth)
+  const setChatsWidth = useChatsWidthStore((state) => state.setChatsWidth)
   return (
     <>
-      <section className="chats">
+      <section className="chats" style={{ width: `${chatsWidth}px` }}>
         <header className="chats__header">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <LogoWitchTitle />
@@ -23,6 +27,7 @@ export default function Chats() {
         </header>
         <div className="chats__body"></div>
         <footer className="chats__footer"></footer>
+        <ChatsResizer chatsWidth={chatsWidth} setChatsWidth={setChatsWidth} />
       </section>
     </>
   )

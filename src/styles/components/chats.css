@@ -1,5 +1,5 @@
 .chats {
-  @apply w-[360px] h-screen bg-gray-50 flex flex-col shadow-inner;
+  @apply h-screen bg-gray-50 flex flex-col shadow-inner relative;
 }
 
 .chats__header {
@@ -15,4 +15,7 @@
 
 .chats__footer {
   @apply mt-auto border-t border-gray-200 p-4 flex justify-center items-center text-gray-500 text-sm;
+}
+.chats__resizer {
+  @apply absolute top-0 right-0 w-1 h-full bg-transparent cursor-e-resize;
 }
