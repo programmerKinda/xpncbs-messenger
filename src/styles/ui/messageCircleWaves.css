@@ -1,0 +1,51 @@
+.waves-container {
+  @apply flex items-end justify-center space-x-[2px] h-[13px];
+}
+
+.wave {
+  /* Все волны теперь имеют потенциал в 13px */
+  @apply w-[3px] bg-blue-500 h-[13px];
+  transform-origin: bottom;
+  transition: transform 0.2s ease; /* Плавный переход при паузе/старте */
+}
+
+/* Устанавливаем исходную "лесенку" через scale, а не высоту */
+.wave1 {
+  transform: scaleY(0.38);
+} /* ~5px */
+.wave2 {
+  transform: scaleY(0.69);
+} /* ~9px */
+.wave3 {
+  transform: scaleY(1);
+} /* 13px */
+
+/* Анимация теперь заставляет их всех вырастать до полного размера */
+@keyframes waveAnimation {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  } /* Минимальная высота */
+  50% {
+    transform: scaleY(1);
+  } /* Максимальная высота (13px) */
+}
+
+.wave.animate {
+  animation: waveAnimation 0.8s infinite ease-in-out;
+}
+
+/* Разные задержки для эффекта перелива */
+.wave1.animate {
+  animation-delay: 0s;
+}
+.wave2.animate {
+  animation-delay: 0.2s;
+}
+.wave3.animate {
+  animation-delay: 0.4s;
+}
+
+.wave.paused {
+  animation-play-state: paused;
+}
