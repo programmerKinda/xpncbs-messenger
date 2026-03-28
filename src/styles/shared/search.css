@@ -1,0 +1,11 @@
+/* ПОИСК DIV*/
+.search{
+    @apply bg-white rounded-3xl flex items-center gap-2;
+    padding: 4px 12px;
+}
+.search__input{
+    @apply w-full border-none text-2xl;
+}
+.search__input:focus{
+    outline: none;
+}
