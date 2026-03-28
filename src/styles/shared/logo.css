@@ -1,0 +1,6 @@
+.logo {
+  @apply flex items-center gap-2;
+}
+.logo__title {
+  @apply text-2xl font-bold;
+}

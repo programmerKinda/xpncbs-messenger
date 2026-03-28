@@ -1,18 +1,12 @@
 @layer base, components, utilities;
 @import './normalize.css';
-@import './aside.css';
+@import './shared/scroll.css';
+@import './shared/logo.css';
+@import './components/sidebar.css';
+@import './components/chats.css';
+@import './components/chatFolders.css';
 @import './shared/search.css';
-@import './shared/button.css';
 
-
-.App{
-  @apply flex h-[1080px]
-}
-:root {
-  --color-background: #ffffff;
-  --color-text: #111827;
-}
-
-.message__footer {
-  @apply flex;
+.App {
+  @apply flex h-screen w-screen;
 }

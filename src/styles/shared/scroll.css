@@ -1,0 +1,11 @@
+.scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scroll::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
