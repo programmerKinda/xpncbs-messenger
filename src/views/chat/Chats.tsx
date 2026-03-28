@@ -17,7 +17,7 @@ export default function Chats() {
     <>
       <section className="chats" style={{ width: `${chatsWidth}px` }}>
         <header className="chats__header">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div className="flex items-center justify-between">
             <LogoWitchTitle />
             <ChatsMenuButton />
           </div>

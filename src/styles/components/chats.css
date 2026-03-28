@@ -3,7 +3,7 @@
 }
 
 .chats__header {
-  @apply flex flex-col gap-2 px-5 py-4 border-b border-gray-200 bg-gray-50;
+  @apply flex flex-col gap-2 px-5 py-4 bg-gray-50;
 }
 
 .chats__menu-btn {
