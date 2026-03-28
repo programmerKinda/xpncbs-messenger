@@ -1,6 +1,13 @@
 @layer base, components, utilities;
-
-@import './ui/messageCircleWaves.css';
-
-/* Компонентные модули */
+@import './normalize.css';
+@import './shared/scroll.css';
+@import './shared/logo.css';
+@import './components/sidebar.css';
+@import './components/chats.css';
+@import './components/chatFolders.css';
+@import './shared/search.css';
 @import './components/message.css';
+
+.App {
+  @apply flex h-screen w-screen;
+}

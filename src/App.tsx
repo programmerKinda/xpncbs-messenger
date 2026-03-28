@@ -1,17 +1,14 @@
+import Sidebar from './views/sidebar/Sidebar'
+import Chats from './views/chat/Chats'
 import Message from './views/message/Message'
+
 function App() {
   return (
     <>
-      <Message
-        message={{
-          uuid: '1',
-          content: 'Привет, мир!',
-          type: 'text',
-          createdAt: new Date(),
-          updated: true,
-          watched: true,
-        }}
-      />
+      <section className="App">
+        <Sidebar />
+        <Chats />
+      </section>
     </>
   )
 }
