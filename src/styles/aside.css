@@ -1,0 +1,52 @@
+/* главная менюшка */
+.aside__main {
+  @apply w-max ;
+  background-color: #fdf171;
+}
+.aside__main-ul {
+  @apply grid w-full gap-10 p-5;
+  border-bottom: 1px solid grey;
+}
+.aside__main-ul-li {
+  @apply list-none cursor-pointer w-max;
+  border-bottom: 3px solid rgba(255, 255, 255, 0);
+  transition: all 0.3s ease-in-out;
+}
+.aside__main-ul-li:hover {
+      border-color:  rgb(0, 0, 0);
+
+}
+
+
+
+
+
+
+/* менюшка чата */
+.aside__chat {
+    @apply bg-gray-500 p-2 w-[384px] 
+}
+.aside__chat-header {
+    @apply flex justify-between items-center gap-10
+
+}
+.aside__chat-header-logo {
+
+}
+.aside__chat-header-menu {
+    @apply bg-inherit border-none
+
+}
+.aside__body {
+
+}
+.aside__body-chatChapters {
+    @apply flex gap-5 items-center mt-5 text-[22px]
+}
+.aside__body-chatCharapter {
+    @apply list-none
+
+}
+.aside__footer {
+
+}

@@ -1,7 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@layer base, components, utilities;
+@import './normalize.css';
+@import './aside.css';
+@import './shared/search.css';
+@import './shared/button.css';
 
+
+.App{
+  @apply flex h-[1080px]
+}
 :root {
   --color-background: #ffffff;
   --color-text: #111827;
