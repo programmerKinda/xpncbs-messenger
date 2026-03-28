@@ -1,0 +1,12 @@
+.sidebar {
+  @apply w-[80px] h-screen bg-gray-50 flex flex-col items-center py-5 shadow-lg;
+}
+
+.sidebar__items {
+  @apply flex flex-col gap-5 w-full items-center;
+}
+
+.sidebar__item {
+  @apply w-[55px] h-[55px] flex items-center justify-center rounded-2xl cursor-pointer text-gray-500 
+         hover:bg-gray-100 hover:text-blue-500 transition-all duration-300 shadow-sm;
+}

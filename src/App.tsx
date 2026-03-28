@@ -1,14 +1,14 @@
-
-import AsideChat from './views/aside/AsideChat'
-import AsideMain from './views/aside/AsideMain'
-
+import Sidebar from './views/sidebar/Sidebar'
+import Chats from './views/chat/Chats'
 
 function App() {
-  return <>
+  return (
+    <>
       <section className="App">
-     <AsideMain/>
-     <AsideChat/>
+        <Sidebar />
+        <Chats />
       </section>
-  </>
+    </>
+  )
 }
 export default App

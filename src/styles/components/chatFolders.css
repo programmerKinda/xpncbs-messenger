@@ -1,0 +1,20 @@
+.chat-folders {
+  @apply flex gap-3 overflow-x-auto py-2 scroll relative list-none;
+}
+.chat-folder {
+  @apply px-4 py-2 text-sm font-medium rounded-2xl bg-white text-gray-700 cursor-pointer list-none
+         hover:bg-blue-100 hover:text-blue-500 transition-all duration-300 shadow-sm;
+}
+.chat-folder.active {
+  @apply bg-blue-200 text-blue-600;
+}
+.chat-folder:hover {
+  @apply bg-blue-100 text-blue-500;
+}
+.chat-folders__sticky-item {
+  @apply sticky right-0 z-10 bg-gray-50;
+  min-width: 3rem;
+}
+.chat-folders__add-button {
+  @apply border-none bg-transparent cursor-pointer w-full flex items-center justify-center;
+}

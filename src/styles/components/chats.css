@@ -1,0 +1,18 @@
+.chats {
+  @apply w-[360px] h-screen bg-gray-50 flex flex-col shadow-inner;
+}
+
+.chats__header {
+  @apply flex flex-col gap-2 px-5 py-4 border-b border-gray-200 bg-gray-50;
+}
+
+.chats__menu-btn {
+  @apply border-none cursor-pointer bg-transparent;
+}
+.chats__body {
+  @apply flex flex-col gap-4 p-4 overflow-hidden;
+}
+
+.chats__footer {
+  @apply mt-auto border-t border-gray-200 p-4 flex justify-center items-center text-gray-500 text-sm;
+}
