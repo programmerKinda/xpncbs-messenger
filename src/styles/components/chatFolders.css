@@ -14,6 +14,7 @@
 .chat-folders__sticky-item {
   @apply sticky right-0 z-10 bg-gray-50;
   min-width: 3rem;
+  margin-left: auto;
 }
 .chat-folders__add-button {
   @apply border-none bg-transparent cursor-pointer w-full flex items-center justify-center;
