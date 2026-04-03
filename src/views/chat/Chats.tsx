@@ -4,6 +4,7 @@ import { ChatsMenuButton } from './ChatsMenuButton'
 import ChatFolders from './ChatFolders'
 import { ChatsResizer } from './ChatsResizer'
 import { useChatsWidthStore } from '@/controllers/chatsWidthController'
+import Menu from '../../shared/components/menu'
 export default function Chats() {
   const chatFolders = [
     { id: 1, name: 'Все' },
