@@ -16,5 +16,8 @@ export const usePopupStore = create<TooltipStore>((set) => ({
   setTargetRef: (ref) => set({ targetRef: ref }),
   setChildren: (children) => set({ children }),
 
-  onClose: () => set({ children: null }),
+  onClose: () => {
+    set({ targetRef: null })
+    set({ children: null })
+  },
 }))

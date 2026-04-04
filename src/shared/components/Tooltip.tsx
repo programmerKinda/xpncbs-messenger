@@ -1,37 +1,28 @@
+import { tooltipPosition } from '@/utils/tooltipPosition'
+import ReactDOM from 'react-dom'
+import { forwardRef } from 'react'
+import { type TooltipProps } from '../../models/tooltip'
 
-import { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
-import { type TooltipProps } from "../../models/tooltip";
-export default function Tooltip({ ref,targetRef, children, onClose }: TooltipProps) {
-  const [position, setPosition] = useState({ top: 0, left: 0 });
+const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
+  ({ className, targetRef, children }, ref) => {
+    const position = tooltipPosition(targetRef)
 
-  useEffect(() => {
-    if (!targetRef) return;
-    if (targetRef.current) {
-      const rect = targetRef.current.getBoundingClientRect();
-      setPosition({
-        top: rect.bottom + window.scrollY, // снизу кнопки
-        left: rect.left + window.scrollX,  // по левому краю
-      });
-    }
-  }, [targetRef]);
+    return ReactDOM.createPortal(
+      <div
+        className={className}
+        ref={ref}
+        style={{
+          position: 'absolute',
+          top: position.top,
+          left: position.left,
+          zIndex: 1000,
+        }}
+      >
+        {children}
+      </div>,
+      document.body
+    )
+  }
+)
 
-  return ReactDOM.createPortal(
-    <div
-      ref={ref as React.RefObject<HTMLDivElement>}
-      style={{
-        position: "absolute",
-        top: position.top,
-        left: position.left,
-        background: "white",
-        border: "1px solid #ccc",
-        padding: "5px",
-        zIndex: 1000,
-      }}
-      onClick={onClose}
-    >
-      {children}
-    </div>,
-    document.body
-  );
-}
+export default Tooltip

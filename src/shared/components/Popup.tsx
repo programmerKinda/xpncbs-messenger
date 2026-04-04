@@ -1,7 +1,19 @@
-export default function Popup({ children }: { children: React.ReactNode }) {
+import { forwardRef } from 'react'
+import Tooltip from './Tooltip'
+import { type TooltipProps } from '../../models/tooltip'
+
+const Popup = forwardRef<HTMLDivElement, TooltipProps>(({ targetRef, children }, ref) => {
   return (
-    <div className="popup">
+    <Tooltip
+      ref={ref}
+      className="w-44 
+  bg-white dark:bg-[#2a2a2a] rounded-xl shadow-lg border border-gray-200 dark:border-[#3a3a3a]
+  py-1"
+      targetRef={targetRef}
+    >
       {children}
-    </div>
+    </Tooltip>
   )
-}
+})
+
+export default Popup

@@ -7,7 +7,6 @@
 @import './shared/search.css';
 @import './components/message.css';
 @import './shared/menu.css';
-@import './shared/popup.css';
 
 @tailwind base;
 @tailwind components;
