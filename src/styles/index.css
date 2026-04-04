@@ -6,6 +6,7 @@
 @import './components/chatFolders.css';
 @import './shared/search.css';
 @import './components/message.css';
+@import './shared/menu.css';
 
 @tailwind base;
 @tailwind components;
