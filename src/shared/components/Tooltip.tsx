@@ -2,10 +2,14 @@ import { tooltipPosition } from '@/utils/tooltipPosition'
 import ReactDOM from 'react-dom'
 import { forwardRef } from 'react'
 import { type TooltipProps } from '../../models/tooltip'
+import { usePopupStore } from '@/controllers/popupController'
 
 const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
   ({ className, targetRef, children }, ref) => {
-    const position = tooltipPosition(targetRef)
+    const parent = usePopupStore((state) => state.parent)
+    const position = tooltipPosition(targetRef, parent)
+
+    if (!parent) return null
 
     return ReactDOM.createPortal(
       <div
@@ -20,7 +24,7 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
       >
         {children}
       </div>,
-      document.body
+      parent
     )
   }
 )

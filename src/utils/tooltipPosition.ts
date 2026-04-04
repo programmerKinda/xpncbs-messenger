@@ -1,16 +1,29 @@
 import { useState, useEffect } from 'react'
-export const tooltipPosition = (targetRef: React.RefObject<HTMLElement> | null) => {
+
+export const tooltipPosition = (
+  targetRef: React.RefObject<HTMLElement> | null,
+  parent: HTMLElement | null // родитель, внутри которого рендерим портал
+) => {
   const [position, setPosition] = useState({ top: 0, left: 0 })
 
   useEffect(() => {
-    if (!targetRef) return
-    if (targetRef.current) {
-      const rect = targetRef.current.getBoundingClientRect()
+    if (!targetRef?.current) return
+
+    const targetRect = targetRef.current.getBoundingClientRect()
+
+    if (parent) {
+      const parentRect = parent.getBoundingClientRect()
       setPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
+        top: targetRect.bottom - parentRect.top,
+        left: targetRect.left - parentRect.left,
+      })
+    } else {
+      setPosition({
+        top: targetRect.bottom + window.scrollY,
+        left: targetRect.left + window.scrollX,
       })
     }
-  }, [targetRef])
+  }, [targetRef, parent])
+
   return position
 }

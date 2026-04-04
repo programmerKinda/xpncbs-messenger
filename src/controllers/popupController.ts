@@ -1,6 +1,8 @@
 import { create } from 'zustand'
+import React from 'react'
 
 interface TooltipStore {
+  parent: HTMLElement | null
   targetRef: React.RefObject<HTMLElement> | null
   children: React.ReactNode
 
@@ -10,14 +12,19 @@ interface TooltipStore {
 }
 
 export const usePopupStore = create<TooltipStore>((set) => ({
+  parent: null,
   targetRef: null,
   children: null,
 
-  setTargetRef: (ref) => set({ targetRef: ref }),
+  setTargetRef: (ref) => {
+    set({ targetRef: ref })
+    const parent = ref.current?.parentElement || null
+    set({ parent })
+  },
+
   setChildren: (children) => set({ children }),
 
   onClose: () => {
-    set({ targetRef: null })
-    set({ children: null })
+    set({ targetRef: null, children: null, parent: null })
   },
 }))
