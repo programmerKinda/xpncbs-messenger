@@ -4,6 +4,7 @@ import { use, useRef } from 'react'
 import { usePopupStore } from './controllers/popupController'
 import Popup from './shared/components/Popup'
 import { useEffect } from 'react'
+import ChatWindow from './views/chat/ChatWindow'
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
@@ -25,6 +26,7 @@ function App() {
     <section className="App">
       <Sidebar />
       <Chats />
+      <ChatWindow />
       {targetRef && children && (
         <Popup ref={popupRef} targetRef={targetRef}>
           {children}

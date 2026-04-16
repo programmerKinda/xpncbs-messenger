@@ -1,0 +1,25 @@
+.chat-window {
+   @apply w-full bg-zinc-100 flex flex-col ;
+}
+.chat-window__header {
+    @apply flex items-center gap-2 border-b border-gray-300 justify-between p-4;
+
+}
+.chat-window__body {
+   padding: 16px 64px;
+   flex: 1 1 auto;
+}
+.chat-window__footer {
+    @apply  items-center p-4  w-full ;
+
+}
+.chat-window__form {
+    @apply border border-gray-300 p-4 rounded-full bg-white;
+}
+.chat-window__label {
+    @apply flex gap-2;
+}
+.chat-window__input{
+    @apply w-full bg-transparent outline-none text-xl placeholder-gray-400 text-gray-700 border-none;
+    transition: all 0.3s ease-in-out;
+}
