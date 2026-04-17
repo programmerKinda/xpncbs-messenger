@@ -4,6 +4,7 @@ import { use, useRef } from 'react'
 import { usePopupStore } from './controllers/popupController'
 import Popup from './shared/components/Popup'
 import { useEffect } from 'react'
+import UserAvatar from './views/user/userAvatar'
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
@@ -25,6 +26,7 @@ function App() {
     <section className="App">
       <Sidebar />
       <Chats />
+      <UserAvatar name='x p' avatarURL=''/>
       {targetRef && children && (
         <Popup ref={popupRef} targetRef={targetRef}>
           {children}
