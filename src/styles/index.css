@@ -9,7 +9,6 @@
 @import './shared/menu.css';
 @import './components/user.css';
 
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

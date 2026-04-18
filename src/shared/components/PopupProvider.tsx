@@ -28,7 +28,6 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({ children, popup })
       {React.cloneElement(children, {
         ref: targetRef,
         onClick: handleClick,
-        
       } as any)}
     </div>
   )

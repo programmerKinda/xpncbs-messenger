@@ -1,12 +1,9 @@
 .user-avatar {
-    @apply w-10 h-10 overflow-hidden rounded-full flex items-center justify-center text-3xl;
-    border:1px solid black;
-    line-height: 0;
+  @apply w-10 h-10 overflow-hidden rounded-full flex items-center justify-center text-3xl;
+  border: 1px solid black;
+  line-height: 0;
 }
 .user-avatar__img {
-
-
 }
 .user-avatar__name {
-
 }

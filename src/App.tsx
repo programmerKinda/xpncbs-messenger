@@ -19,14 +19,16 @@ function App() {
       }
     }
     document.addEventListener('click', handleClickOutside)
-    return () => {document.removeEventListener('click', handleClickOutside)}
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+    }
   }, [targetRef, onClose])
 
   return (
     <section className="App">
       <Sidebar />
       <Chats />
-      <UserAvatar name='x p' avatarURL=''/>
+      <UserAvatar name="x p" avatarURL="" />
       {targetRef && children && (
         <Popup ref={popupRef} targetRef={targetRef}>
           {children}
