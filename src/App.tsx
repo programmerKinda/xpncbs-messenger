@@ -4,7 +4,7 @@ import { use, useRef } from 'react'
 import { usePopupStore } from './controllers/popupController'
 import Popup from './shared/components/Popup'
 import { useEffect } from 'react'
-import UserAvatar from './views/user/userAvatar'
+import UserAvatar from './views/user/UserAvatar.tsx'
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
