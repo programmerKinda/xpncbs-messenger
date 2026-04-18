@@ -1,9 +1,11 @@
 .user-avatar {
-  @apply w-12 h-12 overflow-hidden rounded-full flex items-center justify-center text-xl;
-  
-  line-height: 0;
+  @apply w-12 h-12 overflow-hidden rounded-full;
 }
 .user-avatar__img {
+  @apply block w-full h-full object-cover;
 }
 .user-avatar__name {
+  @apply flex items-center justify-center text-xl w-full h-full;
+  line-height: 1;
+  transform: translateY(-0.06em);
 }
