@@ -5,13 +5,15 @@ import { PopupProvider } from "@/shared/components/PopupProvider";
 import { User,Settings,LogOut } from "lucide-react";
 import Message from "../message/Message";
 import { messageTypes } from "@/models/message";
-
+import UserAvatar from "../user/UserAvatar";
+import UserName from "../user/UserName";
 export default function ChatWindow() {
   return (
     <div className="chat-window">
       <header className="chat-window__header">
-           <div>
-              тут будет пользователь
+           <div className="flex gap-1 items-start">
+              <UserAvatar name="x p" avatarURL="" />
+              <UserName name="" phone="123-456-7890" contactName=""/>
            </div>
           
     <PopupProvider

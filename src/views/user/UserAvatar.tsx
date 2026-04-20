@@ -6,8 +6,8 @@ export default function UserAvatar({ name, avatarURL }: { name: string; avatarUR
   const nameArray = name.split(' ')
   const colorMain = colorHash.hex(name)
   const lighterColor = chroma(colorMain).brighten(1.2).hex()
-  const darkenColor = chroma(colorMain).darken(0.5).hex()
-  const styles = avatarURL ? {} : { backgroundColor: colorMain, border: `2px solid ${darkenColor}` }
+
+  const styles = avatarURL ? {} : { backgroundColor: colorMain }
   const letters = `${nameArray[0][0]}${nameArray[1][0]}`
   const isAllLower = letters === letters.toLowerCase()
 
