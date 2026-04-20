@@ -1,6 +1,6 @@
 import Sidebar from './views/sidebar/Sidebar'
 import Chats from './views/chat/Chats'
-import { use, useRef } from 'react'
+import { useRef } from 'react'
 import { usePopupStore } from './controllers/popupController'
 import Popup from './shared/components/Popup'
 import { useEffect } from 'react'
@@ -19,7 +19,9 @@ function App() {
       }
     }
     document.addEventListener('click', handleClickOutside)
-    return () => {document.removeEventListener('click', handleClickOutside)}
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+    }
   }, [targetRef, onClose])
 
   return (
