@@ -9,3 +9,7 @@
   line-height: 1;
   transform: translateY(-0.06em);
 }
+/* NAME */
+.user-name {
+  @apply text-xl font-medium;
+}
