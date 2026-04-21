@@ -1,13 +1,23 @@
 import { create } from 'zustand'
 import React from 'react'
+import { type Placement,type Align } from '../models/tooltip'
+
 
 interface TooltipStore {
   parent: HTMLElement | null
   targetRef: React.RefObject<HTMLElement> | null
-  children: React.ReactNode
+  children: React.ReactNode | null
 
-  setTargetRef: (ref: React.RefObject<HTMLElement>) => void
-  setChildren: (children: React.ReactNode) => void
+  placement: Placement
+  align: Align
+
+  setPopup: (data: {
+    ref: React.RefObject<HTMLElement>
+    children: React.ReactNode
+    placement?: Placement
+    align?: Align
+  }) => void
+
   onClose: () => void
 }
 
@@ -16,15 +26,26 @@ export const usePopupStore = create<TooltipStore>((set) => ({
   targetRef: null,
   children: null,
 
-  setTargetRef: (ref) => {
-    set({ targetRef: ref })
-    const parent = ref.current?.parentElement || null
-    set({ parent })
+  placement: 'bottom',
+  align: 'start',
+
+  setPopup: ({ ref, children, placement = 'bottom', align = 'start' }) => {
+    set({
+      targetRef: ref,
+      children,
+      placement,
+      align,
+      parent: ref.current?.parentElement || null,
+    })
   },
 
-  setChildren: (children) => set({ children }),
-
   onClose: () => {
-    set({ targetRef: null, children: null, parent: null })
+    set({
+      targetRef: null,
+      children: null,
+      parent: null,
+      placement: 'bottom',
+      align: 'start',
+    })
   },
 }))

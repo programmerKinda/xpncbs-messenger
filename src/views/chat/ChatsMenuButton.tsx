@@ -5,6 +5,8 @@ import { PopupProvider } from '@/shared/components/PopupProvider'
 export const ChatsMenuButton = () => {
   return (
     <PopupProvider
+      placement="bottom"
+      align="center"
       popup={
         <Menu
           items={[
