@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useLayoutEffect } from 'react'
 
 export const tooltipPosition = (
   targetRef: React.RefObject<HTMLElement> | null,
-  parent: HTMLElement | null // родитель, внутри которого рендерим портал
+  parent: HTMLElement | null
 ) => {
   const [position, setPosition] = useState({ top: 0, left: 0 })
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!targetRef?.current) return
 
     const targetRect = targetRef.current.getBoundingClientRect()
