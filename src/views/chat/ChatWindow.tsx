@@ -9,7 +9,7 @@ import UserAvatar from "../user/UserAvatar";
 import UserName from "../user/UserName";
 export default function ChatWindow() {
   return (
-    <div className="chat-window">
+    <div className="chat-window" style={{background: `url('images/chatBg.jpeg')`}}>
       <header className="chat-window__header">
            <div className="flex gap-1 items-start">
               <UserAvatar name="x p" avatarURL="" />
@@ -17,6 +17,8 @@ export default function ChatWindow() {
            </div>
           
     <PopupProvider
+      placement="bottom"
+      align="center"
       popup={
         <Menu
           items={[
