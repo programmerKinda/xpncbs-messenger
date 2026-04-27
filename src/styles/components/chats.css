@@ -19,3 +19,21 @@
 .chats__resizer {
   @apply absolute top-0 right-0 w-1 h-full bg-transparent cursor-e-resize;
 }
+.item-chat {
+  @apply flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-all duration-300;
+
+}
+.item-chat__time{
+  @apply text-sm
+}
+.last-message__text{
+
+}
+.item-chat__info{
+   @apply w-[30%];
+  white-space:nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 auto;
+
+}

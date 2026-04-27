@@ -1,10 +1,10 @@
 import Menu from "@/shared/components/menu";
 import { Plus, Sticker, Mic, EllipsisVertical} from "lucide-react";
-import { ChatsMenuButton } from "./ChatsMenuButton";
+
 import { PopupProvider } from "@/shared/components/PopupProvider";
 import { User,Settings,LogOut } from "lucide-react";
 import Message from "../message/Message";
-import { messageTypes } from "@/models/message";
+
 import UserAvatar from "../user/UserAvatar";
 import UserName from "../user/UserName";
 export default function ChatWindow() {
