@@ -8,6 +8,7 @@
 @import './components/message.css';
 @import './shared/menu.css';
 @import './components/chatWindow.css';
+@import './components/chatMenu.css';
 
 @import './components/user.css';
 

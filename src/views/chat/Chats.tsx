@@ -28,9 +28,7 @@ export default function Chats() {
           <ChatFolders chatFolders={chatFolders} />
         </header>
         <div className="chats__body">
-
-          <ItemChat createdAt={new Date} watched={true}/>
-
+          <ItemChat createdAt={new Date()} watched={true} />
         </div>
         <footer className="chats__footer"></footer>
         <ChatsResizer chatsWidth={chatsWidth} setChatsWidth={setChatsWidth} />

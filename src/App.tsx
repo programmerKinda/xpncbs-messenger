@@ -5,10 +5,14 @@ import { usePopupStore } from './controllers/popupController'
 import Popup from './shared/components/Popup'
 import { useEffect } from 'react'
 import ChatWindow from './views/chat/ChatWindow'
+import ChatMenu from './views/chat/ChatMenu'
+import { useChatMenuStore } from './controllers/chatMenuController'
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
-  const { targetRef, children, onClose,placement } = usePopupStore()
+  const { targetRef, children, onClose, placement } = usePopupStore()
+  const { isOpen } = useChatMenuStore()
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (targetRef && targetRef.current && targetRef.current.contains(event.target as Node)) {
@@ -29,15 +33,12 @@ function App() {
       <Sidebar />
       <Chats />
       <ChatWindow />
+      {isOpen && <ChatMenu />}
       {targetRef && children && (
-  <Popup
-    ref={popupRef}
-    targetRef={targetRef}
-    placement={placement}
-  >
-    {children}
-  </Popup>
-)}
+        <Popup ref={popupRef} targetRef={targetRef} placement={placement}>
+          {children}
+        </Popup>
+      )}
     </section>
   )
 }

@@ -16,13 +16,7 @@ const Tooltip = forwardRef<HTMLDivElement, Props>(
     const parent = usePopupStore((s) => s.parent)
     const tooltipRef = useRef<HTMLDivElement>(null)
 
-    const { top, left, ready } = tooltipPosition(
-      targetRef,
-      tooltipRef,
-      parent,
-      placement,
-      align
-    )
+    const { top, left, ready } = tooltipPosition(targetRef, tooltipRef, parent, placement, align)
 
     if (!parent) return null
 
