@@ -16,6 +16,14 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  overflow: hidden;
+}
 .App {
-  @apply flex h-screen w-screen relative overflow-hidden;
+  @apply flex h-screen relative;
+  width: 100%;
+  transition: width 0.3s ease-in-out;
+}
+.App--menu-closed {
+  width: calc(100% + 450px);
 }

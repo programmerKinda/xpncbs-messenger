@@ -29,11 +29,11 @@ function App() {
   }, [targetRef, onClose])
 
   return (
-    <section className="App">
+    <section className={`App ${isOpen ? '' : 'App--menu-closed'}`}>
       <Sidebar />
       <Chats />
       <ChatWindow />
-      {isOpen && <ChatMenu />}
+      <ChatMenu />
       {targetRef && children && (
         <Popup ref={popupRef} targetRef={targetRef} placement={placement}>
           {children}

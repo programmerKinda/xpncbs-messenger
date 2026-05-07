@@ -2,24 +2,14 @@ import { Ban, BrushCleaning, Gift, Images, Info, PenIcon, Phone, Trash, X } from
 import UserAvatar from '../user/UserAvatar'
 import UserName from '../user/UserName'
 import { useChatMenuStore } from '@/controllers/chatMenuController'
-import { useState } from 'react'
 
 export default function ChatMenu() {
   const { toggleMenu } = useChatMenuStore()
-  const [isClosing, setIsClosing] = useState(false)
-
-  const handleClose = () => {
-    setIsClosing(true)
-    setTimeout(() => {
-      toggleMenu()
-      setIsClosing(false)
-    }, 200)
-  }
 
   return (
-    <div className={`chat-menu ${isClosing ? 'chat-menu--closing' : ''}`}>
+    <div className={`chat-menu`}>
       <header className="chat-menu__header">
-        <button className="chat-menu__exit" onClick={handleClose}>
+        <button className="chat-menu__exit" onClick={toggleMenu}>
           <X size={25} />
         </button>
         <h2 className="chat-menu__title">Данные контакта</h2>

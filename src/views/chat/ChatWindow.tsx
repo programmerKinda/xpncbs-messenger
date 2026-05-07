@@ -8,11 +8,14 @@ import UserName from '../user/UserName'
 import { useChatMenuStore } from '@/controllers/chatMenuController'
 import { useRef } from 'react'
 export default function ChatWindow() {
-  
-  const { isOpen, toggleMenu } = useChatMenuStore()
+  const { toggleMenu } = useChatMenuStore()
   const chatWindowRef = useRef<HTMLDivElement>(null)
   return (
-    <div className="chat-window" style={{ background: `url('images/chatBg.jpeg')`,width: isOpen ? `${chatWindowRef.current!.offsetWidth-450}px` : '100%' } } ref={chatWindowRef}>
+    <div
+      className="chat-window"
+      style={{ background: `url('images/chatBg.jpeg')` }}
+      ref={chatWindowRef}
+    >
       <header className="chat-window__header">
         <div className="flex gap-1 items-start">
           <UserAvatar name="x p" avatarURL="" />
