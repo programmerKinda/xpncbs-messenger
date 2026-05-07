@@ -17,5 +17,5 @@
 @tailwind utilities;
 
 .App {
-  @apply flex h-screen w-screen;
+  @apply flex h-screen w-screen relative overflow-hidden;
 }

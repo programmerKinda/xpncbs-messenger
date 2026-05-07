@@ -1,17 +1,18 @@
 import Menu from '@/shared/components/menu'
 import { Plus, Sticker, Mic, EllipsisVertical } from 'lucide-react'
-
 import { PopupProvider } from '@/shared/components/PopupProvider'
 import { User, Settings, LogOut } from 'lucide-react'
 import Message from '../message/Message'
-
 import UserAvatar from '../user/UserAvatar'
 import UserName from '../user/UserName'
 import { useChatMenuStore } from '@/controllers/chatMenuController'
+import { useRef } from 'react'
 export default function ChatWindow() {
-  const { toggleMenu } = useChatMenuStore()
+  
+  const { isOpen, toggleMenu } = useChatMenuStore()
+  const chatWindowRef = useRef<HTMLDivElement>(null)
   return (
-    <div className="chat-window" style={{ background: `url('images/chatBg.jpeg')` }}>
+    <div className="chat-window" style={{ background: `url('images/chatBg.jpeg')`,width: isOpen ? `${chatWindowRef.current!.offsetWidth-450}px` : '100%' } } ref={chatWindowRef}>
       <header className="chat-window__header">
         <div className="flex gap-1 items-start">
           <UserAvatar name="x p" avatarURL="" />

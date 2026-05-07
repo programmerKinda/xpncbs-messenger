@@ -1,9 +1,10 @@
 .chat-menu {
-  @apply w-[450px] h-screen bg-gray-50 shadow-inner flex flex-col overflow-y-scroll;
+  @apply w-[450px] h-screen bg-gray-50 shadow-inner flex flex-col overflow-y-scroll absolute top-0 right-0 ;
   transform: translateX(100%);
   opacity: 0;
   animation: chatMenuOpen 280ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   will-change: transform, opacity;
+
 }
 
 .chat-menu--closing {
