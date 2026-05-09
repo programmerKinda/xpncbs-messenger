@@ -26,11 +26,7 @@ export default function Chats() {
 
           <ChatFolders chatFolders={chatFolders} />
         </header>
-        <div className="chats__body">
-
-
-          
-        </div>
+        <div className="chats__body"></div>
         <footer className="chats__footer"></footer>
         <ChatsResizer chatsWidth={chatsWidth} setChatsWidth={setChatsWidth} />
       </section>

@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect } from 'react'
+import { useState, useLayoutEffect, useRef } from 'react'
 
 type Placement = 'top' | 'bottom' | 'left' | 'right'
 type Align = 'start' | 'center' | 'end'
@@ -11,8 +11,9 @@ export const tooltipPosition = (
   align: Align = 'start'
 ) => {
   const [position, setPosition] = useState({ top: 0, left: 0, ready: false })
+  const observerRef = useRef<ResizeObserver | null>(null)
 
-  useLayoutEffect(() => {
+  const calculatePosition = () => {
     if (!targetRef?.current || !tooltipRef?.current) return
 
     const targetRect = targetRef.current.getBoundingClientRect()
@@ -103,6 +104,22 @@ export const tooltipPosition = (
     }
 
     setPosition({ top, left, ready: true })
+  }
+
+  useLayoutEffect(() => {
+    calculatePosition()
+
+    if (tooltipRef?.current) {
+      observerRef.current = new ResizeObserver(calculatePosition)
+      observerRef.current.observe(tooltipRef.current)
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+        observerRef.current = null
+      }
+    }
   }, [targetRef?.current, tooltipRef?.current, parent, placement, align])
 
   return position

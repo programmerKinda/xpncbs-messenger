@@ -6,7 +6,7 @@ export const ChatsMenuButton = () => {
   return (
     <PopupProvider
       placement="bottom"
-      align="center"
+      align="start"
       popup={
         <Menu
           items={[

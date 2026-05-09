@@ -8,7 +8,7 @@ import ChatWindow from './views/chat/ChatWindow'
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
-  const { targetRef, children, onClose,placement } = usePopupStore()
+  const { targetRef, children, onClose, placement, align } = usePopupStore()
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (targetRef && targetRef.current && targetRef.current.contains(event.target as Node)) {
@@ -30,14 +30,10 @@ function App() {
       <Chats />
       <ChatWindow />
       {targetRef && children && (
-  <Popup
-    ref={popupRef}
-    targetRef={targetRef}
-    placement={placement}
-  >
-    {children}
-  </Popup>
-)}
+        <Popup ref={popupRef} targetRef={targetRef} placement={placement} align={align}>
+          {children}
+        </Popup>
+      )}
     </section>
   )
 }

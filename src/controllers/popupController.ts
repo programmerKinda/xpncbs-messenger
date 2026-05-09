@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import React from 'react'
-import { type Placement,type Align } from '../models/tooltip'
-
+import { type Placement, type Align } from '../models/tooltip'
 
 interface TooltipStore {
   parent: HTMLElement | null
