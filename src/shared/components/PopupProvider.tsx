@@ -18,7 +18,8 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({
 
   const { targetRef: activeRef, setPopup, onClose } = usePopupStore()
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
     if (!targetRef.current) return
 
     if (activeRef?.current === targetRef.current) {

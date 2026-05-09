@@ -1,13 +1,14 @@
 import Menu from '@/shared/components/menu'
-import { Plus, Sticker, Mic, EllipsisVertical } from 'lucide-react'
-import { ChatsMenuButton } from './ChatsMenuButton'
+import { Plus, Sticker, Mic, EllipsisVertical, FileText, Image, Headphones } from 'lucide-react'
 import { PopupProvider } from '@/shared/components/PopupProvider'
 import { User, Settings, LogOut } from 'lucide-react'
 import Message from '../message/Message'
-import { messageTypes } from '@/models/message'
 import UserAvatar from '../user/UserAvatar'
 import UserName from '../user/UserName'
+import EmojiPicker from 'emoji-picker-react'
+import { useState } from 'react'
 export default function ChatWindow() {
+  const [value, setValue] = useState('')
   return (
     <div className="chat-window" style={{ background: `url('images/chatBg.jpeg')` }}>
       <header className="chat-window__header">
@@ -59,19 +60,52 @@ export default function ChatWindow() {
         />
       </div>
       <footer className="chat-window__footer">
-        <form action="" className="chat-window__form">
-          <label htmlFor="" className="chat-window__label">
-            <button>
-              <Plus size={25} />
-            </button>
-            <button>
-              <Sticker size={25} />
-            </button>
-            <input type="text" className="chat-window__input" placeholder="Введите сообщение" />
-            <button>
-              <Mic size={25} />
-            </button>
-          </label>
+  <form action="" className="chat-window__form">
+        <label htmlFor="" className="chat-window__label">
+            <PopupProvider
+              placement="top"
+              align="center"
+              popup={
+                <Menu
+                  items={[
+                    {
+                      icon: <FileText />,
+                      label: 'Документ',
+                      onClick: () => console.log('Документ'),
+                    },
+                    {
+                      icon: <Image />,
+                      label: 'Фото и видео',
+                      onClick: () => console.log('Фото и видео'),
+                    },
+                    {
+                      icon: <Headphones />,
+                      label: 'Аудио',
+                      onClick: () => console.log('Аудио'),
+                    },
+                    {
+                      icon: <User />,
+                      label: 'Контакт',
+                      onClick: () => console.log('Контакт'),
+                    }
+                  ]}
+                />
+              }
+            >
+              <button><Plus size={25}/></button>
+            </PopupProvider>
+            <PopupProvider
+              placement="top"
+              align="center"
+              popup={
+                  <EmojiPicker onEmojiClick={(emojiObject) => setValue((prev) => prev + emojiObject.emoji)} />
+              }
+            >
+              <button><Sticker size={25}/></button>
+            </PopupProvider>
+            <input type="text" className="chat-window__input" value={value} placeholder="Введите сообщение" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}/>
+            <button><Mic size={25}/></button>
+            </label>
         </form>
       </footer>
     </div>
