@@ -7,6 +7,7 @@ import UserAvatar from '../user/UserAvatar'
 import UserName from '../user/UserName'
 import EmojiPicker from 'emoji-picker-react'
 import { useState } from 'react'
+import ChatInput from './ChatInput'
 export default function ChatWindow() {
   const [value, setValue] = useState('')
   return (
@@ -60,8 +61,8 @@ export default function ChatWindow() {
         />
       </div>
       <footer className="chat-window__footer">
-  <form action="" className="chat-window__form">
-        <label htmlFor="" className="chat-window__label">
+        <form action="" className="chat-window__form">
+          <label htmlFor="" className="chat-window__label">
             <PopupProvider
               placement="top"
               align="center"
@@ -87,25 +88,34 @@ export default function ChatWindow() {
                       icon: <User />,
                       label: 'Контакт',
                       onClick: () => console.log('Контакт'),
-                    }
+                    },
                   ]}
                 />
               }
             >
-              <button><Plus size={25}/></button>
+              <button>
+                <Plus size={25} />
+              </button>
             </PopupProvider>
             <PopupProvider
               placement="top"
               align="center"
               popup={
-                  <EmojiPicker onEmojiClick={(emojiObject) => setValue((prev) => prev + emojiObject.emoji)} />
+                <EmojiPicker
+                  onEmojiClick={(emojiObject) => setValue((prev) => prev + emojiObject.emoji)}
+                />
               }
             >
-              <button><Sticker size={25}/></button>
+              <button>
+                <Sticker size={25} />
+              </button>
             </PopupProvider>
-            <input type="text" className="chat-window__input" value={value} placeholder="Введите сообщение" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}/>
-            <button><Mic size={25}/></button>
-            </label>
+            {/* <input type="text" className="chat-window__input" value={value} placeholder="Введите сообщение" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}/> */}
+            <ChatInput />
+            <button>
+              <Mic size={25} />
+            </button>
+          </label>
         </form>
       </footer>
     </div>
