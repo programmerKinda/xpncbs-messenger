@@ -1,10 +1,11 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef,useEffect } from 'react'
 interface ChatInputProps {
   value: string
   setValue: (value: string) => void
+  placeholder?: string
 }
 
-const ChatInput = ({ value, setValue }: ChatInputProps) => {
+const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
   const text = 'dsl;,dvsl,sdlsdds😕dddd🤨'
 
   const parts: string[] =
@@ -34,6 +35,7 @@ const ChatInput = ({ value, setValue }: ChatInputProps) => {
     if (!el) {
       return
     }
+
 
     const selection = window.getSelection()
 
@@ -133,15 +135,23 @@ const ChatInput = ({ value, setValue }: ChatInputProps) => {
     selection.removeAllRanges()
     selection.addRange(range)
   }, [value])
+  useEffect(() => {inputRef.current?.focus()}, [value])
   return (
+    <div className="chat-kinda-input">
     <div
-      className="chat-kinda-input"
+      className="chat-kinda-input__content"
       contentEditable
+      tabIndex={0}
       ref={inputRef}
-      onInput={(e) => setValue(e.currentTarget.innerText)}
+      onInput={(e) => setValue(e.currentTarget.textContent)}
+      
     >
-
+     
     </div>
+    {inputRef.current?.textContent === '' && (
+      <span className="chat-kinda-placeholder">{placeholder}</span>
+    )}
+  </div>
   )
 }
 export default ChatInput

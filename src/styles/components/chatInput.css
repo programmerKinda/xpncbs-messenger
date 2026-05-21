@@ -1,3 +1,10 @@
+
 .chat-kinda-input {
-  @apply w-full bg-transparent outline-none text-xl placeholder-gray-400 text-gray-700 border-none;
+  @apply w-full relative bg-transparent outline-none text-xl placeholder-gray-400 text-gray-700 border-none ;
+}
+.chat-kinda-input__content {
+  @apply w-full h-full outline-none text-xl placeholder-gray-400 text-gray-700 border-none;
+}
+.chat-kinda-placeholder {
+  @apply text-gray-400 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none;
 }
