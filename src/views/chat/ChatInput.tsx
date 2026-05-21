@@ -14,115 +14,128 @@ const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
   }
 
   const inputRef = useRef<HTMLDivElement>(null)
-  useLayoutEffect(() => {
-    const el = inputRef.current
+useLayoutEffect(() => {
+  const el = inputRef.current
 
-    if (!el) {
-      return
+  if (!el) {
+    return
+  }
+
+  const selection = window.getSelection()
+
+  let cursorPosition = 0
+
+  // сохраняем позицию курсора
+  if (selection && selection.rangeCount > 0) {
+    const range = selection.getRangeAt(0)
+    const preCaretRange = range.cloneRange()
+
+    preCaretRange.selectNodeContents(el)
+    preCaretRange.setEnd(range.endContainer, range.endOffset)
+
+    cursorPosition = preCaretRange.toString().length
+  }
+
+  // очищаем
+  el.innerHTML = ''
+
+  // корректная сегментация grapheme clusters
+  const segmenter = new Intl.Segmenter(undefined, {
+    granularity: 'grapheme',
+  })
+
+  const parts = [...segmenter.segment(value)].map((s) => s.segment)
+
+  const result = parts.map((item) => ({
+    type: /\p{Extended_Pictographic}/u.test(item) ? 'emoji' : 'text',
+    content: item,
+  }))
+
+  result.forEach((item) => {
+    const span = document.createElement('span')
+
+    // обычный текст
+    if (item.type === 'text') {
+      span.textContent = item.content
     }
 
-    const selection = window.getSelection()
+    // emoji
+    if (item.type === 'emoji') {
+      const classes = [
+        'relative',
+        'inline-block',
+        "before:content-['']",
+        'text-transparent',
+        'before:absolute',
+        'before:inset-0',
+        'before:bg-[image:var(--emoji-url)]',
+        'before:bg-contain',
+        'before:bg-center',
+        'before:bg-no-repeat',
+      ]
 
-    let cursorPosition = 0
+      classes.forEach((className) => {
+        span.classList.add(className)
+      })
 
-    if (selection && selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0)
-      const preCaretRange = range.cloneRange()
+      span.style.setProperty(
+        '--emoji-url',
+        `url('https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/${emojiToUnified(
+          item.content
+        )}.png')`
+      )
 
-      preCaretRange.selectNodeContents(el)
-      preCaretRange.setEnd(range.endContainer, range.endOffset)
-
-      cursorPosition = preCaretRange.toString().length
+      // нужен реальный текст внутри для caret/selection
+      span.textContent = item.content
     }
 
-    el.innerHTML = ''
+    el.appendChild(span)
+  })
 
-    const parts =
-      value.match(
-        /[\p{Emoji_Presentation}\p{Extended_Pictographic}]|[^\p{Emoji_Presentation}\p{Extended_Pictographic}]+/gu
-      ) ?? []
+  // восстанавливаем курсор
+  if (!selection) {
+    return
+  }
 
-    const result = parts.map((item) => ({
-      type: /[\p{Emoji_Presentation}\p{Extended_Pictographic}]/u.test(item) ? 'emoji' : 'text',
-      content: item,
-    }))
+  const range = document.createRange()
 
-    result.forEach((item) => {
-      const span = document.createElement('span')
+  let currentPosition = 0
 
-      if (item.type === 'text') {
-        span.innerText = item.content
+  const walk = (node: Node): boolean => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent ?? ''
+      const textLength = text.length
+
+      if (currentPosition + textLength >= cursorPosition) {
+        range.setStart(node, cursorPosition - currentPosition)
+        range.collapse(true)
+
+        return true
       }
 
-      if (item.type === 'emoji') {
-        const classes = [
-          'relative',
-          'inline-block',
-          "before:content-['']",
-          'text-transparent',
-          'before:absolute',
-          'before:inset-0',
-          'before:bg-[image:var(--emoji-url)]',
-          'before:bg-contain',
-          'before:bg-center',
-          'before:bg-no-repeat',
-        ]
-
-        classes.forEach((className) => {
-          span.classList.add(className)
-        })
-
-        span.style.setProperty(
-          '--emoji-url',
-          `url('https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/${emojiToUnified(item.content)}.png')`
-        )
-
-        span.innerText = item.content
-      }
-
-      el.appendChild(span)
-    })
-
-    if (!selection) {
-      return
+      currentPosition += textLength
     }
 
-    const range = document.createRange()
-
-    let currentPosition = 0
-
-    const walk = (node: Node): boolean => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        const textLength = node.textContent?.length ?? 0
-
-        if (currentPosition + textLength >= cursorPosition) {
-          range.setStart(node, cursorPosition - currentPosition)
-          range.collapse(true)
-
-          return true
-        }
-
-        currentPosition += textLength
+    for (const child of node.childNodes) {
+      if (walk(child)) {
+        return true
       }
-
-      for (const child of node.childNodes) {
-        if (walk(child)) {
-          return true
-        }
-      }
-
-      return false
     }
 
-    const found = walk(el)
+    return false
+  }
 
-    if (!found) {
-      return
-    }
+  const found = walk(el)
 
-    selection.removeAllRanges()
-    selection.addRange(range)
-  }, [value])
+  // если курсор в конце
+  if (!found) {
+    range.selectNodeContents(el)
+    range.collapse(false)
+  }
+
+  selection.removeAllRanges()
+  selection.addRange(range)
+}, [value])
 
   return (
     <div className="chat-kinda-input">
