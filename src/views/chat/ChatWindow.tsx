@@ -111,7 +111,7 @@ export default function ChatWindow() {
               </button>
             </PopupProvider>
             {/* <input type="text" className="chat-window__input" value={value} placeholder="Введите сообщение" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}/> */}
-            <ChatInput value={value} setValue={setValue} placeholder='Введите сообщение'/>
+            <ChatInput value={value} setValue={setValue} placeholder="Введите сообщение" />
             <button>
               <Mic size={25} />
             </button>

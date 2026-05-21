@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef,useEffect } from 'react'
+import { useLayoutEffect, useRef, useEffect } from 'react'
 interface ChatInputProps {
   value: string
   setValue: (value: string) => void
@@ -6,18 +6,6 @@ interface ChatInputProps {
 }
 
 const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
-  const text = 'dsl;,dvsl,sdlsdds😕dddd🤨'
-
-  const parts: string[] =
-    text.match(
-      /[\p{Emoji_Presentation}\p{Extended_Pictographic}]|[^\p{Emoji_Presentation}\p{Extended_Pictographic}]+/gu
-    ) ?? []
-
-  const result = parts.map((item) => ({
-    type: /[\p{Emoji_Presentation}\p{Extended_Pictographic}]/u.test(item) ? 'emoji' : 'text',
-    content: item,
-  }))
-  console.log(result)
   function emojiToUnified(emoji: string): string {
     return [...emoji]
       .map((char) => char.codePointAt(0)?.toString(16))
@@ -25,9 +13,6 @@ const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
       .join('-')
   }
 
-  console.log(emojiToUnified('😄')) // 1f604
-  console.log(emojiToUnified('🤨')) // 1f928
-  console.log(emojiToUnified('👨👩👧👦')) // 1f468-200d-1f469-200d-1f467-200d-1f466
   const inputRef = useRef<HTMLDivElement>(null)
   useLayoutEffect(() => {
     const el = inputRef.current
@@ -35,7 +20,6 @@ const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
     if (!el) {
       return
     }
-
 
     const selection = window.getSelection()
 
@@ -130,28 +114,28 @@ const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
       return false
     }
 
-    walk(el)
+    const found = walk(el)
+
+    if (!found) {
+      return
+    }
 
     selection.removeAllRanges()
     selection.addRange(range)
   }, [value])
-  useEffect(() => {inputRef.current?.focus()}, [value])
+
   return (
     <div className="chat-kinda-input">
-    <div
-      className="chat-kinda-input__content"
-      contentEditable
-      tabIndex={0}
-      ref={inputRef}
-      onInput={(e) => setValue(e.currentTarget.textContent)}
-      
-    >
-     
+      <div
+        className="chat-kinda-input__content"
+        contentEditable
+        tabIndex={0}
+        ref={inputRef}
+        onClick={() => console.log(value)}
+        onInput={(e) => setValue(e.currentTarget.textContent)}
+      ></div>
+      {!value && <span className="chat-kinda-placeholder">{placeholder}</span>}
     </div>
-    {inputRef.current?.textContent === '' && (
-      <span className="chat-kinda-placeholder">{placeholder}</span>
-    )}
-  </div>
   )
 }
 export default ChatInput
