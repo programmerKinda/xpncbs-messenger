@@ -71,6 +71,8 @@ const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
           'h-[24px]',
           'overflow-hidden',
           'text-transparent',
+          'text-transparent',
+          'selection:text-transparent',
           'before:absolute',
           'before:inset-0',
           'before:bg-[image:var(--emoji-url)]',
