@@ -67,6 +67,7 @@ const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
           'items-center',
           'justify-center',
           "before:content-['']",
+          "selection:bg-[#3367D1]",
           'w-[24px]',
           'h-[24px]',
           'overflow-hidden',
