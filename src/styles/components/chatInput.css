@@ -7,3 +7,7 @@
 .chat-kinda-placeholder {
   @apply text-gray-400 absolute inset-0 pointer-events-none;
 }
+
+.emoji {
+  @apply inline-block w-[24px] h-[24px] object-cover;
+}

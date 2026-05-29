@@ -1,7 +1,8 @@
 import { useLayoutEffect, useRef, useEffect } from 'react'
+
 interface ChatInputProps {
   value: string
-  setValue: (value: string) => void
+  setValue: React.Dispatch<React.SetStateAction<string>>
   placeholder?: string
 }
 
@@ -14,137 +15,150 @@ const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
   }
 
   const inputRef = useRef<HTMLDivElement>(null)
-  useLayoutEffect(() => {
-    const el = inputRef.current
+  // useLayoutEffect(() => {
+  //   const el = inputRef.current
 
-    if (!el) {
-      return
-    }
+  //   if (!el) {
+  //     return
+  //   }
 
-    const selection = window.getSelection()
+  //   const selection = window.getSelection()
 
-    let cursorPosition = 0
+  //   let cursorPosition = 0
 
-    // сохраняем позицию курсора
-    if (selection && selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0)
-      const preCaretRange = range.cloneRange()
+  //   // сохраняем позицию курсора
+  //   if (selection && selection.rangeCount > 0) {
+  //     const range = selection.getRangeAt(0)
+  //     const preCaretRange = range.cloneRange()
 
-      preCaretRange.selectNodeContents(el)
-      preCaretRange.setEnd(range.endContainer, range.endOffset)
+  //     preCaretRange.selectNodeContents(el)
+  //     preCaretRange.setEnd(range.endContainer, range.endOffset)
 
-      cursorPosition = preCaretRange.toString().length
-    }
+  //     cursorPosition = preCaretRange.toString().length
+  //   }
 
-    // очищаем
-    el.innerHTML = ''
+  //   // очищаем
+  //   el.innerHTML = ''
 
-    // корректная сегментация grapheme clusters
-    const segmenter = new Intl.Segmenter(undefined, {
-      granularity: 'grapheme',
-    })
+  //   // корректная сегментация grapheme clusters
+  //   const segmenter = new Intl.Segmenter(undefined, {
+  //     granularity: 'grapheme',
+  //   })
 
-    const parts = [...segmenter.segment(value)].map((s) => s.segment)
+  //   const parts = [...segmenter.segment(value)].map((s) => s.segment)
 
-    const result = parts.map((item) => ({
-      type: /\p{Extended_Pictographic}/u.test(item) ? 'emoji' : 'text',
-      content: item,
-    }))
+  //   const result = parts.map((item) => ({
+  //     type: /\p{Extended_Pictographic}/u.test(item) ? 'emoji' : 'text',
+  //     content: item,
+  //   }))
 
-    result.forEach((item) => {
-      const span = document.createElement('span')
+  //   result.forEach((item) => {
 
-      // обычный текст
-      if (item.type === 'text') {
-        span.textContent = item.content
-      }
+  //     // обычный текст
+  //     if (item.type === 'text') {
+  //       const span = document.createElement('span')
+  //       span.classList.add("input-text")
+  //       span.textContent = item.content
+  //       el.appendChild(span)
+  //     }
 
-      // emoji
-      if (item.type === 'emoji') {
-        const classes = [
-          'relative',
-          'inline-flex',
-          'items-center',
-          'justify-center',
-          "before:content-['']",
-          "selection:bg-[#3367D1]",
-          'w-[24px]',
-          'h-[24px]',
-          'overflow-hidden',
-          'text-transparent',
-          'text-transparent',
-          'selection:text-transparent',
-          'before:absolute',
-          'before:inset-0',
-          'before:bg-[image:var(--emoji-url)]',
-          'before:bg-contain',
-          'before:bg-center',
-          'before:bg-no-repeat',
-        ]
+  //     // emoji
+  //     if (item.type === 'emoji') {
+  //       const img = document.createElement('img')
+  //       img.src = `https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/${emojiToUnified(
+  //         item.content
+  //       )}.png`
+  //       img.alt = item.content
 
-        classes.forEach((className) => {
-          span.classList.add(className)
+  //         img.classList.add("emoji")
+
+  //       // нужен реальный текст внутри для caret/selection
+  //       el.appendChild(img)
+  //     }
+
+  //   })
+
+  //   // восстанавливаем курсор
+  //   if (!selection) {
+  //     return
+  //   }
+
+  //   const range = document.createRange()
+
+  //   let currentPosition = 0
+
+  //   const walk = (node: Node): boolean => {
+  //     if (node.nodeType === Node.TEXT_NODE) {
+  //       const text = node.textContent ?? ''
+  //       const textLength = text.length
+
+  //       if (currentPosition + textLength >= cursorPosition) {
+  //         range.setStart(node, cursorPosition - currentPosition)
+  //         range.collapse(true)
+
+  //         return true
+  //       }
+
+  //       currentPosition += textLength
+  //     }
+
+  //     for (const child of node.childNodes) {
+  //       if (walk(child)) {
+  //         return true
+  //       }
+  //     }
+
+  //     return false
+  //   }
+
+  //   const found = walk(el)
+
+  //   // если курсор в конце
+  //   if (!found) {
+  //     range.selectNodeContents(el)
+  //     range.collapse(false)
+  //   }
+
+  //   selection.removeAllRanges()
+  //   selection.addRange(range)
+  // }, [value])
+
+  const handleInput = () => {
+    let content = ''
+    inputRef.current!.childNodes.forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const currentContent = node.textContent as string
+        const segmenter = new Intl.Segmenter(undefined, {
+          granularity: 'grapheme',
         })
 
-        span.style.setProperty(
-          '--emoji-url',
-          `url('https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/${emojiToUnified(
-            item.content
-          )}.png')`
-        )
+        const parts = [...segmenter.segment(currentContent)].map((s) => s.segment)
 
-        // нужен реальный текст внутри для caret/selection
-        span.textContent = item.content
+        const result = parts.map((item) => ({
+          type: /\p{Extended_Pictographic}/u.test(item) ? 'emoji' : 'text',
+          content: item,
+        }))
+        node.textContent = ''
+
+        result.forEach((item) => {
+          if (item.type === 'text') {
+            const span = document.createElement('span')
+            span.textContent = item.content
+            inputRef.current!.appendChild(span)
+          }
+          if (item.type === 'emoji') {
+            const img = document.createElement('img')
+            img.src = `https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/${emojiToUnified(
+              item.content
+            )}.png`
+            img.alt = item.content
+            img.className = 'emoji'
+            inputRef.current!.appendChild(img)
+          }
+        })
       }
-
-      el.appendChild(span)
     })
-
-    // восстанавливаем курсор
-    if (!selection) {
-      return
-    }
-
-    const range = document.createRange()
-
-    let currentPosition = 0
-
-    const walk = (node: Node): boolean => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        const text = node.textContent ?? ''
-        const textLength = text.length
-
-        if (currentPosition + textLength >= cursorPosition) {
-          range.setStart(node, cursorPosition - currentPosition)
-          range.collapse(true)
-
-          return true
-        }
-
-        currentPosition += textLength
-      }
-
-      for (const child of node.childNodes) {
-        if (walk(child)) {
-          return true
-        }
-      }
-
-      return false
-    }
-
-    const found = walk(el)
-
-    // если курсор в конце
-    if (!found) {
-      range.selectNodeContents(el)
-      range.collapse(false)
-    }
-
-    selection.removeAllRanges()
-    selection.addRange(range)
-  }, [value])
-
+  }
   return (
     <div className="chat-kinda-input">
       <div
@@ -153,7 +167,7 @@ const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
         tabIndex={0}
         ref={inputRef}
         onClick={() => console.log(value)}
-        onInput={(e) => setValue(e.currentTarget.textContent)}
+        onInput={handleInput}
       ></div>
       {!value && <span className="chat-kinda-placeholder">{placeholder}</span>}
     </div>
