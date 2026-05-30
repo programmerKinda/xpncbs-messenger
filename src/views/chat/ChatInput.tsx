@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 
 interface ChatInputProps {
   value: string
@@ -7,6 +7,7 @@ interface ChatInputProps {
 }
 
 const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
+  const [isEmpty, setIsEmpty] = useState(true)
   function emojiToUnified(emoji: string): string {
     return [...emoji]
       .map((char) => char.codePointAt(0)?.toString(16))
@@ -15,116 +16,26 @@ const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
   }
 
   const inputRef = useRef<HTMLDivElement>(null)
-  // useLayoutEffect(() => {
-  //   const el = inputRef.current
+  useEffect(() => {
+    const el = inputRef.current
 
-  //   if (!el) {
-  //     return
-  //   }
+    if (!el) return
 
-  //   const selection = window.getSelection()
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach(() => {
+        setIsEmpty(el.textContent?.trim() === '' && el.querySelectorAll('img').length === 0)
+      })
+    })
 
-  //   let cursorPosition = 0
+    observer.observe(el, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    })
 
-  //   // сохраняем позицию курсора
-  //   if (selection && selection.rangeCount > 0) {
-  //     const range = selection.getRangeAt(0)
-  //     const preCaretRange = range.cloneRange()
-
-  //     preCaretRange.selectNodeContents(el)
-  //     preCaretRange.setEnd(range.endContainer, range.endOffset)
-
-  //     cursorPosition = preCaretRange.toString().length
-  //   }
-
-  //   // очищаем
-  //   el.innerHTML = ''
-
-  //   // корректная сегментация grapheme clusters
-  //   const segmenter = new Intl.Segmenter(undefined, {
-  //     granularity: 'grapheme',
-  //   })
-
-  //   const parts = [...segmenter.segment(value)].map((s) => s.segment)
-
-  //   const result = parts.map((item) => ({
-  //     type: /\p{Extended_Pictographic}/u.test(item) ? 'emoji' : 'text',
-  //     content: item,
-  //   }))
-
-  //   result.forEach((item) => {
-
-  //     // обычный текст
-  //     if (item.type === 'text') {
-  //       const span = document.createElement('span')
-  //       span.classList.add("input-text")
-  //       span.textContent = item.content
-  //       el.appendChild(span)
-  //     }
-
-  //     // emoji
-  //     if (item.type === 'emoji') {
-  //       const img = document.createElement('img')
-  //       img.src = `https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/${emojiToUnified(
-  //         item.content
-  //       )}.png`
-  //       img.alt = item.content
-
-  //         img.classList.add("emoji")
-
-  //       // нужен реальный текст внутри для caret/selection
-  //       el.appendChild(img)
-  //     }
-
-  //   })
-
-  //   // восстанавливаем курсор
-  //   if (!selection) {
-  //     return
-  //   }
-
-  //   const range = document.createRange()
-
-  //   let currentPosition = 0
-
-  //   const walk = (node: Node): boolean => {
-  //     if (node.nodeType === Node.TEXT_NODE) {
-  //       const text = node.textContent ?? ''
-  //       const textLength = text.length
-
-  //       if (currentPosition + textLength >= cursorPosition) {
-  //         range.setStart(node, cursorPosition - currentPosition)
-  //         range.collapse(true)
-
-  //         return true
-  //       }
-
-  //       currentPosition += textLength
-  //     }
-
-  //     for (const child of node.childNodes) {
-  //       if (walk(child)) {
-  //         return true
-  //       }
-  //     }
-
-  //     return false
-  //   }
-
-  //   const found = walk(el)
-
-  //   // если курсор в конце
-  //   if (!found) {
-  //     range.selectNodeContents(el)
-  //     range.collapse(false)
-  //   }
-
-  //   selection.removeAllRanges()
-  //   selection.addRange(range)
-  // }, [value])
-
+    return () => observer.disconnect()
+  }, [])
   const handleInput = () => {
-    let content = ''
     inputRef.current!.childNodes.forEach((node) => {
       if (node.nodeType === Node.TEXT_NODE) {
         const currentContent = node.textContent as string
@@ -169,7 +80,7 @@ const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
         onClick={() => console.log(value)}
         onInput={handleInput}
       ></div>
-      {!value && <span className="chat-kinda-placeholder">{placeholder}</span>}
+      {isEmpty && <span className="chat-kinda-placeholder">{placeholder}</span>}
     </div>
   )
 }
