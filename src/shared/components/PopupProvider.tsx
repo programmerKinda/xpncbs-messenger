@@ -18,7 +18,7 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({
 
   const { targetRef: activeRef, setPopup, onClose } = usePopupStore()
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
     if (!targetRef.current) return
 
@@ -35,11 +35,19 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({
     })
   }
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault()
+    if (children.props.onMouseDown) {
+      children.props.onMouseDown(e)
+    }
+  }
+
   return (
     <div className="relative">
       {React.cloneElement(children, {
         ref: targetRef,
         onClick: handleClick,
+        onMouseDown: handleMouseDown,
       } as any)}
     </div>
   )

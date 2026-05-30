@@ -35,40 +35,221 @@ const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
 
     return () => observer.disconnect()
   }, [])
-  const handleInput = () => {
-    inputRef.current!.childNodes.forEach((node) => {
+
+  const getNodeLength = (node: Node): number => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent ?? ''
+      return [...new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(text)].length
+    }
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const element = node as HTMLElement
+      if (element.tagName === 'IMG') return 1
+      return Array.from(node.childNodes).reduce((sum, child) => sum + getNodeLength(child), 0)
+    }
+    return 0
+  }
+
+  const getTextNodeGraphemeOffset = (node: Text, utf16Offset: number): number => {
+    const text = node.textContent ?? ''
+    const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
+    let offset = 0
+    let consumed = 0
+
+    for (const segment of segmenter.segment(text)) {
+      const segmentText = segment.segment
+      const segmentLength = segmentText.length
+      if (utf16Offset < consumed + segmentLength) {
+        return offset
+      }
+      consumed += segmentLength
+      offset += 1
+    }
+
+    return offset
+  }
+
+  const getCaretOffset = (root: Node): number | null => {
+    const selection = window.getSelection()
+    if (!selection || selection.rangeCount === 0) return null
+
+    const focusNode = selection.focusNode
+    const focusOffset = selection.focusOffset
+    if (!focusNode || !root.contains(focusNode)) return null
+
+    let offset = 0
+    const traverse = (node: Node): boolean => {
+      if (node === focusNode) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          offset += getTextNodeGraphemeOffset(node as Text, focusOffset)
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const element = node as Element
+          if (element.tagName === 'IMG') {
+            if (focusOffset > 0) offset += 1
+          } else {
+            for (let i = 0; i < focusOffset; i += 1) {
+              offset += getNodeLength(node.childNodes[i])
+            }
+          }
+        }
+        return true
+      }
+
       if (node.nodeType === Node.TEXT_NODE) {
-        const currentContent = node.textContent as string
-        const segmenter = new Intl.Segmenter(undefined, {
-          granularity: 'grapheme',
-        })
+        offset += getNodeLength(node)
+        return false
+      }
 
-        const parts = [...segmenter.segment(currentContent)].map((s) => s.segment)
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const element = node as HTMLElement
+        if (element.tagName === 'IMG') {
+          offset += 1
+          return false
+        }
+        for (const child of Array.from(node.childNodes)) {
+          if (traverse(child)) return true
+        }
+      }
+      return false
+    }
 
-        const result = parts.map((item) => ({
-          type: /\p{Extended_Pictographic}/u.test(item) ? 'emoji' : 'text',
-          content: item,
-        }))
-        node.textContent = ''
+    traverse(root)
+    return offset
+  }
 
-        result.forEach((item) => {
-          if (item.type === 'text') {
-            const span = document.createElement('span')
-            span.textContent = item.content
-            inputRef.current!.appendChild(span)
+  const getTextNodeUtf16Offset = (node: Text, graphemeOffset: number): number => {
+    const text = node.textContent ?? ''
+    const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
+    let consumed = 0
+    let count = 0
+
+    for (const segment of segmenter.segment(text)) {
+      if (count === graphemeOffset) break
+      consumed += segment.segment.length
+      count += 1
+    }
+
+    return consumed
+  }
+
+  const setCaretOffset = (root: Node, targetOffset: number) => {
+    const selection = window.getSelection()
+    if (!selection) return
+
+    const range = document.createRange()
+    let remaining = targetOffset
+
+    const traverse = (node: Node): boolean => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const nodeLength = getNodeLength(node)
+        if (remaining <= nodeLength) {
+          const utf16Offset = getTextNodeUtf16Offset(node as Text, remaining)
+          range.setStart(node, utf16Offset)
+          range.collapse(true)
+          return true
+        }
+        remaining -= nodeLength
+        return false
+      }
+
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const element = node as HTMLElement
+        if (element.tagName === 'IMG') {
+          if (remaining === 0) {
+            range.setStartBefore(node)
+            range.collapse(true)
+            return true
           }
-          if (item.type === 'emoji') {
-            const img = document.createElement('img')
-            img.src = `https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/${emojiToUnified(
-              item.content
-            )}.png`
-            img.alt = item.content
-            img.className = 'emoji'
-            inputRef.current!.appendChild(img)
+          if (remaining === 1) {
+            range.setStartAfter(node)
+            range.collapse(true)
+            return true
           }
-        })
+          remaining -= 1
+          return false
+        }
+
+        for (const child of Array.from(node.childNodes)) {
+          if (traverse(child)) return true
+        }
+      }
+      return false
+    }
+
+    if (!traverse(root)) {
+      range.setStart(root, root.childNodes.length)
+      range.collapse(true)
+    }
+
+    selection.removeAllRanges()
+    selection.addRange(range)
+  }
+
+  const handleInput = () => {
+    const el = inputRef.current
+    if (!el) return
+
+    const caretOffset = getCaretOffset(el)
+
+    const existingSpans = Array.from(el.querySelectorAll('span'))
+    existingSpans.forEach((span) => {
+      const children = Array.from(span.childNodes)
+      span.replaceWith(...children)
+    })
+
+    const textNodes: Text[] = []
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        return node.nodeValue != null ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
+      },
+    })
+
+    while (walker.nextNode()) {
+      textNodes.push(walker.currentNode as Text)
+    }
+
+    textNodes.forEach((node) => {
+      const currentContent = node.textContent as string
+      const segmenter = new Intl.Segmenter(undefined, {
+        granularity: 'grapheme',
+      })
+
+      const parts = [...segmenter.segment(currentContent)].map((s) => s.segment)
+
+      const fragment = document.createDocumentFragment()
+      let textBuffer = ''
+      const flushText = () => {
+        if (textBuffer.length === 0) return
+        const span = document.createElement('span')
+        span.textContent = textBuffer
+        fragment.appendChild(span)
+        textBuffer = ''
+      }
+
+      parts.forEach((item) => {
+        const isEmoji = /\p{Extended_Pictographic}/u.test(item) || /\p{Emoji}/u.test(item)
+        if (isEmoji) {
+          flushText()
+          const img = document.createElement('img')
+          img.src = `https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/${emojiToUnified(
+            item
+          )}.png`
+          img.alt = item
+          img.className = 'emoji'
+          fragment.appendChild(img)
+        } else {
+          textBuffer += item
+        }
+      })
+
+      flushText()
+      if (fragment.childNodes.length > 0) {
+        node.replaceWith(fragment)
       }
     })
+
+    if (caretOffset !== null) {
+      setCaretOffset(el, caretOffset)
+    }
   }
   return (
     <div className="chat-kinda-input">
