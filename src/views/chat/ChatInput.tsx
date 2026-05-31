@@ -317,8 +317,32 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
       const el = inputRef.current
       if (!el) return
 
-      const selection = window.getSelection()
-      if (!selection || selection.rangeCount === 0) return
+      let selection = window.getSelection()
+
+      // Если выделение не внутри input, установим каретку внутрь input
+      if (
+        !selection ||
+        selection.rangeCount === 0 ||
+        !selection.focusNode ||
+        !el.contains(selection.focusNode)
+      ) {
+        el.focus()
+        if (lastCaretOffset.current !== null) {
+          setCaretOffset(el, lastCaretOffset.current)
+        } else {
+          const r = document.createRange()
+          r.selectNodeContents(el)
+          r.collapse(false)
+          selection = window.getSelection()
+          if (selection) {
+            selection.removeAllRanges()
+            selection.addRange(r)
+          }
+        }
+
+        selection = window.getSelection()
+        if (!selection || selection.rangeCount === 0) return
+      }
 
       // Insert emoji text node
       const textNode = document.createTextNode(emoji)

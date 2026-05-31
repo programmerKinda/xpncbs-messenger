@@ -13,7 +13,9 @@
 }
 
 .epr-emoji {
-  transition: background-color 0.2s ease, transform 0.15s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
 }
 
 .epr-emoji:hover {
