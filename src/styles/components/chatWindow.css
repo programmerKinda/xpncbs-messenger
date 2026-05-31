@@ -12,10 +12,11 @@
   @apply items-center p-4  w-full;
 }
 .chat-window__form {
-  @apply border border-gray-300 p-4 rounded-full bg-white;
+  @apply border border-gray-300 p-4 bg-white;
+  
 }
 .chat-window__label {
-  @apply flex gap-2;
+  @apply flex gap-2 items-end;
 }
 .chat-window__input {
   @apply w-full bg-transparent outline-none text-xl placeholder-gray-400 text-gray-700 border-none;

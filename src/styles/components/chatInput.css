@@ -1,8 +1,14 @@
 .chat-kinda-input {
-  @apply w-full relative bg-transparent outline-none text-xl placeholder-gray-400 text-gray-700 border-none;
+  @apply w-full relative bg-transparent outline-none text-xl placeholder-gray-400 text-gray-700 border-none ;
 }
 .chat-kinda-input__content {
-  @apply w-full h-full outline-none text-xl placeholder-gray-400 text-gray-700 border-none;
+  @apply w-full h-full outline-none text-xl placeholder-gray-400 text-gray-700 border-none overflow-hidden max-h-[150px] overflow-y-auto;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  text-overflow: break-word;
+
 }
 .chat-kinda-placeholder {
   @apply text-gray-400 absolute inset-0 pointer-events-none;

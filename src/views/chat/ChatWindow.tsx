@@ -6,11 +6,37 @@ import Message from '../message/Message'
 import UserAvatar from '../user/UserAvatar'
 import UserName from '../user/UserName'
 import EmojiPicker from 'emoji-picker-react'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import ChatInput, { type ChatInputHandle } from './ChatInput'
 export default function ChatWindow() {
   const [value, setValue] = useState('')
+  const [formRadius, setFormRadius] = useState('999px')
   const chatInputRef = useRef<ChatInputHandle>(null)
+  const formRef = useRef<HTMLFormElement>(null)
+
+  useEffect(() => {
+    const formElement = formRef.current
+    if (!formElement) return
+
+    const initialHeight = formElement.offsetHeight
+    const maxHeight = initialHeight + 160
+    const minRadius = 8
+    const maxRadius = Math.round(initialHeight / 2)
+
+    const updateRadius = () => {
+      const height = formElement.offsetHeight
+      const normalized = Math.min(1, Math.max(0, (height - initialHeight) / (maxHeight - initialHeight)))
+      const radius = Math.round(maxRadius - normalized * (maxRadius - minRadius))
+      setFormRadius(`${radius}px`)
+    }
+
+    updateRadius()
+    const resizeObserver = new ResizeObserver(updateRadius)
+    resizeObserver.observe(formElement)
+
+    return () => resizeObserver.disconnect()
+  }, [])
+
   return (
     <div className="chat-window" style={{ background: `url('images/chatBg.jpeg')` }}>
       <header className="chat-window__header">
@@ -62,7 +88,12 @@ export default function ChatWindow() {
         />
       </div>
       <footer className="chat-window__footer">
-        <form action="" className="chat-window__form">
+        <form
+          action=""
+          className="chat-window__form"
+          ref={formRef}
+          style={{ borderRadius: formRadius, transition: 'border-radius 1s ease' }}
+        >
           <div className="chat-window__label">
             <PopupProvider
               placement="top"
