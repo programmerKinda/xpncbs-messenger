@@ -1,9 +1,18 @@
-import { useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react'
+import {
+  useRef,
+  useEffect,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  type Dispatch,
+  type MouseEvent,
+  type SetStateAction,
+} from 'react'
 import { usePopupStore } from '@/controllers/popupController'
 
 interface ChatInputProps {
   value: string
-  setValue: React.Dispatch<React.SetStateAction<string>>
+  setValue: Dispatch<SetStateAction<string>>
   placeholder?: string
 }
 
@@ -12,7 +21,7 @@ export interface ChatInputHandle {
 }
 
 const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
-  ({ value, setValue: _setValue, placeholder }, ref) => {
+  ({ setValue: _setValue, placeholder }, ref) => {
     const [isEmpty, setIsEmpty] = useState(true)
     function emojiToUnified(emoji: string): string {
       return [...emoji]
@@ -277,6 +286,33 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
       }
     }
 
+    const handleMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+      const target = event.target as HTMLElement
+      const el = inputRef.current
+      if (!el || target.tagName !== 'IMG') return
+
+      const img = target as HTMLImageElement
+      const rect = img.getBoundingClientRect()
+      const clickX = event.clientX
+      const placeBefore = clickX - rect.left < rect.width / 2
+
+      const selection = window.getSelection()
+      if (!selection) return
+
+      const range = document.createRange()
+      if (placeBefore) {
+        range.setStartBefore(img)
+      } else {
+        range.setStartAfter(img)
+      }
+      range.collapse(true)
+
+      selection.removeAllRanges()
+      selection.addRange(range)
+      el.focus()
+      event.preventDefault()
+    }
+
     const insertEmojiAtCaret = (emoji: string) => {
       const el = inputRef.current
       if (!el) return
@@ -306,7 +342,7 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
           contentEditable
           tabIndex={0}
           ref={inputRef}
-          onClick={() => console.log(value)}
+          onMouseDown={handleMouseDown}
           onBlur={() => {
             if (popupOpen) {
               restoreFocus()
