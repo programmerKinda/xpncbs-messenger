@@ -6,10 +6,11 @@ import Message from '../message/Message'
 import UserAvatar from '../user/UserAvatar'
 import UserName from '../user/UserName'
 import EmojiPicker from 'emoji-picker-react'
-import { useState } from 'react'
-import ChatInput from './ChatInput'
+import { useState, useRef } from 'react'
+import ChatInput, { type ChatInputHandle } from './ChatInput'
 export default function ChatWindow() {
   const [value, setValue] = useState('')
+  const chatInputRef = useRef<ChatInputHandle>(null)
   return (
     <div className="chat-window" style={{ background: `url('images/chatBg.jpeg')` }}>
       <header className="chat-window__header">
@@ -102,8 +103,11 @@ export default function ChatWindow() {
               align="center"
               popup={
                 <EmojiPicker
-                searchDisabled
-                  onEmojiClick={(emojiObject) => setValue((prev) => prev + emojiObject.emoji)}
+                  searchDisabled
+                  onEmojiClick={(emojiObject) => {
+                    chatInputRef.current?.insertEmojiAtCaret(emojiObject.emoji)
+                    setValue((prev) => prev + emojiObject.emoji)
+                  }}
                 />
               }
             >
@@ -112,7 +116,12 @@ export default function ChatWindow() {
               </button>
             </PopupProvider>
             {/* <input type="text" className="chat-window__input" value={value} placeholder="Введите сообщение" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}/> */}
-            <ChatInput value={value} setValue={setValue} placeholder="Введите сообщение" />
+            <ChatInput
+              ref={chatInputRef}
+              value={value}
+              setValue={setValue}
+              placeholder="Введите сообщение"
+            />
             <button type="button">
               <Mic size={25} />
             </button>

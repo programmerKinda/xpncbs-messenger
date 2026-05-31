@@ -11,3 +11,11 @@
 .emoji {
   @apply inline-block w-[24px] h-[24px] object-cover;
 }
+
+.epr-emoji {
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.epr-emoji:hover {
+  transform: translateY(-1px);
+}
