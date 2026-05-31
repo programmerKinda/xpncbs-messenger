@@ -62,7 +62,7 @@ export default function ChatWindow() {
       </div>
       <footer className="chat-window__footer">
         <form action="" className="chat-window__form">
-          <label htmlFor="" className="chat-window__label">
+          <div className="chat-window__label">
             <PopupProvider
               placement="top"
               align="center"
@@ -93,7 +93,7 @@ export default function ChatWindow() {
                 />
               }
             >
-              <button>
+              <button type="button">
                 <Plus size={25} />
               </button>
             </PopupProvider>
@@ -102,20 +102,21 @@ export default function ChatWindow() {
               align="center"
               popup={
                 <EmojiPicker
+                searchDisabled
                   onEmojiClick={(emojiObject) => setValue((prev) => prev + emojiObject.emoji)}
                 />
               }
             >
-              <button>
+              <button type="button">
                 <Sticker size={25} />
               </button>
             </PopupProvider>
             {/* <input type="text" className="chat-window__input" value={value} placeholder="Введите сообщение" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}/> */}
             <ChatInput value={value} setValue={setValue} placeholder="Введите сообщение" />
-            <button>
+            <button type="button">
               <Mic size={25} />
             </button>
-          </label>
+          </div>
         </form>
       </footer>
     </div>

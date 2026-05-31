@@ -28,6 +28,7 @@ const Tooltip = forwardRef<HTMLDivElement, Props>(
           else if (ref) (ref as any).current = node
         }}
         className={className}
+        onPointerDown={(e) => e.preventDefault()}
         style={{
           position: 'absolute',
           top,

@@ -42,12 +42,20 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({
     }
   }
 
+  const handlePointerDown = (e: React.PointerEvent<HTMLElement>) => {
+    e.preventDefault()
+    if (children.props.onPointerDown) {
+      children.props.onPointerDown(e)
+    }
+  }
+
   return (
     <div className="relative">
       {React.cloneElement(children, {
         ref: targetRef,
         onClick: handleClick,
         onMouseDown: handleMouseDown,
+        onPointerDown: handlePointerDown,
       } as any)}
     </div>
   )

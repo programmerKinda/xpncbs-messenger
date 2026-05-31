@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
+import { usePopupStore } from '@/controllers/popupController'
 
 interface ChatInputProps {
   value: string
@@ -6,7 +7,7 @@ interface ChatInputProps {
   placeholder?: string
 }
 
-const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
+const ChatInput = ({ value, setValue: _setValue, placeholder }: ChatInputProps) => {
   const [isEmpty, setIsEmpty] = useState(true)
   function emojiToUnified(emoji: string): string {
     return [...emoji]
@@ -16,6 +17,9 @@ const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
   }
 
   const inputRef = useRef<HTMLDivElement>(null)
+  const popupOpen = usePopupStore((s) => Boolean(s.children))
+  const lastCaretOffset = useRef<number | null>(null)
+
   useEffect(() => {
     const el = inputRef.current
 
@@ -184,6 +188,22 @@ const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
     selection.addRange(range)
   }
 
+  const restoreFocus = () => {
+    const el = inputRef.current
+    if (!el) return
+
+    const caretOffset = getCaretOffset(el)
+    lastCaretOffset.current = caretOffset
+
+    setTimeout(() => {
+      if (!inputRef.current) return
+      inputRef.current.focus()
+      if (lastCaretOffset.current !== null) {
+        setCaretOffset(inputRef.current, lastCaretOffset.current)
+      }
+    }, 0)
+  }
+
   const handleInput = () => {
     const el = inputRef.current
     if (!el) return
@@ -259,6 +279,11 @@ const ChatInput = ({ value, setValue, placeholder }: ChatInputProps) => {
         tabIndex={0}
         ref={inputRef}
         onClick={() => console.log(value)}
+        onBlur={() => {
+          if (popupOpen) {
+            restoreFocus()
+          }
+        }}
         onInput={handleInput}
       ></div>
       {isEmpty && <span className="chat-kinda-placeholder">{placeholder}</span>}
