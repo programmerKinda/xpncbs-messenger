@@ -260,7 +260,9 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
         }
 
         parts.forEach((item) => {
-          const isEmoji = /\p{Extended_Pictographic}/u.test(item) || /\p{Emoji}/u.test(item)
+          const isEmojiRaw = /\p{Extended_Pictographic}/u.test(item) || /\p{Emoji}/u.test(item)
+          const isSimpleDigit = /^[0-9]$/.test(item)
+          const isEmoji = isEmojiRaw && !isSimpleDigit
           if (isEmoji) {
             flushText()
             const img = document.createElement('img')
