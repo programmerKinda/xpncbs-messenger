@@ -1,5 +1,14 @@
 import Menu from '@/shared/components/menu'
-import { Plus, Sticker, Mic, EllipsisVertical, FileText, Image, Headphones, Send } from 'lucide-react'
+import {
+  Plus,
+  Sticker,
+  Mic,
+  EllipsisVertical,
+  FileText,
+  Image,
+  Headphones,
+  Send,
+} from 'lucide-react'
 import { PopupProvider } from '@/shared/components/PopupProvider'
 import { User, Settings, LogOut } from 'lucide-react'
 import Message from '../message/Message'
@@ -9,7 +18,6 @@ import EmojiPicker from 'emoji-picker-react'
 import { useState, useRef, useEffect } from 'react'
 import ChatInput, { type ChatInputHandle } from './ChatInput'
 export default function ChatWindow() {
-  const [isEmpty, setIsEmpty] = useState(true)
   const [value, setValue] = useState('')
   const [formRadius, setFormRadius] = useState('999px')
   const chatInputRef = useRef<ChatInputHandle>(null)
@@ -26,7 +34,10 @@ export default function ChatWindow() {
 
     const updateRadius = () => {
       const height = formElement.offsetHeight
-      const normalized = Math.min(1, Math.max(0, (height - initialHeight) / (maxHeight - initialHeight)))
+      const normalized = Math.min(
+        1,
+        Math.max(0, (height - initialHeight) / (maxHeight - initialHeight))
+      )
       const radius = Math.round(maxRadius - normalized * (maxRadius - minRadius))
       setFormRadius(`${radius}px`)
     }
@@ -138,7 +149,7 @@ export default function ChatWindow() {
                   searchDisabled
                   onEmojiClick={(emojiObject) => {
                     chatInputRef.current?.insertEmojiAtCaret(emojiObject.emoji)
-                    setValue((prev) => prev + emojiObject.emoji)
+                    // setValue((prev) => prev + emojiObject.emoji)
                   }}
                 />
               }
@@ -148,17 +159,15 @@ export default function ChatWindow() {
               </button>
             </PopupProvider>
             {/* <input type="text" className="chat-window__input" value={value} placeholder="Введите сообщение" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}/> */}
-<ChatInput
-  ref={chatInputRef}
-  value={value}
-  setValue={setValue}
-  placeholder="Введите сообщение"
-  onEmptyChange={setIsEmpty}
-  isEmpty={isEmpty}
-/>
-<button type="button">
-  {isEmpty ? <Mic size={25} /> : <Send size={25} />}
-</button>
+            <ChatInput
+              ref={chatInputRef}
+              value={value}
+              setValue={setValue}
+              placeholder="Введите сообщение"
+            />
+            <button type="button">
+              {value.trim() === '' ? <Mic size={25} /> : <Send size={25} />}
+            </button>
           </div>
         </form>
       </footer>

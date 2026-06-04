@@ -13,7 +13,6 @@
 }
 .chat-window__form {
   @apply border border-gray-300 p-4 bg-white;
-  
 }
 .chat-window__label {
   @apply flex gap-2 items-end;

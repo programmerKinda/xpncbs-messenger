@@ -14,8 +14,6 @@ interface ChatInputProps {
   value: string
   setValue: Dispatch<SetStateAction<string>>
   placeholder?: string
-  isEmpty?: boolean
-  onEmptyChange?: (empty: boolean) => void
 }
 
 export interface ChatInputHandle {
@@ -23,8 +21,9 @@ export interface ChatInputHandle {
 }
 
 const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
-({ setValue: _setValue, placeholder, isEmpty, onEmptyChange }, ref) => {
-   
+  ({ value, setValue: _setValue, placeholder }, ref) => {
+    const [isEmpty, setIsEmpty] = useState(true)
+
     function emojiToUnified(emoji: string): string {
       return [...emoji]
         .map((char) => char.codePointAt(0)?.toString(16))
@@ -36,33 +35,46 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
     const popupOpen = usePopupStore((s) => Boolean(s.children))
     const lastCaretOffset = useRef<number | null>(null)
 
-useEffect(() => {
-  const el = inputRef.current
-  if (!el) return
+    const parseValue = () => {
+      let str = ''
+      const children = [...inputRef.current!.children]
+      children.forEach((el) => {
+        if (el.classList.contains('textBuffer')) {
+          str += el.textContent
+        } else if (el.classList.contains('emoji')) {
+          const img = el as HTMLImageElement
+          str += img.alt
+        }
+      })
+      _setValue(str)
+    }
 
-  const checkIsEmpty = () => {
-    const empty =
-      el.textContent === '' &&
-      el.querySelectorAll('img').length === 0
+    useEffect(() => {
+      const el = inputRef.current
+      if (!el) return
 
-    onEmptyChange?.(empty)
-  }
+      const checkIsEmpty = () => {
+        const empty = el.textContent === '' && el.querySelectorAll('img').length === 0
 
-  // Первичная проверка при монтировании
-  checkIsEmpty()
+        setIsEmpty?.(empty)
+      }
 
-  const observer = new MutationObserver(() => {
-    checkIsEmpty()
-  })
+      // Первичная проверка при монтировании
+      checkIsEmpty()
 
-  observer.observe(el, {
-    childList: true,
-    subtree: true,
-    characterData: true,
-  })
+      const observer = new MutationObserver(() => {
+        checkIsEmpty()
+        parseValue()
+      })
 
-  return () => observer.disconnect()
-}, [])
+      observer.observe(el, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+      })
+
+      return () => observer.disconnect()
+    }, [])
 
     const getNodeLength = (node: Node): number => {
       if (node.nodeType === Node.TEXT_NODE) {
@@ -264,6 +276,7 @@ useEffect(() => {
         const flushText = () => {
           if (textBuffer.length === 0) return
           const span = document.createElement('span')
+          span.className = 'textBuffer'
           span.textContent = textBuffer
           fragment.appendChild(span)
           textBuffer = ''
@@ -378,6 +391,9 @@ useEffect(() => {
           contentEditable
           tabIndex={0}
           ref={inputRef}
+          onClick={() => {
+            console.log(value)
+          }}
           onMouseDown={handleMouseDown}
           onBlur={() => {
             if (popupOpen) {
@@ -386,11 +402,7 @@ useEffect(() => {
           }}
           onInput={handleInput}
         ></div>
-        {placeholder && isEmpty && (
-      <span className="chat-kinda-placeholder">
-        {placeholder}
-      </span>
-    )}
+        {placeholder && isEmpty && <span className="chat-kinda-placeholder">{placeholder}</span>}
       </div>
     )
   }
