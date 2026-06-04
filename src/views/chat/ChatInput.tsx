@@ -14,6 +14,8 @@ interface ChatInputProps {
   value: string
   setValue: Dispatch<SetStateAction<string>>
   placeholder?: string
+  isEmpty?: boolean
+  onEmptyChange?: (empty: boolean) => void
 }
 
 export interface ChatInputHandle {
@@ -21,8 +23,8 @@ export interface ChatInputHandle {
 }
 
 const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
-  ({ setValue: _setValue, placeholder }, ref) => {
-    const [isEmpty, setIsEmpty] = useState(true)
+({ setValue: _setValue, placeholder, isEmpty, onEmptyChange }, ref) => {
+   
     function emojiToUnified(emoji: string): string {
       return [...emoji]
         .map((char) => char.codePointAt(0)?.toString(16))
@@ -34,25 +36,33 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
     const popupOpen = usePopupStore((s) => Boolean(s.children))
     const lastCaretOffset = useRef<number | null>(null)
 
-    useEffect(() => {
-      const el = inputRef.current
+useEffect(() => {
+  const el = inputRef.current
+  if (!el) return
 
-      if (!el) return
+  const checkIsEmpty = () => {
+    const empty =
+      el.textContent === '' &&
+      el.querySelectorAll('img').length === 0
 
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach(() => {
-          setIsEmpty(el.textContent?.trim() === '' && el.querySelectorAll('img').length === 0)
-        })
-      })
+    onEmptyChange?.(empty)
+  }
 
-      observer.observe(el, {
-        childList: true,
-        subtree: true,
-        characterData: true,
-      })
+  // Первичная проверка при монтировании
+  checkIsEmpty()
 
-      return () => observer.disconnect()
-    }, [])
+  const observer = new MutationObserver(() => {
+    checkIsEmpty()
+  })
+
+  observer.observe(el, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+  })
+
+  return () => observer.disconnect()
+}, [])
 
     const getNodeLength = (node: Node): number => {
       if (node.nodeType === Node.TEXT_NODE) {
@@ -376,7 +386,11 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
           }}
           onInput={handleInput}
         ></div>
-        {isEmpty && <span className="chat-kinda-placeholder">{placeholder}</span>}
+        {placeholder && isEmpty && (
+      <span className="chat-kinda-placeholder">
+        {placeholder}
+      </span>
+    )}
       </div>
     )
   }
