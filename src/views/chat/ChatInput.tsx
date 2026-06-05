@@ -311,31 +311,11 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
       }
     }
 
-    const handleMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
       const target = event.target as HTMLElement
-      const el = inputRef.current
-      if (!el || target.tagName !== 'IMG') return
-
-      const img = target as HTMLImageElement
-      const rect = img.getBoundingClientRect()
-      const clickX = event.clientX
-      const placeBefore = clickX - rect.left < rect.width / 2
-
-      const selection = window.getSelection()
-      if (!selection) return
-
-      const range = document.createRange()
-      if (placeBefore) {
-        range.setStartBefore(img)
-      } else {
-        range.setStartAfter(img)
+      if (target.tagName === 'IMG' && target.classList.contains('emoji')) {
+        event.preventDefault()
       }
-      range.collapse(true)
-
-      selection.removeAllRanges()
-      selection.addRange(range)
-      el.focus()
-      event.preventDefault()
     }
 
     const insertEmojiAtCaret = (emoji: string) => {
@@ -394,7 +374,7 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
           onClick={() => {
             console.log(value)
           }}
-          onMouseDown={handleMouseDown}
+          onDragStart={handleDragStart}
           onBlur={() => {
             if (popupOpen) {
               restoreFocus()

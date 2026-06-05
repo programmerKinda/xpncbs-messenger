@@ -50,7 +50,7 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({
   }
 
   return (
-    <div className="relative">
+    <div className="relative inline-flex">
       {React.cloneElement(children, {
         ref: targetRef,
         onClick: handleClick,

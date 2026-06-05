@@ -1,5 +1,5 @@
 .chat-kinda-input {
-  @apply w-full relative bg-transparent outline-none text-xl placeholder-gray-400 text-gray-700 border-none;
+  @apply w-full h-full relative bg-transparent outline-none text-xl placeholder-gray-400 text-gray-700 border-none;
 }
 .chat-kinda-input__content {
   @apply w-full h-full outline-none text-xl placeholder-gray-400 text-gray-700 border-none overflow-hidden max-h-[150px] overflow-y-auto;
@@ -14,7 +14,10 @@
 }
 
 .emoji {
-  @apply inline-block w-[24px] h-[24px] object-cover;
+  @apply inline-block w-[24px] h-[24px] object-cover select-none;
+  user-drag: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
 
 .epr-emoji {
