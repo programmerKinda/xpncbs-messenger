@@ -8,6 +8,8 @@
   overflow-wrap: break-word;
   word-break: break-word;
   text-overflow: break-word;
+  color: transparent;
+  caret-color: black;
 }
 .chat-kinda-placeholder {
   @apply text-gray-400 absolute inset-0 pointer-events-none;
@@ -18,6 +20,8 @@
   user-drag: none;
   -webkit-user-drag: none;
   pointer-events: none;
+  color: black;
+  
 }
 
 .epr-emoji {
@@ -28,4 +32,8 @@
 
 .epr-emoji:hover {
   transform: translateY(-1px);
+}
+/* потомок класса .chat-kinda-input__content */
+.textBuffer{
+  color:black
 }

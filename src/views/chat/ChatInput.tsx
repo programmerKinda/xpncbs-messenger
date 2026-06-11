@@ -23,6 +23,7 @@ export interface ChatInputHandle {
 const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
   ({ value, setValue: _setValue, placeholder }, ref) => {
     const [isEmpty, setIsEmpty] = useState(true)
+    const [hasBr,setHasBr] = useState(false)
 
     function emojiToUnified(emoji: string): string {
       return [...emoji]
@@ -243,7 +244,7 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
     const handleInput = () => {
       const el = inputRef.current
       if (!el) return
-
+      setHasBr(el.querySelectorAll('br').length > 1)
       const caretOffset = getCaretOffset(el)
 
       const existingSpans = Array.from(el.querySelectorAll('span'))
@@ -283,7 +284,7 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
         }
 
         parts.forEach((item) => {
-          const isEmojiRaw = /\p{Extended_Pictographic}/u.test(item) || /\p{Emoji}/u.test(item)
+          const isEmojiRaw = /\p{Extended_Pictographic}/u.test(item) || /\p{Regional_Indicator}/u.test(item)
           const isSimpleDigit = /^[0-9]$/.test(item)
           const isEmoji = isEmojiRaw && !isSimpleDigit
           if (isEmoji) {
@@ -364,6 +365,11 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
       insertEmojiAtCaret,
     }))
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault()
+      }
+    }
     return (
       <div className="chat-kinda-input">
         <div
@@ -371,6 +377,7 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
           contentEditable
           tabIndex={0}
           ref={inputRef}
+          onKeyDown={handleKeyDown}
           onClick={() => {
             console.log(value)
           }}
@@ -382,7 +389,7 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
           }}
           onInput={handleInput}
         ></div>
-        {placeholder && isEmpty && <span className="chat-kinda-placeholder">{placeholder}</span>}
+        {placeholder && isEmpty && !hasBr && <span className="chat-kinda-placeholder ">{placeholder}</span>}
       </div>
     )
   }

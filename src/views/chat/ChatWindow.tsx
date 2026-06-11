@@ -49,6 +49,52 @@ export default function ChatWindow() {
     return () => resizeObserver.disconnect()
   }, [])
 
+  const emojiLabels = {
+    'Frequently Used': 'Часто используемые',
+    'Custom Emojis': 'Пользовательские эмодзи',
+    People: 'Люди',
+    'Animals & Nature': 'Животные & природа',
+    'Smileys & People': 'Смайлы & люди',
+    'Food & Drink': 'Еда & напитки',
+    'Travel & Places': 'Путешествия & места',
+    Activities: 'Активности',
+    Objects: 'Объекты',
+    Symbols: 'Символы',
+    Flags: 'Флаги',
+  }
+
+  useEffect(() => {
+    const updateEmojiLabels = () => {
+      const labels = document.querySelectorAll<HTMLDivElement>('.epr-emoji-category-label')
+      labels.forEach((el) => {
+        if (!el.dataset.key) {
+          el.dataset.key = el.textContent ?? ''
+        }
+
+        const key = el.dataset.key as keyof typeof emojiLabels
+        const translated = emojiLabels[key]
+
+        if (translated !== undefined && el.textContent !== translated) {
+          el.textContent = translated
+        }
+      })
+    }
+
+    const observer = new MutationObserver(() => {
+      const picker = document.querySelector('.EmojiPickerReact')
+
+      if (picker) {
+        updateEmojiLabels()
+      }
+    })
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    })
+
+    return () => observer.disconnect()
+  }, [])
   return (
     <div className="chat-window" style={{ background: `url('images/chatBg.jpeg')` }}>
       <header className="chat-window__header">
@@ -145,13 +191,18 @@ export default function ChatWindow() {
               placement="top"
               align="center"
               popup={
+                <><style>
+                  {`.epr_-3yva2a{display: none !important;}`}
+                </style>
                 <EmojiPicker
+                  style={{ border: 'none',background: 'none',width: '500px',height: '350px' }}
+                  
                   searchDisabled
                   onEmojiClick={(emojiObject) => {
                     chatInputRef.current?.insertEmojiAtCaret(emojiObject.emoji)
                     // setValue((prev) => prev + emojiObject.emoji)
                   }}
-                />
+                /></>
               }
             >
               <button type="button">
