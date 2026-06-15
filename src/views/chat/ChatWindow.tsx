@@ -1,4 +1,6 @@
 import Menu from '@/shared/components/menu'
+import VoiceRecorder from './VoiceRecorder'
+
 import {
   Plus,
   Sticker,
@@ -8,6 +10,7 @@ import {
   Image,
   Headphones,
   Send,
+  Trash,
 } from 'lucide-react'
 import { PopupProvider } from '@/shared/components/PopupProvider'
 import { User, Settings, LogOut } from 'lucide-react'
@@ -18,6 +21,7 @@ import EmojiPicker from 'emoji-picker-react'
 import { useState, useRef, useEffect } from 'react'
 import ChatInput, { type ChatInputHandle } from './ChatInput'
 export default function ChatWindow() {
+  const [isRecording, setIsRecording] = useState(false)
   const [value, setValue] = useState('')
   const [formRadius, setFormRadius] = useState('999px')
   const chatInputRef = useRef<ChatInputHandle>(null)
@@ -153,7 +157,7 @@ export default function ChatWindow() {
           style={{ borderRadius: formRadius, transition: 'border-radius 1s ease' }}
         >
           <div className="chat-window__label">
-            <PopupProvider
+          {!isRecording ?(<>            <PopupProvider
               placement="top"
               align="center"
               popup={
@@ -180,7 +184,7 @@ export default function ChatWindow() {
                       onClick: () => console.log('Контакт'),
                     },
                   ]}
-                />
+                /> 
               }
             >
               <button type="button">
@@ -201,23 +205,27 @@ export default function ChatWindow() {
                   onEmojiClick={(emojiObject) => {
                     chatInputRef.current?.insertEmojiAtCaret(emojiObject.emoji)
                     // setValue((prev) => prev + emojiObject.emoji)
-                  }}
+                  }} 
                 /></>
               }
             >
               <button type="button">
                 <Sticker size={25} />
               </button>
-            </PopupProvider>
+            </PopupProvider></>) : <Trash size={25} onClick={() => setIsRecording(false)} />}
             {/* <input type="text" className="chat-window__input" value={value} placeholder="Введите сообщение" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}/> */}
-            <ChatInput
-              ref={chatInputRef}
-              value={value}
-              setValue={setValue}
-              placeholder="Введите сообщение"
-            />
-            <button type="button">
-              {value.trim() === '' ? <Mic size={25} /> : <Send size={25} />}
+            {!isRecording && (
+              <ChatInput
+                ref={chatInputRef}
+                value={value}
+                setValue={setValue}
+                placeholder="Введите сообщение"
+              />
+            )}
+            {isRecording && <VoiceRecorder isRecording={isRecording} />}
+            
+            <button type="button" onClick={() => setIsRecording(!isRecording)}>
+              {value.trim()  === '' && !isRecording ? <Mic size={25}  /> : <Send size={25} />}
             </button>
           </div>
         </form>
