@@ -160,11 +160,11 @@ const checkAllowExtensions = (files: File[]): boolean => {
     if (
       !allowedExtensions.find(ext => fileName.endsWith(ext))
     ) {
-      setHasPhotosOrVideos(false); // Return the current state if any file has an unsupported extension
+      return false; // Return the current state if any file has an unsupported extension
     }
   }
 
-  setHasPhotosOrVideos(true);
+      return true; // All files have supported extensions
 };
   return (
     <div className="chat-window" style={{ background: `url('images/chatBg.jpeg')` }}    onDragEnter={handleDragEnter}
