@@ -21,7 +21,6 @@
   -webkit-user-drag: none;
   pointer-events: none;
   color: black;
-  
 }
 
 .epr-emoji {
@@ -34,6 +33,6 @@
   transform: translateY(-1px);
 }
 /* потомок класса .chat-kinda-input__content */
-.textBuffer{
-  color:black
+.textBuffer {
+  color: black;
 }

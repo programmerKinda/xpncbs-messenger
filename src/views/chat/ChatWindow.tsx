@@ -26,6 +26,8 @@ export default function ChatWindow() {
   const [formRadius, setFormRadius] = useState('999px')
   const chatInputRef = useRef<ChatInputHandle>(null)
   const formRef = useRef<HTMLFormElement>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const [hasPhotosOrVideos, setHasPhotosOrVideos] = useState(false)
 
   useEffect(() => {
     const formElement = formRef.current
@@ -99,8 +101,75 @@ export default function ChatWindow() {
 
     return () => observer.disconnect()
   }, [])
+
+const dragCounter = useRef(0);
+
+const handleDragEnter = (e: React.DragEvent) => {
+  e.preventDefault();
+  dragCounter.current++;
+
+  if (e.dataTransfer.types.includes('Files')) {
+    setIsDragging(true);
+  }
+  setHasPhotosOrVideos(checkAllowExtensions([...e.dataTransfer.items].filter(item => item.kind === 'file').map(item => item.getAsFile()!).filter(file => file !== null) as File[]));
+};
+
+const handleDragLeave = (e: React.DragEvent) => {
+  e.preventDefault();
+  dragCounter.current--;
+
+  if (dragCounter.current === 0) {
+    setIsDragging(false);
+  }
+};
+
+const handleDrop = (e: React.DragEvent) => {
+  e.preventDefault();
+
+  dragCounter.current = 0;
+  setIsDragging(false);
+
+  const files = [...e.dataTransfer.files];
+  if (checkAllowExtensions(files)) {
+    console.log(files,hasPhotosOrVideos);
+  }
+};
+const checkAllowExtensions = (files: File[]): boolean => {
+  const allowedExtensions = [
+    '.png',
+    '.jpg',
+    '.jpeg',
+    '.webp',
+    '.gif',
+    '.mp4',
+    '.mov',
+    '.avi',
+    '.mkv',
+    '.webm',
+    '.m4v',
+    '.wmv',
+    '.flv',
+    '.3gp',
+    '.mpeg',
+    '.mpg',
+  ];
+
+  for (const file of files) {
+    const fileName = file.name.toLowerCase();
+
+    if (
+      !allowedExtensions.find(ext => fileName.endsWith(ext))
+    ) {
+      setHasPhotosOrVideos(false); // Return the current state if any file has an unsupported extension
+    }
+  }
+
+  setHasPhotosOrVideos(true);
+};
   return (
-    <div className="chat-window" style={{ background: `url('images/chatBg.jpeg')` }}>
+    <div className="chat-window" style={{ background: `url('images/chatBg.jpeg')` }}    onDragEnter={handleDragEnter}
+  onDragLeave={handleDragLeave}
+  onDragOver={(e) => e.preventDefault()}>
       <header className="chat-window__header">
         <div className="flex gap-1 items-start">
           <UserAvatar name="x p" avatarURL="" />
@@ -228,8 +297,21 @@ export default function ChatWindow() {
               {value.trim()  === '' && !isRecording ? <Mic size={25}  /> : <Send size={25} />}
             </button>
           </div>
+          
         </form>
       </footer>
+      {isDragging && (
+        <div className='chat-window__drop-area' onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}>
+          <div className='chat-window__drop-text'>
+            <span className='chat-window__drop-text--primary'>Перетащите файлы сюда</span>
+            <span className='chat-window__drop-text--secondary'>для отправки без сжатия</span>
+          </div>
+        {hasPhotosOrVideos && (          <div className='chat-window__drop-text'>
+            <span className='chat-window__drop-text--primary'>Перетащите файлы сюда</span>
+            <span className='chat-window__drop-text--secondary'>для быстрой отправки</span>
+          </div>)}
+        </div>)}
+      
     </div>
   )
 }

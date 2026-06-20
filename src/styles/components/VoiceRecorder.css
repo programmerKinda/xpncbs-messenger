@@ -5,7 +5,8 @@
   width: 100%;
 }
 
-.btn, .stop {
+.btn,
+.stop {
   padding: 8px 12px;
   border: none;
   border-radius: 10px;
@@ -17,11 +18,9 @@
   align-items: center;
   gap: 12px;
 
-  
   padding: 0px 14px;
   border-radius: 30px;
   color: white;
-  
 }
 
 .dot {
@@ -29,9 +28,7 @@
   height: 10px;
   border-radius: 50%;
   background: red;
- 
 }
-
 
 .timer {
   font-size: 14px;
@@ -44,12 +41,10 @@
   gap: 2px;
   height: 28px;
 
-
-
   max-height: 44px;
   overflow: hidden;
   flex: 1 1 auto;
- 
+
   padding: 4px;
 }
 
@@ -57,16 +52,14 @@
   width: 4px;
   background-color: #000000;
   border-radius: 999px;
- 
-  transform-origin: bottom;
 
+  transform-origin: bottom;
 }
 
 .rec-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  
 }
 
 .rec-timer {
