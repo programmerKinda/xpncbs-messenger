@@ -106,12 +106,19 @@ const dragCounter = useRef(0);
 
 const handleDragEnter = (e: React.DragEvent) => {
   e.preventDefault();
+
   dragCounter.current++;
 
-  if (e.dataTransfer.types.includes('Files')) {
-    setIsDragging(true);
-  }
-  setHasPhotosOrVideos(checkAllowExtensions([...e.dataTransfer.items].filter(item => item.kind === 'file').map(item => item.getAsFile()!).filter(file => file !== null) as File[]));
+  if (!e.dataTransfer.types.includes('Files')) return;
+
+  setIsDragging(true);
+
+  const files = [...e.dataTransfer.items]
+    .filter(item => item.kind === 'file')
+    .map(item => item.getAsFile())
+    .filter(Boolean) as File[];
+
+  setHasPhotosOrVideos(checkAllowExtensions(files));
 };
 
 const handleDragLeave = (e: React.DragEvent) => {
@@ -136,36 +143,40 @@ const handleDrop = (e: React.DragEvent) => {
 };
 const checkAllowExtensions = (files: File[]): boolean => {
   const allowedExtensions = [
-    '.png',
-    '.jpg',
-    '.jpeg',
-    '.webp',
-    '.gif',
-    '.mp4',
-    '.mov',
-    '.avi',
-    '.mkv',
-    '.webm',
-    '.m4v',
-    '.wmv',
-    '.flv',
-    '.3gp',
-    '.mpeg',
-    '.mpg',
-  ];
+    { name: 'png' },
+    { name: 'jpg' },
+    { name: 'jpeg' },
+    { name: 'webp' },
+    { name: 'gif' },
+    { name: 'mp4' },
+    { name: 'mov' },
+    { name: 'avi' },
+    { name: 'mkv' },
+    { name: 'webm' },
+    { name: 'm4v' },
+    { name: 'wmv' },
+    { name: 'flv' },
+    { name: '3gp' },
+    { name: 'mpeg' },
+    { name: 'mpg' },
+  ]
 
   for (const file of files) {
-    const fileName = file.name.toLowerCase();
+    const checking = file.name.toLowerCase()
 
-    if (
-      !allowedExtensions.find(ext => fileName.endsWith(ext))
-    ) {
-      return false; // Return the current state if any file has an unsupported extension
+    const isValid = checking.match(
+      new RegExp(
+        `(\\.${allowedExtensions.map(item => item.name).join('|\\.')})$`
+      )
+    )
+
+    if (!isValid) {
+      return false
     }
   }
 
-      return true; // All files have supported extensions
-};
+  return true
+}
   return (
     <div className="chat-window" style={{ background: `url('images/chatBg.jpeg')` }}    onDragEnter={handleDragEnter}
   onDragLeave={handleDragLeave}
@@ -226,7 +237,7 @@ const checkAllowExtensions = (files: File[]): boolean => {
           style={{ borderRadius: formRadius, transition: 'border-radius 1s ease' }}
         >
           <div className="chat-window__label">
-          {!isRecording ?(<>            <PopupProvider
+          {!isRecording && (<>            <PopupProvider
               placement="top"
               align="center"
               popup={
@@ -281,7 +292,7 @@ const checkAllowExtensions = (files: File[]): boolean => {
               <button type="button">
                 <Sticker size={25} />
               </button>
-            </PopupProvider></>) : <Trash size={25} onClick={() => setIsRecording(false)} />}
+            </PopupProvider></>)}
             {/* <input type="text" className="chat-window__input" value={value} placeholder="Введите сообщение" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}/> */}
             {!isRecording && (
               <ChatInput
@@ -291,8 +302,12 @@ const checkAllowExtensions = (files: File[]): boolean => {
                 placeholder="Введите сообщение"
               />
             )}
-            {isRecording && <VoiceRecorder isRecording={isRecording} />}
-            
+            {isRecording && (
+              <div className="flex justify-end items-center gap-2 w-full">
+                <Trash size={25} onClick={() => setIsRecording(false)} />
+                <VoiceRecorder isRecording={isRecording} />
+              </div>
+            )}
             <button type="button" onClick={() => setIsRecording(!isRecording)}>
               {value.trim()  === '' && !isRecording ? <Mic size={25}  /> : <Send size={25} />}
             </button>
@@ -300,17 +315,44 @@ const checkAllowExtensions = (files: File[]): boolean => {
           
         </form>
       </footer>
-      {isDragging && (
-        <div className='chat-window__drop-area' onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}>
-          <div className='chat-window__drop-text'>
-            <span className='chat-window__drop-text--primary'>Перетащите файлы сюда</span>
-            <span className='chat-window__drop-text--secondary'>для отправки без сжатия</span>
-          </div>
-        {hasPhotosOrVideos && (          <div className='chat-window__drop-text'>
-            <span className='chat-window__drop-text--primary'>Перетащите файлы сюда</span>
-            <span className='chat-window__drop-text--secondary'>для быстрой отправки</span>
-          </div>)}
-        </div>)}
+{isDragging && (
+  <div
+    className="chat-window__drop-area"
+    onDrop={handleDrop}
+    onDragOver={(e) => e.preventDefault()}
+  >
+    {hasPhotosOrVideos ? (
+      <>
+        <div className="chat-window__drop-text">
+          <span className="chat-window__drop-text--primary">
+            Перетащите фотографии сюда
+          </span>
+          <span className="chat-window__drop-text--secondary">
+            для отправки без сжатия
+          </span>
+        </div>
+
+        <div className="chat-window__drop-text">
+          <span className="chat-window__drop-text--primary">
+            Перетащите фотографии сюда
+          </span>
+          <span className="chat-window__drop-text--secondary">
+            для быстрой отправки
+          </span>
+        </div>
+      </>
+    ) : (
+      <div className="chat-window__drop-text">
+        <span className="chat-window__drop-text--primary">
+          Перетащите файл сюда
+        </span>
+        <span className="chat-window__drop-text--secondary">
+          для отправки
+        </span>
+      </div>
+    )}
+  </div>
+)}
       
     </div>
   )

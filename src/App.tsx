@@ -26,7 +26,7 @@ function App() {
 
   return (
     <section className="App">
-      <Sidebar />
+      
       <Chats />
       <ChatWindow />
       {targetRef && children && (
