@@ -104,22 +104,55 @@ export default function ChatWindow() {
 
 const dragCounter = useRef(0);
 
+const hasPhotosOrVideosFromItems = (items: DataTransferItemList | null): boolean => {
+  if (!items) return false
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i]
+    if (item.kind !== 'file') continue
+
+    // Prefer MIME type when available
+    const mime = item.type
+    if (mime && (mime.startsWith('image/') || mime.startsWith('video/'))) {
+      return true
+    }
+
+    // Fallback: try to get a File object (may be null during dragenter)
+    try {
+      const file = item.getAsFile()
+      if (file) {
+        const ftype = file.type
+        if (ftype && (ftype.startsWith('image/') || ftype.startsWith('video/'))) {
+          return true
+        }
+
+        // As a last resort, check extension from name if available
+        const name = file.name || ''
+        if (name.match(/\.(png|jpe?g|webp|gif|mp4|mov|avi|mkv|webm|m4v|wmv|flv|3gp|mpeg|mpg)$/i)) {
+          return true
+        }
+      }
+    } catch (err) {
+      // ignore and continue
+    }
+  }
+
+  return false
+}
+
 const handleDragEnter = (e: React.DragEvent) => {
-  e.preventDefault();
+  e.preventDefault()
 
-  dragCounter.current++;
+  dragCounter.current++
 
-  if (!e.dataTransfer.types.includes('Files')) return;
+  if (!e.dataTransfer.types.includes('Files')) return
 
-  setIsDragging(true);
+  setIsDragging(true)
 
-  const files = [...e.dataTransfer.items]
-    .filter(item => item.kind === 'file')
-    .map(item => item.getAsFile())
-    .filter(Boolean) as File[];
-
-  setHasPhotosOrVideos(checkAllowExtensions(files));
-};
+  // Determine presence of images/videos using DataTransferItem.type where possible.
+  const hasMedia = hasPhotosOrVideosFromItems(e.dataTransfer.items)
+  setHasPhotosOrVideos(hasMedia)
+}
 
 const handleDragLeave = (e: React.DragEvent) => {
   e.preventDefault();
@@ -160,6 +193,8 @@ const checkAllowExtensions = (files: File[]): boolean => {
     { name: 'mpeg' },
     { name: 'mpg' },
   ]
+
+  if (!files || files.length === 0) return false
 
   for (const file of files) {
     const checking = file.name.toLowerCase()
