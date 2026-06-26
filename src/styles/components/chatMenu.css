@@ -1,0 +1,51 @@
+.chat-menu {
+  @apply w-[450px] h-screen bg-gray-50 shadow-inner flex flex-col overflow-y-scroll;
+}
+.chat-menu__header {
+  @apply flex items-center gap-2 border-b border-gray-300  p-4 bg-white;
+}
+.chat-menu__exit {
+}
+.user-info {
+  @apply flex flex-col items-center gap-2 justify-center py-4;
+  border-bottom: 1px solid #e5e7eb;
+}
+.chat-menu__title {
+  @apply text-xl flex-auto;
+}
+.chat-menu__edit {
+  @apply justify-self-end;
+}
+.chat-menu__status {
+}
+.chat-menu__info {
+  @apply text-xl;
+  color: rgb(48, 48, 48);
+  border-bottom: 1px solid #e5e7eb;
+}
+.chat-menu__info-item {
+  @apply p-4 flex items-center gap-2 cursor-pointer hover:bg-gray-200 transition-all duration-300;
+}
+.chat-menu__actions {
+  @apply text-xl;
+  color: rgb(185, 0, 0);
+}
+.chat-menu__action-item {
+  @apply p-4 flex items-center gap-2 cursor-pointer hover:bg-[#8b000029] transition-all duration-300;
+}
+.chat-menu__media {
+  @apply px-4 border-b border-gray-300 py-2;
+}
+.chat-menu__media-button {
+  @apply flex items-center py-4 px-2 hover:bg-gray-200 transition-all duration-300 gap-2 rounded-md w-full;
+}
+.chat-menu__media-list {
+  @apply grid items-center gap-1 px-4 mt-1;
+  grid-template-columns: repeat(4, 1fr);
+}
+.chat-menu__media-item {
+}
+.chat-menu__media-item img {
+  @apply block  object-cover rounded-md;
+  aspect-ratio: 1 / 1; /* квадрат */
+}

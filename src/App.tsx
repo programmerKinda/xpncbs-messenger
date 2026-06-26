@@ -1,15 +1,19 @@
 import Sidebar from './views/sidebar/Sidebar'
 import Chats from './views/chat/Chats'
-import { use, useRef } from 'react'
+import { useRef } from 'react'
 import { usePopupStore } from './controllers/popupController'
 import Popup from './shared/components/Popup'
 import { useEffect } from 'react'
-import UserAvatar from './views/user/UserAvatar.tsx'
-import UserName from './views/user/UserName.tsx'
+import ChatWindow from './views/chat/ChatWindow'
+import ChatMenu from './views/chat/ChatMenu'
+import { useChatMenuStore } from './controllers/chatMenuController'
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
-  const { targetRef, children, onClose } = usePopupStore()
+  const { targetRef, children, onClose, placement, align } = usePopupStore()
+
+  const { isOpen } = useChatMenuStore()
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (targetRef && targetRef.current && targetRef.current.contains(event.target as Node)) {
@@ -26,13 +30,13 @@ function App() {
   }, [targetRef, onClose])
 
   return (
-    <section className="App">
+    <section className={`App ${isOpen ? '' : 'App--menu-closed'}`}>
       <Sidebar />
       <Chats />
-      <UserAvatar name="x p" avatarURL="" />
-      <UserName name="" phone="123-456-7890" contactName=""/>
+      <ChatWindow />
+      <ChatMenu />
       {targetRef && children && (
-        <Popup ref={popupRef} targetRef={targetRef}>
+        <Popup ref={popupRef} targetRef={targetRef} placement={placement} align={align}>
           {children}
         </Popup>
       )}

@@ -7,12 +7,24 @@
 @import './shared/search.css';
 @import './components/message.css';
 @import './shared/menu.css';
+@import './components/chatWindow.css';
+@import './components/chatInput.css';
+@import './components/chatMenu.css';
+
 @import './components/user.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+body {
+  overflow: hidden;
+}
 .App {
-  @apply flex h-screen w-screen;
+  @apply flex h-screen relative;
+  width: 100%;
+  transition: width 0.3s ease-in-out;
+}
+.App--menu-closed {
+  width: calc(100% + 450px);
 }

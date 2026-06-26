@@ -4,7 +4,8 @@ import { ChatsMenuButton } from './ChatsMenuButton'
 import ChatFolders from './ChatFolders'
 import { ChatsResizer } from './ChatsResizer'
 import { useChatsWidthStore } from '@/controllers/chatsWidthController'
-import Menu from '../../shared/components/menu'
+
+import ItemChat from './ItemChat'
 export default function Chats() {
   const chatFolders = [
     { id: 1, name: 'Все' },
@@ -26,7 +27,9 @@ export default function Chats() {
 
           <ChatFolders chatFolders={chatFolders} />
         </header>
-        <div className="chats__body"></div>
+        <div className="chats__body">
+          <ItemChat createdAt={new Date()} watched={true} />
+        </div>
         <footer className="chats__footer"></footer>
         <ChatsResizer chatsWidth={chatsWidth} setChatsWidth={setChatsWidth} />
       </section>
