@@ -3,7 +3,7 @@
 }
 
 .sidebar__items {
-  @apply flex flex-col gap-5 w-full items-center;
+  @apply flex flex-col gap-5 w-[20%] items-center;
 }
 
 .sidebar__item {

@@ -1,4 +1,5 @@
 import Menu from '@/shared/components/menu'
+import { useChatMenuStore } from '@/controllers/chatMenuController'
 import VoiceRecorder from './VoiceRecorder'
 
 import {
@@ -212,16 +213,26 @@ const checkAllowExtensions = (files: File[]): boolean => {
 
   return true
 }
+  const { toggleMenu } = useChatMenuStore()
+  const chatWindowRef = useRef<HTMLDivElement>(null)
   return (
     <div className="chat-window" style={{ background: `url('images/chatBg.jpeg')` }}    onDragEnter={handleDragEnter}
   onDragLeave={handleDragLeave}
-  onDragOver={(e) => e.preventDefault()}>
+  onDragOver={(e) => e.preventDefault()} ref={chatWindowRef}>
       <header className="chat-window__header">
         <div className="flex gap-1 items-start">
           <UserAvatar name="x p" avatarURL="" />
-          <UserName name="" phone="123-456-7890" contactName="" />
+
+                    <div onClick={toggleMenu}>
+            <UserName name="" phone="123-456-7890" contactName="" />
+          </div>
         </div>
 
+
+
+
+ 
+   
         <PopupProvider
           placement="bottom"
           align="center"
@@ -388,7 +399,4 @@ const checkAllowExtensions = (files: File[]): boolean => {
     )}
   </div>
 )}
-      
-    </div>
-  )
-}
+</div>)}
