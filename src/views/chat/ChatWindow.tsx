@@ -1,5 +1,4 @@
 import Menu from '@/shared/components/menu'
-import { useChatMenuStore } from '@/controllers/chatMenuController'
 import VoiceRecorder from './VoiceRecorder'
 
 import {
@@ -19,206 +18,39 @@ import Message from '../message/Message'
 import UserAvatar from '../user/UserAvatar'
 import UserName from '../user/UserName'
 import EmojiPicker from 'emoji-picker-react'
-import { useState, useRef, useEffect } from 'react'
-import ChatInput, { type ChatInputHandle } from './ChatInput'
+import ChatInput from './ChatInput'
+import { useChatWindowController } from '@/hooks/useChatWindowController'
+
 export default function ChatWindow() {
-  const [isRecording, setIsRecording] = useState(false)
-  const [value, setValue] = useState('')
-  const [formRadius, setFormRadius] = useState('999px')
-  const chatInputRef = useRef<ChatInputHandle>(null)
-  const formRef = useRef<HTMLFormElement>(null)
-  const [isDragging, setIsDragging] = useState(false)
-  const [hasPhotosOrVideos, setHasPhotosOrVideos] = useState(false)
+  const {
+    isRecording,
+    setIsRecording,
+    value,
+    setValue,
+    formRadius,
+    chatInputRef,
+    formRef,
+    isDragging,
+    hasPhotosOrVideos,
+    chatWindowRef,
+    handleDragEnter,
+    handleDragLeave,
+    handleDrop,
+    handleDragOver,
+    toggleMenu,
+    handleToggleRecording,
+    handleEmojiSelect,
+  } = useChatWindowController()
 
-  useEffect(() => {
-    const formElement = formRef.current
-    if (!formElement) return
-
-    const initialHeight = formElement.offsetHeight
-    const maxHeight = initialHeight + 160
-    const minRadius = 8
-    const maxRadius = Math.round(initialHeight / 2)
-
-    const updateRadius = () => {
-      const height = formElement.offsetHeight
-      const normalized = Math.min(
-        1,
-        Math.max(0, (height - initialHeight) / (maxHeight - initialHeight))
-      )
-      const radius = Math.round(maxRadius - normalized * (maxRadius - minRadius))
-      setFormRadius(`${radius}px`)
-    }
-
-    updateRadius()
-    const resizeObserver = new ResizeObserver(updateRadius)
-    resizeObserver.observe(formElement)
-
-    return () => resizeObserver.disconnect()
-  }, [])
-
-  const emojiLabels = {
-    'Frequently Used': 'Часто используемые',
-    'Custom Emojis': 'Пользовательские эмодзи',
-    People: 'Люди',
-    'Animals & Nature': 'Животные & природа',
-    'Smileys & People': 'Смайлы & люди',
-    'Food & Drink': 'Еда & напитки',
-    'Travel & Places': 'Путешествия & места',
-    Activities: 'Активности',
-    Objects: 'Объекты',
-    Symbols: 'Символы',
-    Flags: 'Флаги',
-  }
-
-  useEffect(() => {
-    const updateEmojiLabels = () => {
-      const labels = document.querySelectorAll<HTMLDivElement>('.epr-emoji-category-label')
-      labels.forEach((el) => {
-        if (!el.dataset.key) {
-          el.dataset.key = el.textContent ?? ''
-        }
-
-        const key = el.dataset.key as keyof typeof emojiLabels
-        const translated = emojiLabels[key]
-
-        if (translated !== undefined && el.textContent !== translated) {
-          el.textContent = translated
-        }
-      })
-    }
-
-    const observer = new MutationObserver(() => {
-      const picker = document.querySelector('.EmojiPickerReact')
-
-      if (picker) {
-        updateEmojiLabels()
-      }
-    })
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    })
-
-    return () => observer.disconnect()
-  }, [])
-
-const dragCounter = useRef(0);
-
-const hasPhotosOrVideosFromItems = (items: DataTransferItemList | null): boolean => {
-  if (!items) return false
-
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i]
-    if (item.kind !== 'file') continue
-
-    // Prefer MIME type when available
-    const mime = item.type
-    if (mime && (mime.startsWith('image/') || mime.startsWith('video/'))) {
-      return true
-    }
-
-    // Fallback: try to get a File object (may be null during dragenter)
-    try {
-      const file = item.getAsFile()
-      if (file) {
-        const ftype = file.type
-        if (ftype && (ftype.startsWith('image/') || ftype.startsWith('video/'))) {
-          return true
-        }
-
-        // As a last resort, check extension from name if available
-        const name = file.name || ''
-        if (name.match(/\.(png|jpe?g|webp|gif|mp4|mov|avi|mkv|webm|m4v|wmv|flv|3gp|mpeg|mpg)$/i)) {
-          return true
-        }
-      }
-    } catch (err) {
-      // ignore and continue
-    }
-  }
-
-  return false
-}
-
-const handleDragEnter = (e: React.DragEvent) => {
-  e.preventDefault()
-
-  dragCounter.current++
-
-  if (!e.dataTransfer.types.includes('Files')) return
-
-  setIsDragging(true)
-
-  // Determine presence of images/videos using DataTransferItem.type where possible.
-  const hasMedia = hasPhotosOrVideosFromItems(e.dataTransfer.items)
-  setHasPhotosOrVideos(hasMedia)
-}
-
-const handleDragLeave = (e: React.DragEvent) => {
-  e.preventDefault();
-  dragCounter.current--;
-
-  if (dragCounter.current === 0) {
-    setIsDragging(false);
-  }
-};
-
-const handleDrop = (e: React.DragEvent) => {
-  e.preventDefault();
-
-  dragCounter.current = 0;
-  setIsDragging(false);
-
-  const files = [...e.dataTransfer.files];
-  if (checkAllowExtensions(files)) {
-    console.log(files,hasPhotosOrVideos);
-  }
-};
-const checkAllowExtensions = (files: File[]): boolean => {
-  const allowedExtensions = [
-    { name: 'png' },
-    { name: 'jpg' },
-    { name: 'jpeg' },
-    { name: 'webp' },
-    { name: 'gif' },
-    { name: 'mp4' },
-    { name: 'mov' },
-    { name: 'avi' },
-    { name: 'mkv' },
-    { name: 'webm' },
-    { name: 'm4v' },
-    { name: 'wmv' },
-    { name: 'flv' },
-    { name: '3gp' },
-    { name: 'mpeg' },
-    { name: 'mpg' },
-  ]
-
-  if (!files || files.length === 0) return false
-
-  for (const file of files) {
-    const checking = file.name.toLowerCase()
-
-    const isValid = checking.match(
-      new RegExp(
-        `(\\.${allowedExtensions.map(item => item.name).join('|\\.')})$`
-      )
-    )
-
-    if (!isValid) {
-      return false
-    }
-  }
-
-  return true
-}
-  const { toggleMenu } = useChatMenuStore()
-  const chatWindowRef = useRef<HTMLDivElement>(null)
   return (
-    <div className="chat-window" style={{ background: `url('images/chatBg.jpeg')` }}    onDragEnter={handleDragEnter}
-  onDragLeave={handleDragLeave}
-  onDragOver={(e) => e.preventDefault()} ref={chatWindowRef}>
+    <div
+      className="chat-window"
+      style={{ background: `url('images/chatBg.jpeg')` }}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      ref={chatWindowRef}
+    >
       <header className="chat-window__header">
         <div className="flex gap-1 items-start">
           <UserAvatar name="x p" avatarURL="" />
@@ -325,13 +157,9 @@ const checkAllowExtensions = (files: File[]): boolean => {
                   {`.epr_-3yva2a{display: none !important;}`}
                 </style>
                 <EmojiPicker
-                  style={{ border: 'none',background: 'none',width: '500px',height: '350px' }}
-                  
+                  style={{ border: 'none', background: 'none', width: '500px', height: '350px' }}
                   searchDisabled
-                  onEmojiClick={(emojiObject) => {
-                    chatInputRef.current?.insertEmojiAtCaret(emojiObject.emoji)
-                    // setValue((prev) => prev + emojiObject.emoji)
-                  }} 
+                  onEmojiClick={(emojiObject) => handleEmojiSelect(emojiObject.emoji)}
                 /></>
               }
             >
@@ -354,8 +182,8 @@ const checkAllowExtensions = (files: File[]): boolean => {
                 <VoiceRecorder isRecording={isRecording} />
               </div>
             )}
-            <button type="button" onClick={() => setIsRecording(!isRecording)}>
-              {value.trim()  === '' && !isRecording ? <Mic size={25}  /> : <Send size={25} />}
+            <button type="button" onClick={handleToggleRecording}>
+              {value.trim() === '' && !isRecording ? <Mic size={25} /> : <Send size={25} />}
             </button>
           </div>
           

@@ -5,7 +5,6 @@ import {
   forwardRef,
   useImperativeHandle,
   type Dispatch,
-  type MouseEvent,
   type SetStateAction,
 } from 'react'
 import { usePopupStore } from '@/controllers/popupController'
