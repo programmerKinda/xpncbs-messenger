@@ -101,7 +101,10 @@ export function useChatWindowController() {
 
     const updateRadius = () => {
       const height = formElement.offsetHeight
-      const normalized = Math.min(1, Math.max(0, (height - initialHeight) / (maxHeight - initialHeight)))
+      const normalized = Math.min(
+        1,
+        Math.max(0, (height - initialHeight) / (maxHeight - initialHeight))
+      )
       const radius = Math.round(maxRadius - normalized * (maxRadius - minRadius))
       setFormRadius(`${radius}px`)
     }

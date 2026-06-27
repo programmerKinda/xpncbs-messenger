@@ -20,7 +20,7 @@ import UserName from '../user/UserName'
 import EmojiPicker from 'emoji-picker-react'
 import ChatInput from './ChatInput'
 import { useChatWindowController } from '@/hooks/useChatWindowController'
-
+import ModalProvider from '@/shared/components/ModalProvider'
 export default function ChatWindow() {
   const {
     isRecording,
@@ -55,16 +55,11 @@ export default function ChatWindow() {
         <div className="flex gap-1 items-start">
           <UserAvatar name="x p" avatarURL="" />
 
-                    <div onClick={toggleMenu}>
+          <div onClick={toggleMenu}>
             <UserName name="" phone="123-456-7890" contactName="" />
           </div>
         </div>
 
-
-
-
- 
-   
         <PopupProvider
           placement="bottom"
           align="center"
@@ -115,58 +110,71 @@ export default function ChatWindow() {
           style={{ borderRadius: formRadius, transition: 'border-radius 1s ease' }}
         >
           <div className="chat-window__label">
-          {!isRecording && (<>            <PopupProvider
-              placement="top"
-              align="center"
-              popup={
-                <Menu
-                  items={[
-                    {
-                      icon: <FileText />,
-                      label: 'Документ',
-                      onClick: () => console.log('Документ'),
-                    },
-                    {
-                      icon: <Image />,
-                      label: 'Фото и видео',
-                      onClick: () => console.log('Фото и видео'),
-                    },
-                    {
-                      icon: <Headphones />,
-                      label: 'Аудио',
-                      onClick: () => console.log('Аудио'),
-                    },
-                    {
-                      icon: <User />,
-                      label: 'Контакт',
-                      onClick: () => console.log('Контакт'),
-                    },
-                  ]}
-                /> 
-              }
-            >
-              <button type="button">
-                <Plus size={25} />
-              </button>
-            </PopupProvider>
-            <PopupProvider
-              placement="top"
-              align="center"
-              popup={
-                <><style>
-                  {`.epr_-3yva2a{display: none !important;}`}
-                </style>
-                <EmojiPicker
-                  style={{ border: 'none', background: 'none', width: '500px', height: '350px' }}
-                  searchDisabled
-                  onEmojiClick={(emojiObject) => handleEmojiSelect(emojiObject.emoji)}
-                /></>
-              }
-            >
-              <button type="button">
-                <Sticker size={25} />
-              </button>
-            </PopupProvider></>)}
+            {!isRecording && (
+              <>
+                {' '}
+                <ModalProvider modal={<div>Модальное окно</div>}>
+                  <button> Модалка</button>
+                </ModalProvider>
+                <PopupProvider
+                  placement="top"
+                  align="center"
+                  popup={
+                    <Menu
+                      items={[
+                        {
+                          icon: <FileText />,
+                          label: 'Документ',
+                          onClick: () => console.log('Документ'),
+                        },
+                        {
+                          icon: <Image />,
+                          label: 'Фото и видео',
+                          onClick: () => console.log('Фото и видео'),
+                        },
+                        {
+                          icon: <Headphones />,
+                          label: 'Аудио',
+                          onClick: () => console.log('Аудио'),
+                        },
+                        {
+                          icon: <User />,
+                          label: 'Контакт',
+                          onClick: () => console.log('Контакт'),
+                        },
+                      ]}
+                    />
+                  }
+                >
+                  <button type="button">
+                    <Plus size={25} />
+                  </button>
+                </PopupProvider>
+                <PopupProvider
+                  placement="top"
+                  align="center"
+                  popup={
+                    <>
+                      <style>{`.epr_-3yva2a{display: none !important;}`}</style>
+                      <EmojiPicker
+                        style={{
+                          border: 'none',
+                          background: 'none',
+                          width: '500px',
+                          height: '350px',
+                        }}
+                        searchDisabled
+                        onEmojiClick={(emojiObject) => handleEmojiSelect(emojiObject.emoji)}
+                      />
+                    </>
+                  }
+                >
+                  <button type="button">
+                    <Sticker size={25} />
+                  </button>
+                </PopupProvider>
+              </>
+            )}
             {/* <input type="text" className="chat-window__input" value={value} placeholder="Введите сообщение" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}/> */}
             {!isRecording && (
               <ChatInput
@@ -186,45 +194,34 @@ export default function ChatWindow() {
               {value.trim() === '' && !isRecording ? <Mic size={25} /> : <Send size={25} />}
             </button>
           </div>
-          
         </form>
       </footer>
-{isDragging && (
-  <div
-    className="chat-window__drop-area"
-    onDrop={handleDrop}
-    onDragOver={(e) => e.preventDefault()}
-  >
-    {hasPhotosOrVideos ? (
-      <>
-        <div className="chat-window__drop-text">
-          <span className="chat-window__drop-text--primary">
-            Перетащите фотографии сюда
-          </span>
-          <span className="chat-window__drop-text--secondary">
-            для отправки без сжатия
-          </span>
-        </div>
+      {isDragging && (
+        <div
+          className="chat-window__drop-area"
+          onDrop={handleDrop}
+          onDragOver={(e) => e.preventDefault()}
+        >
+          {hasPhotosOrVideos ? (
+            <>
+              <div className="chat-window__drop-text">
+                <span className="chat-window__drop-text--primary">Перетащите фотографии сюда</span>
+                <span className="chat-window__drop-text--secondary">для отправки без сжатия</span>
+              </div>
 
-        <div className="chat-window__drop-text">
-          <span className="chat-window__drop-text--primary">
-            Перетащите фотографии сюда
-          </span>
-          <span className="chat-window__drop-text--secondary">
-            для быстрой отправки
-          </span>
+              <div className="chat-window__drop-text">
+                <span className="chat-window__drop-text--primary">Перетащите фотографии сюда</span>
+                <span className="chat-window__drop-text--secondary">для быстрой отправки</span>
+              </div>
+            </>
+          ) : (
+            <div className="chat-window__drop-text">
+              <span className="chat-window__drop-text--primary">Перетащите файл сюда</span>
+              <span className="chat-window__drop-text--secondary">для отправки</span>
+            </div>
+          )}
         </div>
-      </>
-    ) : (
-      <div className="chat-window__drop-text">
-        <span className="chat-window__drop-text--primary">
-          Перетащите файл сюда
-        </span>
-        <span className="chat-window__drop-text--secondary">
-          для отправки
-        </span>
-      </div>
-    )}
-  </div>
-)}
-</div>)}
+      )}
+    </div>
+  )
+}

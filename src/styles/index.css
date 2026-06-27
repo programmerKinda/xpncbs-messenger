@@ -1,6 +1,7 @@
 @import './normalize.css';
 @import './shared/scroll.css';
 @import './shared/logo.css';
+@import './shared/modal.css';
 @import './components/sidebar.css';
 @import './components/chats.css';
 @import './components/chatFolders.css';
@@ -10,7 +11,6 @@
 @import './components/chatWindow.css';
 @import './components/chatInput.css';
 @import './components/chatMenu.css';
-
 @import './components/user.css';
 
 @tailwind base;

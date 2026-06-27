@@ -7,10 +7,12 @@ import { useEffect } from 'react'
 import ChatWindow from './views/chat/ChatWindow'
 import ChatMenu from './views/chat/ChatMenu'
 import { useChatMenuStore } from './controllers/chatMenuController'
-
+import Modal from './shared/components/Modal'
+import { useModalStore } from './controllers/modalController'
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
   const { targetRef, children, onClose, placement, align } = usePopupStore()
+  const { modalChildren } = useModalStore()
 
   const { isOpen } = useChatMenuStore()
 
@@ -40,6 +42,7 @@ function App() {
           {children}
         </Popup>
       )}
+      {modalChildren && <Modal>{modalChildren}</Modal>}
     </section>
   )
 }
