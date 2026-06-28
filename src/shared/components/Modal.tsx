@@ -1,6 +1,7 @@
 import { useModalStore } from '@/controllers/modalController'
+import { X } from 'lucide-react'
 const Modal = ({ children }: { children: React.ReactNode }) => {
-  const { resetModalChildren } = useModalStore()
+  const { resetModalChildren, resetModalHeaderContent, modalHeaderContent } = useModalStore()
 
   return (
     <div className="modal">
@@ -9,9 +10,24 @@ const Modal = ({ children }: { children: React.ReactNode }) => {
         onClick={(e) => {
           e.stopPropagation()
           resetModalChildren()
+          resetModalHeaderContent()
         }}
       />
-      <div className="modal__content">{children}</div>
+      <div className="modal__content">
+        <div className="modal__content-header">
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              resetModalChildren()
+              resetModalHeaderContent()
+            }}
+          >
+            <X />
+          </button>
+          {modalHeaderContent}
+        </div>
+        {children}
+      </div>
     </div>
   )
 }

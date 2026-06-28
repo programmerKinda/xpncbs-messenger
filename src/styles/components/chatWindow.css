@@ -1,5 +1,5 @@
 .chat-window {
-  @apply flex-auto bg-zinc-100 flex flex-col transition-all duration-300 ease-in-out;
+  @apply flex-auto bg-zinc-100 flex flex-col transition-all duration-300 ease-in-out relative;
 }
 .chat-window__header {
   @apply flex items-center gap-2 border-b border-gray-300 justify-between p-4 bg-white;

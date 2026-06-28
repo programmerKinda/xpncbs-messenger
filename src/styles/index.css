@@ -12,6 +12,7 @@
 @import './components/chatInput.css';
 @import './components/chatMenu.css';
 @import './components/user.css';
+@import './components/chatFileSendModal.css';
 
 @tailwind base;
 @tailwind components;

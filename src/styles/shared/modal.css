@@ -26,3 +26,7 @@
   position: relative;
   z-index: 1001;
 }
+.modal__content-header {
+  @apply flex items-center  gap-2;
+  justify-content: space-between;
+}

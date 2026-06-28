@@ -1,5 +1,6 @@
 import Menu from '@/shared/components/menu'
 import VoiceRecorder from './VoiceRecorder'
+import ChatFileSendModal from './ChatFileSendModal'
 
 import {
   Plus,
@@ -20,8 +21,10 @@ import UserName from '../user/UserName'
 import EmojiPicker from 'emoji-picker-react'
 import ChatInput from './ChatInput'
 import { useChatWindowController } from '@/hooks/useChatWindowController'
-import ModalProvider from '@/shared/components/ModalProvider'
+import { useModalStore } from '@/controllers/modalController'
+
 export default function ChatWindow() {
+  const { setModalChildren, setModalHeaderContent } = useModalStore()
   const {
     isRecording,
     setIsRecording,
@@ -41,6 +44,20 @@ export default function ChatWindow() {
     handleToggleRecording,
     handleEmojiSelect,
   } = useChatWindowController()
+
+  const openFileSendModal = (files: File[]) => {
+    setModalChildren(
+      <>
+        <ChatFileSendModal files={files} />
+      </>
+    )
+    setModalHeaderContent(
+      <div className="flex w-full justify-between">
+        <span>Отправить {files.length} файлов</span>
+        <Plus />
+      </div>
+    )
+  }
 
   return (
     <div
@@ -113,9 +130,6 @@ export default function ChatWindow() {
             {!isRecording && (
               <>
                 {' '}
-                <ModalProvider modal={<div>Модальное окно</div>}>
-                  <button> Модалка</button>
-                </ModalProvider>
                 <PopupProvider
                   placement="top"
                   align="center"
@@ -204,18 +218,45 @@ export default function ChatWindow() {
         >
           {hasPhotosOrVideos ? (
             <>
-              <div className="chat-window__drop-text">
+              <div
+                className="chat-window__drop-text"
+                onDrop={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  const files = [...event.dataTransfer.files]
+                  handleDrop(event)
+                  openFileSendModal(files)
+                }}
+              >
                 <span className="chat-window__drop-text--primary">Перетащите фотографии сюда</span>
                 <span className="chat-window__drop-text--secondary">для отправки без сжатия</span>
               </div>
 
-              <div className="chat-window__drop-text">
+              <div
+                className="chat-window__drop-text"
+                onDrop={(event) => {
+                  event.preventDefault()
+                  event.stopPropagation()
+                  const files = [...event.dataTransfer.files]
+                  handleDrop(event)
+                  openFileSendModal(files)
+                }}
+              >
                 <span className="chat-window__drop-text--primary">Перетащите фотографии сюда</span>
                 <span className="chat-window__drop-text--secondary">для быстрой отправки</span>
               </div>
             </>
           ) : (
-            <div className="chat-window__drop-text">
+            <div
+              className="chat-window__drop-text"
+              onDrop={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                const files = [...event.dataTransfer.files]
+                handleDrop(event)
+                openFileSendModal(files)
+              }}
+            >
               <span className="chat-window__drop-text--primary">Перетащите файл сюда</span>
               <span className="chat-window__drop-text--secondary">для отправки</span>
             </div>

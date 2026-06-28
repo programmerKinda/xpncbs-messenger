@@ -68,6 +68,15 @@ const hasPhotosOrVideosFromItems = (items: DataTransferItemList | null): boolean
   return false
 }
 
+export const isPhotoOrVideoFile = (file: File): boolean => {
+  const mime = file.type
+  if (mime && (mime.startsWith('image/') || mime.startsWith('video/'))) {
+    return true
+  }
+
+  return /\.(png|jpe?g|webp|gif|mp4|mov|avi|mkv|webm|m4v|wmv|flv|3gp|mpeg|mpg)$/i.test(file.name)
+}
+
 const checkAllowExtensions = (files: File[]): boolean => {
   if (!files || files.length === 0) return false
 
@@ -83,6 +92,7 @@ export function useChatWindowController() {
   const [formRadius, setFormRadius] = useState('999px')
   const [isDragging, setIsDragging] = useState(false)
   const [hasPhotosOrVideos, setHasPhotosOrVideos] = useState(false)
+  const [draggedFiles, setDraggedFiles] = useState<File[]>([])
 
   const chatInputRef = useRef<ChatInputHandle>(null)
   const formRef = useRef<HTMLFormElement>(null)
@@ -165,6 +175,7 @@ export function useChatWindowController() {
 
     if (dragCounter.current === 0) {
       setIsDragging(false)
+      setDraggedFiles([])
     }
   }
 
@@ -175,6 +186,7 @@ export function useChatWindowController() {
     setIsDragging(false)
 
     const files = [...event.dataTransfer.files]
+    setDraggedFiles(files)
     if (checkAllowExtensions(files)) {
       console.log(files, hasPhotosOrVideos)
     }
@@ -210,6 +222,7 @@ export function useChatWindowController() {
     toggleMenu,
     handleToggleRecording,
     handleEmojiSelect,
+    draggedFiles,
   } as const
 }
 
