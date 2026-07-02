@@ -14,8 +14,11 @@ function getFileExtension(file: File) {
 function FilePreview({ file }: { file: File }) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const isPreviewable = isPhotoOrVideoFile(file)
-  const isImage = file.type.startsWith('image/') || /\.(png|jpe?g|webp|gif|bmp|svg)$/i.test(file.name)
-  const isVideo = file.type.startsWith('video/') || /\.(mp4|mov|avi|mkv|webm|m4v|wmv|flv|3gp|mpeg|mpg)$/i.test(file.name)
+  const isImage =
+    file.type.startsWith('image/') || /\.(png|jpe?g|webp|gif|bmp|svg)$/i.test(file.name)
+  const isVideo =
+    file.type.startsWith('video/') ||
+    /\.(mp4|mov|avi|mkv|webm|m4v|wmv|flv|3gp|mpeg|mpg)$/i.test(file.name)
   const extension = getFileExtension(file)
 
   useEffect(() => {

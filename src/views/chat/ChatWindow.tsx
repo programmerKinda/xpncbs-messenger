@@ -43,6 +43,7 @@ export default function ChatWindow() {
     toggleMenu,
     handleToggleRecording,
     handleEmojiSelect,
+    draggedFiles,
     setDraggedFiles,
   } = useChatWindowController()
 
@@ -55,15 +56,29 @@ export default function ChatWindow() {
     setModalHeaderContent(
       <div className="flex w-full justify-between">
         <span>Отправить {files.length} файлов</span>
-        <button onClick={() => {
-             const input = document.createElement('input')
-             input.type = 'file'
-             input.multiple = true
-             input.onchange = () => {setDraggedFiles(prev=> [...prev, ...input.files])
-              input.remove()}
-              
-             input.click()
-        }}>
+        <button
+          onClick={() => {
+            const input = document.createElement('input')
+            input.type = 'file'
+            input.multiple = true
+            input.onchange = () => {
+              const selectedFiles = Array.from(input.files ?? [])
+              if (selectedFiles.length === 0) {
+                input.remove()
+                return
+              }
+
+              setDraggedFiles((prev) => {
+                const nextFiles = [...prev, ...selectedFiles]
+                openFileSendModal(nextFiles)
+                return nextFiles
+              })
+              input.remove()
+            }
+
+            input.click()
+          }}
+        >
           <Plus />
         </button>
       </div>
