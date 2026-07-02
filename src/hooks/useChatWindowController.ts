@@ -223,6 +223,7 @@ export function useChatWindowController() {
     handleToggleRecording,
     handleEmojiSelect,
     draggedFiles,
+    setDraggedFiles,
   } as const
 }
 
