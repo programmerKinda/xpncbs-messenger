@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { File as FileIcon } from 'lucide-react'
 import { isPhotoOrVideoFile } from '@/hooks/useChatWindowController'
+import { useChatWindowController } from '@/hooks/useChatWindowController'
+import ChatForm from './ChatForm'
 
 interface ChatFileSendModalProps {
   files: File[]
@@ -102,6 +104,18 @@ const formatFileSize = (size: number) => {
 }
 
 export default function ChatFileSendModal({ files }: ChatFileSendModalProps) {
+  const {
+    isRecording,
+    setIsRecording,
+    value,
+    setValue,
+    formRadius,
+    chatInputRef,
+    formRef,
+
+    handleToggleRecording,
+    handleEmojiSelect,
+  } = useChatWindowController()
   return (
     <div className="chat-file-send-modal">
       <div className="modal__content-body">
@@ -118,7 +132,21 @@ export default function ChatFileSendModal({ files }: ChatFileSendModalProps) {
           </div>
         ))}
       </div>
-      <div className="modal__content-footer"></div>
+      <div className="modal__content-footer">
+        <ChatForm
+          isRecording={isRecording}
+          setIsRecording={setIsRecording}
+          value={value}
+          setValue={setValue}
+          formRadius={formRadius}
+          formRef={formRef}
+          chatInputRef={chatInputRef}
+          handleToggleRecording={handleToggleRecording}
+          handleEmojiSelect={handleEmojiSelect}
+          addFileButton={false}
+          voiceButton={false}
+        />
+      </div>
     </div>
   )
 }

@@ -1,9 +1,13 @@
-import { Settings, UserPen, MessageCircle } from 'lucide-react'
+import { BiSolidMessageDetail } from "react-icons/bi";
+import { FaUser } from "react-icons/fa";
+import { IoMdSettings } from "react-icons/io";
+
 export const sidebarElements = [
-  { icon: <UserPen size={35} />, text: 'Profile' },
-  { icon: <Settings size={35} />, text: 'settings' },
-  {
-    icon: <MessageCircle size={35} />,
+    {
+    icon: <BiSolidMessageDetail size={35} />,
     text: 'Chats',
   },
+  { icon: <FaUser size={30} />, text: 'Profile' },
+  { icon: <IoMdSettings size={35} />, text: 'settings' },
+
 ]
