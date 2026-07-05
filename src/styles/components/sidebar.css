@@ -1,9 +1,9 @@
 .sidebar {
-  @apply w-[80px] h-screen bg-gray-50  py-5 shadow-lg border-r border-gray-200 ;
+  @apply w-max h-screen bg-gray-50  py-5 shadow-lg border-r border-gray-200 ;
 }
 
 .sidebar__items {
-  @apply flex flex-col items-center h-screen;
+  @apply flex flex-col items-center h-full;
 }
 
 .sidebar__item {
@@ -11,6 +11,6 @@
          hover:bg-[#D1D1D1] hover:text-[#7B5CFF] transition-all duration-300 ;
 }
 .sidebar__item:last-of-type {
-  align-self: flex-end;
+  margin-top: auto;
   
 }
