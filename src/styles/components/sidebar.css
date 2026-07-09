@@ -1,16 +1,27 @@
 .sidebar {
-  @apply w-max h-screen bg-gray-50  py-5 shadow-lg border-r border-gray-200 ;
+  @apply w-max h-screen  py-1 shadow-lg border-r border-gray-200 ;
+  background-color: #e8e8e8;
 }
 
 .sidebar__items {
   @apply flex flex-col items-center h-full;
 }
-
-.sidebar__item {
-  @apply w-[80px] h-[80px] flex items-center justify-center  cursor-pointer text-gray-500 
-         hover:bg-[#D1D1D1] hover:text-[#7B5CFF] transition-all duration-300 ;
+.sidebar__item-container{
+  @apply flex  items-center w-[80px] h-[80px] text-gray-500 justify-center  cursor-pointer
+   hover:text-[#8E74FF] transition-all duration-300 ;
 }
-.sidebar__item:last-of-type {
+.sidebar__item-container.active {
+  @apply text-[#7B5CFF] bg-[#C0C0C0];
+}
+.sidebar__item {
+  @apply flex flex-col items-center justify-center cursor-pointer  text-current w-max h-max;
+  
+         
+}
+.sidebar__item-text{
+  @apply text-[12px]  mt-1;
+}
+.sidebar__item-container:last-of-type {
   margin-top: auto;
   
 }

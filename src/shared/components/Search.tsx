@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react'
+import { IoSearch } from "react-icons/io5";
 import { useRef, useState } from 'react'
 
 export const SearchInput = () => {
@@ -7,7 +7,7 @@ export const SearchInput = () => {
 
   return (
     <label className={`search ${isFocused ? 'search--focused' : ''}`}>
-      <Search size={30} />
+      <IoSearch size={25} className="flex-shrink-0"/>
       <input
         type="text"
         placeholder="Поиск"

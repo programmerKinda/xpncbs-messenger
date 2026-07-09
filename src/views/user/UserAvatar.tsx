@@ -27,12 +27,12 @@ export default function UserAvatar({
   const offset = isAllLower ? '-0.06em' : '0'
 
   return (
-    <div className={`user-avatar ${size ? '' : 'w-12 h-12'}`} style={styles}>
+    <div className={`user-avatar ${size ? '' : 'w-14 h-14'}`} style={styles}>
       {avatarURL ? (
         <img src={avatarURL} alt="" className="user-avatar__img" />
       ) : (
         <span
-          className={`user-avatar__name ${size ? '' : 'text-xl'}`}
+          className={`user-avatar__name ${size ? '' : 'text-2xl'}`}
           style={{ color: lighterColor, transform: `translateY(${offset})` }}
         >
           {letters}

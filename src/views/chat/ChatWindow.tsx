@@ -78,7 +78,7 @@ export default function ChatWindow() {
   return (
     <div
       className="chat-window"
-      style={{ background: `url('images/chatBg.jpeg')` }}
+      style={{ backgroundColor: '#e8e8e8' }}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}

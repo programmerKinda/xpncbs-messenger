@@ -11,7 +11,7 @@ export default function ItemChat({ createdAt, watched }: ItemChatProps) {
   const timeString = formatTime(createdAt)
   return (
     <div className="item-chat">
-      <UserAvatar name="x p" avatarURL="" />
+      <UserAvatar name="e o" avatarURL="" />
 
       <div className="item-chat__info">
         <UserName name="x p" phone="123-456-7890" contactName="" />

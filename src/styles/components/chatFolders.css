@@ -1,5 +1,6 @@
 .chat-folders {
   @apply flex gap-3 overflow-x-auto py-2 scroll relative list-none;
+  
 }
 .chat-folder {
   @apply px-4 py-2 text-sm font-medium rounded-2xl bg-white text-gray-700 cursor-pointer list-none

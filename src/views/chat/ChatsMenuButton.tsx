@@ -1,4 +1,4 @@
-import { EllipsisVertical, LogOut, Settings, User } from 'lucide-react'
+import { Menu as MenuButton, LogOut, Settings, User } from 'lucide-react'
 import Menu from '@/shared/components/menu'
 import { PopupProvider } from '@/shared/components/PopupProvider'
 
@@ -30,7 +30,7 @@ export const ChatsMenuButton = () => {
       }
     >
       <button className="chats-menu-button">
-        <EllipsisVertical />
+        <MenuButton />
       </button>
     </PopupProvider>
   )
