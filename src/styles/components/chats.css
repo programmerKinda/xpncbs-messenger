@@ -1,11 +1,10 @@
 .chats {
-  @apply h-screen bg-gray-50 flex flex-col shadow-inner relative ;
+  @apply h-screen bg-gray-50 flex flex-col shadow-inner relative;
   container-type: inline-size;
 }
 
-
 .chats__header {
-  @apply flex flex-col gap-2 px-5 py-4 bg-gray-50  ;
+  @apply flex flex-col gap-2 px-5 py-4 bg-gray-50;
 }
 
 .chats__menu-btn {
@@ -40,31 +39,31 @@
   .chats__header {
     @apply items-center justify-center;
   }
-  .logo{
+  .logo {
     @apply hidden;
   }
-  label.search{
+  label.search {
     @apply hidden;
   }
-  ul.chat-folders{
+  ul.chat-folders {
     @apply hidden;
   }
-  .item-chat__info{
+  .item-chat__info {
     @apply hidden;
   }
-  .user-name{
+  .user-name {
     @apply hidden;
   }
-  .last-message{
+  .last-message {
     @apply hidden;
   }
-  .item-chat__time{
+  .item-chat__time {
     @apply hidden;
   }
-  .chats__body{
+  .chats__body {
     @apply p-0 items-center justify-center;
   }
-  .message__status-icon{
+  .message__status-icon {
     @apply hidden;
   }
 }

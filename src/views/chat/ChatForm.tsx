@@ -120,28 +120,24 @@ export default function ChatForm({
             />
           </>
         )}
-{voiceButton ? (
-  <>
-    {isRecording && (
-      <div className="flex justify-end items-center gap-2 w-full">
-        <Trash size={25} onClick={() => setIsRecording(false)} />
-        <VoiceRecorder isRecording={isRecording} />
-      </div>
-    )}
+        {voiceButton ? (
+          <>
+            {isRecording && (
+              <div className="flex justify-end items-center gap-2 w-full">
+                <Trash size={25} onClick={() => setIsRecording(false)} />
+                <VoiceRecorder isRecording={isRecording} />
+              </div>
+            )}
 
-    <button type="button" onClick={handleToggleRecording}>
-      {value.trim() === "" && !isRecording ? (
-        <Mic size={25} />
-      ) : (
-        <Send size={25} />
-      )}
-    </button>
-  </>
-) : (
-  <button type="submit">
-    <Send size={25} />
-  </button>
-)}
+            <button type="button" onClick={handleToggleRecording}>
+              {value.trim() === '' && !isRecording ? <Mic size={25} /> : <Send size={25} />}
+            </button>
+          </>
+        ) : (
+          <button type="submit">
+            <Send size={25} />
+          </button>
+        )}
       </div>
     </form>
   )
