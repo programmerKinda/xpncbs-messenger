@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { SearchInput } from '@/shared'
 import { LogoWitchTitle } from '@/shared'
 import { ChatsMenuButton } from './ChatsMenuButton'
@@ -15,9 +16,30 @@ export default function Chats() {
   ]
   const chatsWidth = useChatsWidthStore((state) => state.chatsWidth)
   const setChatsWidth = useChatsWidthStore((state) => state.setChatsWidth)
+  const chatsRef = useRef<HTMLElement | null>(null)
+
+  const handleResizeMove = (width: number) => {
+    if (chatsRef.current) {
+      chatsRef.current.style.transition = 'none'
+      chatsRef.current.style.width = `${width}px`
+    }
+  }
+
+  const handleResizeStart = () => {
+    if (chatsRef.current) {
+      chatsRef.current.style.transition = 'none'
+    }
+  }
+
+  const handleResizeEnd = () => {
+    if (chatsRef.current) {
+      chatsRef.current.style.transition = ''
+    }
+  }
+
   return (
     <>
-      <section className="chats" style={{ width: `${chatsWidth}px` }}>
+      <section ref={chatsRef} className="chats" style={{ width: `${chatsWidth}px` }}>
         <header className="chats__header">
           <div className="flex items-center justify-between">
             <LogoWitchTitle />
@@ -31,7 +53,13 @@ export default function Chats() {
           <ItemChat createdAt={new Date()} watched={true} />
         </div>
         <footer className="chats__footer"></footer>
-        <ChatsResizer chatsWidth={chatsWidth} setChatsWidth={setChatsWidth} />
+        <ChatsResizer
+          chatsWidth={chatsWidth}
+          setChatsWidth={setChatsWidth}
+          onResizeMove={handleResizeMove}
+          onResizeStart={handleResizeStart}
+          onResizeEnd={handleResizeEnd}
+        />
       </section>
     </>
   )

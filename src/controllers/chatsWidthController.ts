@@ -2,48 +2,46 @@ import { type ChatsWidth, type ChatsResizerProps } from '@/models/chat/chats'
 import { create } from 'zustand'
 
 const STORAGE_KEY = 'chatsWidth'
+const MIN_WIDTH = 86
+const MAX_WIDTH = 600
+
 export const useChatsWidthStore = create<ChatsWidth>((set) => ({
   startWidth: 0,
   setStartWidth: (width) => set({ startWidth: width }),
   chatsWidth: Number(localStorage.getItem(STORAGE_KEY)) || 360,
   setChatsWidth: (width) => {
-    localStorage.setItem(STORAGE_KEY, width.toString()) // сохраняем
+    localStorage.setItem(STORAGE_KEY, width.toString())
     set({ chatsWidth: width })
   },
 }))
 
 export const startResizing = (
-  e: React.MouseEvent<HTMLDivElement>, //мин 86пх
+  e: React.MouseEvent<HTMLDivElement>,
   { chatsWidth, setChatsWidth }: ChatsResizerProps
 ) => {
   e.preventDefault()
-  const { setStartWidth } = useChatsWidthStore.getState()
+
   const startX = e.clientX
   const startWidth = chatsWidth
+  const { setStartWidth } = useChatsWidthStore.getState()
+
   setStartWidth(startWidth)
 
-  const onMouseMove = (e: MouseEvent) => {
-    const newWidth = startWidth + (e.clientX - startX)
-    if (newWidth >= 86 && newWidth <= 600) setChatsWidth(newWidth)
-  }
-
-  const onMouseUp = () => {
+  const stopResizing = () => {
     document.removeEventListener('mousemove', onMouseMove)
-    document.removeEventListener('mouseup', onMouseUp)
+    document.removeEventListener('mouseup', stopResizing)
+    document.body.style.cursor = ''
+    document.body.style.userSelect = ''
   }
 
-  document.addEventListener('mousemove', onMouseMove)
-  document.addEventListener('mouseup', onMouseUp)
-}
-export const endResizing = (
-  e: React.MouseEvent<HTMLDivElement>, //мин 86пх
-  { chatsWidth, setChatsWidth }: ChatsResizerProps
-) => {
-  e.preventDefault()
-  const { startWidth } = useChatsWidthStore.getState()
-  if (chatsWidth < 150 && startWidth > chatsWidth) {
-    setChatsWidth(86)
-  } else if (chatsWidth > 86 && startWidth < chatsWidth) {
-    setChatsWidth(150)
+  const onMouseMove = (event: MouseEvent) => {
+    const nextWidth = startWidth + (event.clientX - startX)
+    const clampedWidth = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, nextWidth))
+    setChatsWidth(clampedWidth)
   }
+
+  document.body.style.cursor = 'col-resize'
+  document.body.style.userSelect = 'none'
+  document.addEventListener('mousemove', onMouseMove)
+  document.addEventListener('mouseup', stopResizing)
 }
