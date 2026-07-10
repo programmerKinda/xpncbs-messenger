@@ -31,9 +31,11 @@ export default function Chats() {
     }
   }
 
-  const handleResizeEnd = () => {
+  const handleResizeEnd = (width: number) => {
     if (chatsRef.current) {
-      chatsRef.current.style.transition = ''
+      // плавный переход ширины после отпускания
+      chatsRef.current.style.transition = 'width 200ms cubic-bezier(0.22, 1, 0.36, 1)'
+      chatsRef.current.style.width = `${width}px`
     }
   }
 
