@@ -78,7 +78,7 @@ export default function ChatWindow() {
   return (
     <div
       className="chat-window"
-      style={{ backgroundColor: '#e8e8e8' }}
+      style={{ backgroundColor: '#c4c7dd8a' }}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
@@ -136,11 +136,12 @@ export default function ChatWindow() {
         />
       </div>
       <footer className="chat-window__footer">
-        <ChatForm
-          isRecording={isRecording}
-          setIsRecording={setIsRecording}
-          value={value}
-          setValue={setValue}
+        
+          <ChatForm
+            isRecording={isRecording}
+            setIsRecording={setIsRecording}
+            value={value}
+            setValue={setValue}
           formRadius={formRadius}
           formRef={formRef}
           chatInputRef={chatInputRef}
@@ -149,6 +150,7 @@ export default function ChatWindow() {
           addFileButton={true}
           voiceButton={true}
         />
+        
       </footer>
 
       {isDragging && (

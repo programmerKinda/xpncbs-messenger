@@ -1,6 +1,6 @@
 .sidebar {
-  @apply w-max h-screen  py-1 shadow-lg border-r border-gray-200;
-  background-color: #e8e8e8;
+  @apply w-max h-screen shadow-lg border-r border-gray-200;
+  background-color: #c4c7dd8a;
 }
 
 .sidebar__items {
@@ -11,7 +11,8 @@
    hover:text-[#8E74FF] transition-all duration-300;
 }
 .sidebar__item-container.active {
-  @apply text-[#7B5CFF] bg-[#C0C0C0];
+  @apply text-[#7B5CFF] ;
+  background: #c4c7dd8a;
 }
 .sidebar__item {
   @apply flex flex-col items-center justify-center cursor-pointer  text-current w-max h-max;

@@ -1,6 +1,7 @@
 export interface ChatsResizerProps {
   chatsWidth: number
   setChatsWidth: (width: number, persist?: boolean) => void
+  canCollapse?: boolean
   onResizeMove?: (width: number) => void
   onResizeStart?: (width: number) => void
   onResizeEnd?: (width: number) => void
