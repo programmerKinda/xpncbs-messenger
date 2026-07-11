@@ -1,5 +1,6 @@
 
-import MainLayout from "./routes/MainLayout";
+import MainLayout from "./views/layouts/MainLayout";
+import MainPage from "./routes/MainPage";
 import { Routes, Route,BrowserRouter} from "react-router-dom";
 // import Login from "../views/auth/Login";
 // import Register from "../views/auth/Register";
@@ -8,9 +9,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<MainLayout />} />
-        {/* <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} /> */}
+        <Route element={<MainLayout />}>
+        <Route path="/" element={<MainPage/>}/>
+        </Route>
       </Routes>
     </BrowserRouter>
   );

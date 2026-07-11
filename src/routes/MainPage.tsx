@@ -1,4 +1,3 @@
-import Sidebar from '../views/sidebar/Sidebar'
 import Chats from '../views/chat/Chats'
 import { useRef } from 'react'
 import { usePopupStore } from '../controllers/popupController'
@@ -9,7 +8,7 @@ import ChatMenu from '../views/chat/ChatMenu'
 import { useChatMenuStore } from '../controllers/chatMenuController'
 import Modal from '../shared/components/Modal'
 import { useModalStore } from '../controllers/modalController'
-function MainLayout() {
+function MainPage() {
   const popupRef = useRef<HTMLDivElement | null>(null)
   const { targetRef, children, onClose, placement, align } = usePopupStore()
   const { modalChildren } = useModalStore()
@@ -33,7 +32,6 @@ function MainLayout() {
 
   return (
     <section className={`App ${isOpen ? '' : 'App--menu-closed'}`}>
-      <Sidebar />
       <Chats />
       <ChatWindow />
       <ChatMenu />
@@ -47,4 +45,4 @@ function MainLayout() {
   )
 }
 
-export default MainLayout
+export default MainPage
