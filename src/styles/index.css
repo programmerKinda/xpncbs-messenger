@@ -25,10 +25,16 @@ body {
   @apply flex;
 }
 .App {
-  @apply flex h-screen relative;
-  width: 100%;
-  transition: width 0.3s ease-in-out;
+  @apply flex h-screen relative overflow-hidden;
+  flex:1 1 auto;
+  transition: all 0.3s ease-in-out;
 }
-.App--menu-closed {
-  width: calc(100% + 450px);
+.App .chat-menu{
+  margin-left: 0;
+  transform: translateX(0);
+  transition: all 0.3s ease-in-out;
+}
+.App--menu-closed .chat-menu{
+  margin-left: -450px;
+  transform: translateX(100%);
 }
