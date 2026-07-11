@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.16",
-    "@tanstack/react-router": "^1.168.1",
     "autoprefixer": "^10.4.21",
     "chroma-js": "^3.2.0",
     "color-hash": "^2.0.2",
@@ -23,6 +22,7 @@
     "react-dom": "^19.2.4",
     "react-icons": "^5.7.0",
     "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.18.1",
     "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.3.1",
     "zustand": "^5.0.12"

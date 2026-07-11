@@ -25,4 +25,5 @@ export type Message = {
 }
 export interface MessageProps {
   message: Message
+  className?: string
 }

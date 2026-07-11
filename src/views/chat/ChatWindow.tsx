@@ -125,6 +125,7 @@ export default function ChatWindow() {
       </header>
       <div className="chat-window__body">
         <Message
+        className="message--outgoing"
           message={{
             uuid: '1',
             type: 'text',
@@ -132,6 +133,18 @@ export default function ChatWindow() {
             createdAt: new Date(),
             updated: false,
             watched: false,
+            
+          }}
+        />
+                <Message
+          className="message--incoming"
+          message={{
+            uuid: '2',
+            type: 'text',
+            content: 'Привет, как дела?',
+            createdAt: new Date(),
+            updated: false,
+            watched: true,
           }}
         />
       </div>

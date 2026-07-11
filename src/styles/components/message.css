@@ -9,12 +9,13 @@
 /* ИСХОДЯЩЕЕ (ЗЕЛЕНОЕ) */
 /* --------------------- */
 .message--outgoing {
-  @apply self-end ml-auto bg-[#effdde] text-[#1d2022] rounded-br-none border border-[#d4e9bc] mr-2;
+  @apply self-end ml-auto text-[#2C2C35] rounded-br-none border border-[#d4e9bc] mr-2;
+  background: #c1b6f3;
 }
 
 .message--outgoing::after {
   content: '';
-  @apply absolute bottom-0 -right-[5px] w-[10px] h-[15px] bg-[#effdde];
+  @apply absolute bottom-0 -right-[5px] w-[10px] h-[15px] bg-[#c1b6f3];
   clip-path: polygon(0 0, 0 100%, 100% 100%, 15% 45%);
 }
 
@@ -61,11 +62,11 @@
 /* ФУТЕР И МЕТАДАННЫЕ    */
 /* --------------------- */
 .message__footer {
-  @apply float-right mt-[-14px] ml-auto flex items-center flex-nowrap gap-1 text-[11px] text-[#5db05b] font-medium leading-none select-none relative z-10 h-[14px];
+  @apply float-right mt-[-14px] ml-auto flex items-center flex-nowrap gap-1 text-[11px] text-gray-600 font-medium leading-none select-none relative z-10 h-[14px];
 }
 
 .message--incoming .message__footer {
-  @apply text-gray-400;
+  @apply text-gray-600;
 }
 
 .message__time {
