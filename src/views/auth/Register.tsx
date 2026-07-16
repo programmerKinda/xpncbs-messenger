@@ -9,5 +9,5 @@ export default function Register() {
         <button type="submit">Register</button>
       </form>
     </div>
-  );
+  )
 }

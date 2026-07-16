@@ -22,19 +22,19 @@ body {
   overflow: hidden;
 }
 .main-layout {
-  @apply flex;
+  @apply flex overflow-hidden;
 }
 .App {
-  @apply flex h-screen relative overflow-hidden;
-  flex:1 1 auto;
+  @apply flex h-screen relative;
+  flex: 1 1 auto;
   transition: all 0.3s ease-in-out;
 }
-.App .chat-menu{
+.App .chat-menu {
   margin-left: 0;
   transform: translateX(0);
   transition: all 0.3s ease-in-out;
 }
-.App--menu-closed .chat-menu{
+.App--menu-closed .chat-menu {
   margin-left: -450px;
   transform: translateX(100%);
 }

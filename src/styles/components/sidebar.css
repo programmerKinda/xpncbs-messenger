@@ -11,7 +11,7 @@
    hover:text-[#8E74FF] transition-all duration-300;
 }
 .sidebar__item-container.active {
-  @apply text-[#7B5CFF] ;
+  @apply text-[#7B5CFF];
   background: #c4c7dd8a;
 }
 .sidebar__item {

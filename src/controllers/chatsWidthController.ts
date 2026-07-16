@@ -51,7 +51,9 @@ export const startResizing = (
     document.body.style.cursor = ''
     document.body.style.userSelect = ''
 
-    const finalWidth = event ? startWidth + (event.clientX - startX) : useChatsWidthStore.getState().chatsWidth
+    const finalWidth = event
+      ? startWidth + (event.clientX - startX)
+      : useChatsWidthStore.getState().chatsWidth
 
     let nearest: number
     if (finalWidth > steps[1]) {
@@ -59,7 +61,9 @@ export const startResizing = (
       nearest = Math.min(MAX_WIDTH, Math.max(steps[1], finalWidth))
     } else {
       const candidates = [...steps]
-      nearest = candidates.reduce((a, b) => (Math.abs(b - finalWidth) < Math.abs(a - finalWidth) ? b : a))
+      nearest = candidates.reduce((a, b) =>
+        Math.abs(b - finalWidth) < Math.abs(a - finalWidth) ? b : a
+      )
     }
 
     setChatsWidth(nearest)

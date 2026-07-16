@@ -125,7 +125,7 @@ export default function ChatWindow() {
       </header>
       <div className="chat-window__body">
         <Message
-        className="message--outgoing"
+          className="message--outgoing"
           message={{
             uuid: '1',
             type: 'text',
@@ -133,10 +133,9 @@ export default function ChatWindow() {
             createdAt: new Date(),
             updated: false,
             watched: false,
-            
           }}
         />
-                <Message
+        <Message
           className="message--incoming"
           message={{
             uuid: '2',
@@ -149,12 +148,11 @@ export default function ChatWindow() {
         />
       </div>
       <footer className="chat-window__footer">
-        
-          <ChatForm
-            isRecording={isRecording}
-            setIsRecording={setIsRecording}
-            value={value}
-            setValue={setValue}
+        <ChatForm
+          isRecording={isRecording}
+          setIsRecording={setIsRecording}
+          value={value}
+          setValue={setValue}
           formRadius={formRadius}
           formRef={formRef}
           chatInputRef={chatInputRef}
@@ -163,7 +161,6 @@ export default function ChatWindow() {
           addFileButton={true}
           voiceButton={true}
         />
-        
       </footer>
 
       {isDragging && (
