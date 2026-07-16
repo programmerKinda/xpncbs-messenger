@@ -44,5 +44,4 @@ function MainPage() {
     </section>
   )
 }
-
 export default MainPage

@@ -82,7 +82,7 @@ export default function ChatForm({
                 }
               >
                 <button type="button">
-                  <Plus size={25} />
+                  <Plus size={25} color={'#6B7280'} />
                 </button>
               </PopupProvider>
             )}
@@ -108,7 +108,7 @@ export default function ChatForm({
               }
             >
               <button type="button">
-                <Sticker size={25} />
+                <Sticker size={25}  color={'#6B7280'} />
               </button>
             </PopupProvider>
 
@@ -130,12 +130,12 @@ export default function ChatForm({
             )}
 
             <button type="button" onClick={handleToggleRecording}>
-              {value.trim() === '' && !isRecording ? <Mic size={25} /> : <Send size={25} />}
+              {value.trim() === '' && !isRecording ? <Mic size={25}  color={'#6B7280'} /> : <Send size={25} color={'#6B7280'} />}
             </button>
           </>
         ) : (
           <button type="submit">
-            <Send size={25} />
+            <Send size={25} color={'#6B7280'} />
           </button>
         )}
       </div>
