@@ -1,8 +1,8 @@
 .chat-menu {
-  @apply w-[450px] h-screen bg-gray-50 shadow-inner flex flex-col overflow-y-scroll;
-}
+  @apply w-[450px] h-screen bg-gray-50 shadow-inner flex flex-col overflow-y-scroll border-l border-gray-300;
+  }
 .chat-menu__header {
-  @apply flex items-center gap-2 border-b border-gray-300  p-4 bg-white;
+  @apply flex items-center gap-2 border-b border-gray-300  p-4 bg-white min-h-[89px];
 }
 .chat-menu__exit {
 }
@@ -11,7 +11,7 @@
   border-bottom: 1px solid #e5e7eb;
 }
 .chat-menu__title {
-  @apply text-xl flex-auto;
+  @apply text-xl flex-auto text-gray-700;
 }
 .chat-menu__edit {
   @apply justify-self-end;
@@ -27,8 +27,8 @@
   @apply p-4 flex items-center gap-2 cursor-pointer hover:bg-gray-200 transition-all duration-300;
 }
 .chat-menu__actions {
-  @apply text-xl;
-  color: rgb(185, 0, 0);
+  @apply text-xl ;
+  color: #FF5D73;
 }
 .chat-menu__action-item {
   @apply p-4 flex items-center gap-2 cursor-pointer hover:bg-[#8b000029] transition-all duration-300;
@@ -37,7 +37,7 @@
   @apply px-4 border-b border-gray-300 py-2;
 }
 .chat-menu__media-button {
-  @apply flex items-center py-4 px-2 hover:bg-gray-200 transition-all duration-300 gap-2 rounded-md w-full;
+  @apply flex text-xl  items-center py-4 px-2 hover:bg-gray-200 transition-all duration-300 gap-2 rounded-md w-full;
 }
 .chat-menu__media-list {
   @apply grid items-center gap-1 px-4 mt-1;

@@ -42,7 +42,7 @@
 }
 
 .message-text {
-  @apply m-0 inline align-middle text-[15px] leading-[1.35] break-words whitespace-pre-wrap text-inherit;
+  @apply m-0 inline align-middle text-[15px] leading-[1.35] break-words whitespace-pre-wrap text-inherit text-gray-700;
 }
 
 .message-text::after {
@@ -112,7 +112,7 @@
 
 /* Контент и длительность */
 .voice-content {
-  @apply flex-1 flex flex-col gap-0.5;
+  @apply flex-1 flex flex-col gap-0.5 ;
 }
 
 .voice-duration {
