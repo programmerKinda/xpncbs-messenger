@@ -13,7 +13,8 @@
 @import './components/chatMenu.css';
 @import './components/user.css';
 @import './components/chatFileSendModal.css';
-
+@import './components/compactPage.css';
+@import './ui/common.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -22,25 +23,29 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-   /*  */
 }
+
 body {
   overflow: hidden;
   @apply text-[#6B7280];
 }
+
 .main-layout {
   @apply flex overflow-hidden;
 }
+
 .App {
   @apply flex h-screen relative;
   flex: 1 1 auto;
   transition: all 0.3s ease-in-out;
 }
+
 .App .chat-menu {
   margin-left: 0;
   transform: translateX(0);
   transition: all 0.3s ease-in-out;
 }
+
 .App--menu-closed .chat-menu {
   margin-left: -450px;
   transform: translateX(100%);

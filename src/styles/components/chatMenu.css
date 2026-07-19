@@ -1,6 +1,6 @@
 .chat-menu {
   @apply w-[450px] h-screen bg-gray-50 shadow-inner flex flex-col overflow-y-scroll border-l border-gray-300;
-  }
+}
 .chat-menu__header {
   @apply flex items-center gap-2 border-b border-gray-300  p-4 bg-white min-h-[89px];
 }
@@ -27,8 +27,8 @@
   @apply p-4 flex items-center gap-2 cursor-pointer hover:bg-gray-200 transition-all duration-300;
 }
 .chat-menu__actions {
-  @apply text-xl ;
-  color: #FF5D73;
+  @apply text-xl;
+  color: #ff5d73;
 }
 .chat-menu__action-item {
   @apply p-4 flex items-center gap-2 cursor-pointer hover:bg-[#8b000029] transition-all duration-300;

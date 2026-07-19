@@ -112,7 +112,7 @@
 
 /* Контент и длительность */
 .voice-content {
-  @apply flex-1 flex flex-col gap-0.5 ;
+  @apply flex-1 flex flex-col gap-0.5;
 }
 
 .voice-duration {

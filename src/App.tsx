@@ -5,14 +5,16 @@ import { useModalStore } from './controllers/modalController'
 import { usePopupStore } from './controllers/popupController'
 import MainLayout from './views/layouts/MainLayout'
 import MainPage from './routes/MainPage'
+import SettingsPage from './routes/SettingsPage'
+import ContactsPage from './routes/ContactsPage'
+import CallsPage from './routes/CallsPage'
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
-// import Login from "../views/auth/Login";
-// import Register from "../views/auth/Register";
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
   const { targetRef, children, onClose, placement, align } = usePopupStore()
   const { modalChildren } = useModalStore()
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (targetRef && targetRef.current && targetRef.current.contains(event.target as Node)) {
@@ -27,15 +29,16 @@ function App() {
       document.removeEventListener('click', handleClickOutside)
     }
   }, [targetRef, onClose])
+
   return (
     <>
       <BrowserRouter>
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<MainPage />} />
-            <Route path="/settings" element={<div>Settings</div>} />
-            <Route path="/contacts" element={<div>Contacts</div>} />
-            <Route path="/calls" element={<div>Calls</div>} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/contacts" element={<ContactsPage />} />
+            <Route path="/calls" element={<CallsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

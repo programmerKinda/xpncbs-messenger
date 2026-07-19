@@ -1,0 +1,47 @@
+.compact-page {
+  @apply flex-1 h-screen p-8 bg-[#f5f6fb] flex flex-col gap-6;
+}
+
+.compact-page__header {
+  @apply rounded-2xl border border-gray-200 bg-white p-6 shadow-sm;
+}
+
+.compact-page__eyebrow {
+  @apply text-xs font-semibold uppercase tracking-[0.3em] text-[#7B5CFF] mb-2;
+}
+
+.compact-page__title {
+  @apply text-2xl font-semibold text-gray-800;
+}
+
+.compact-page__description {
+  @apply mt-2 text-sm text-gray-500;
+}
+
+.compact-page__content {
+  @apply flex-1 overflow-auto;
+}
+
+.compact-page__grid {
+  @apply grid gap-4 md:grid-cols-2;
+}
+
+.compact-page__card {
+  @apply rounded-2xl border border-gray-200 bg-white p-5 shadow-sm;
+}
+
+.compact-page__card h2 {
+  @apply mb-3 text-lg font-semibold text-gray-800;
+}
+
+.compact-page__card p {
+  @apply text-sm text-gray-500 leading-6;
+}
+
+.compact-page__list {
+  @apply mt-4 space-y-3 text-sm text-gray-600;
+}
+
+.compact-page__item {
+  @apply flex items-center justify-between rounded-xl bg-[#f8f8ff] px-3 py-2;
+}

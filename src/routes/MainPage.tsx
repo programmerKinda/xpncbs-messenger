@@ -3,7 +3,6 @@ import ChatWindow from '../views/chat/ChatWindow'
 import ChatMenu from '../views/chat/ChatMenu'
 import { useChatMenuStore } from '../controllers/chatMenuController'
 function MainPage() {
-
   const { isOpen } = useChatMenuStore()
 
   return (
