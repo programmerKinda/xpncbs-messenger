@@ -1,10 +1,10 @@
 import { useRef } from 'react'
 import { SearchInput } from '@/shared'
 
-import { ChatsMenuButton } from '@/views/chat/ChatsMenuButton'
-
-import { ChatsResizer } from '@/views/chat/ChatsResizer'
+import { CommonSidebarMenuButton } from '@/shared/components/CommonSidebarMenuButton'
+import { CommonSidebarResizer } from '@/shared/components/CommonSidebarResizer'
 import { useChatsWidthStore } from '@/controllers/chatsWidthController'
+
 interface CommonSidebarProps {
   title: string
   headerExtraContent?: React.ReactNode
@@ -45,21 +45,21 @@ export default function CommonSidebar({
 
   return (
     <>
-      <section ref={chatsRef} className="chats" style={{ width: `${chatsWidth}px` }}>
-        <header className="chats__header">
+      <section ref={chatsRef} className="common-sidebar" style={{ width: `${chatsWidth}px` }}>
+        <header className="common-sidebar__header">
           <div className="flex items-center justify-between">
             <h1 className="logo__title">{title}</h1>
-            <ChatsMenuButton />
+            <CommonSidebarMenuButton />
           </div>
           <SearchInput />
 
           {headerExtraContent}
         </header>
 
-        <div className="chats__body">{bodyContent}</div>
-        <footer className="chats__footer"></footer>
+        <div className="common-sidebar__body">{bodyContent}</div>
+        <footer className="common-sidebar__footer"></footer>
         {resize && (
-          <ChatsResizer
+          <CommonSidebarResizer
             chatsWidth={chatsWidth}
             setChatsWidth={setChatsWidth}
             onResizeMove={handleResizeMove}

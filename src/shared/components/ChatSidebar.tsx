@@ -1,7 +1,8 @@
-import ItemChat from './ItemChat'
+import ItemChat from '@/views/chat/ItemChat'
 import CommonSidebar from '@/shared/components/CommonSidebar'
-import ChatFolders from './ChatFolders'
-export default function Chats() {
+import ChatFolders from '@/views/chat/ChatFolders'
+
+export default function ChatSidebar() {
   const chatFolders = [
     { id: 1, name: 'Все' },
     { id: 2, name: 'Групповые' },

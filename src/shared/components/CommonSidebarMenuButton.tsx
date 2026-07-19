@@ -2,7 +2,7 @@ import { Menu as MenuButton, LogOut, Settings, User } from 'lucide-react'
 import Menu from '@/shared/components/menu'
 import { PopupProvider } from '@/shared/components/PopupProvider'
 
-export const ChatsMenuButton = () => {
+export const CommonSidebarMenuButton = () => {
   return (
     <PopupProvider
       placement="bottom"
@@ -29,7 +29,7 @@ export const ChatsMenuButton = () => {
         />
       }
     >
-      <button className="chats-menu-button">
+      <button className="common-sidebar-menu-button">
         <MenuButton />
       </button>
     </PopupProvider>

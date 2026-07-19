@@ -1,23 +1,23 @@
-.chats {
+.common-sidebar {
   @apply h-screen bg-gray-50 flex flex-col shadow-inner relative;
   container-type: inline-size;
 }
 
-.chats__header {
+.common-sidebar__header {
   @apply flex flex-col gap-2 px-5 py-4 bg-gray-50;
 }
 
-.chats__menu-btn {
+.common-sidebar__menu-btn {
   @apply border-none cursor-pointer bg-transparent;
 }
-.chats__body {
+.common-sidebar__body {
   @apply flex flex-col gap-4 p-4 overflow-hidden;
 }
 
-.chats__footer {
+.common-sidebar__footer {
   @apply mt-auto border-t border-gray-200 flex justify-center items-center text-gray-500 text-sm;
 }
-.chats__resizer {
+.common-sidebar__resizer {
   @apply absolute top-0 right-0 w-1 h-full bg-transparent cursor-e-resize;
 }
 .item-chat {
@@ -36,7 +36,7 @@
   flex: 1 1 auto;
 }
 @container (max-width: 86px) {
-  .chats__header {
+  .common-sidebar__header {
     @apply items-center justify-center;
   }
   .logo {
@@ -60,7 +60,7 @@
   .item-chat__time {
     @apply hidden;
   }
-  .chats__body {
+  .common-sidebar__body {
     @apply p-0 items-center justify-center;
   }
   .message__status-icon {

@@ -3,7 +3,7 @@
 @import './shared/logo.css';
 @import './shared/modal.css';
 @import './components/sidebar.css';
-@import './components/chats.css';
+@import './components/commonSidebar.css';
 @import './components/chatFolders.css';
 @import './shared/search.css';
 @import './components/message.css';
