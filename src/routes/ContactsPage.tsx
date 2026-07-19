@@ -1,11 +1,17 @@
-import CompactPage from './CompactPage'
 
-function ContactsPage() {
+import CommonSidebar from '@/shared/components/CommonSidebar'
+
+export default function Contacts() {
+
+
   return (
-    <CompactPage title="Contacts" description="View and manage your contacts">
-      <div>hello</div>
-    </CompactPage>
+    <>
+      <CommonSidebar
+        title="Контакты"
+        resize={true}
+        bodyContent={<><div></div></>} />
+       
+      
+    </>
   )
 }
-
-export default ContactsPage

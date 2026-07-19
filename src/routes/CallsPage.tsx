@@ -1,11 +1,17 @@
-import CompactPage from './CompactPage'
 
-function CallsPage() {
+import CommonSidebar from '@/shared/components/CommonSidebar'
+
+export default function Calls() {
+
+
   return (
-    <CompactPage title="Calls" description="View your call history and manage your call settings">
-      <div>hello</div>
-    </CompactPage>
+    <>
+      <CommonSidebar
+        title="Звонки"
+        resize={true}
+        bodyContent={<><div></div></>} />
+       
+      
+    </>
   )
 }
-
-export default CallsPage

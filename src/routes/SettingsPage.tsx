@@ -1,14 +1,17 @@
-import CompactPage from './CompactPage'
 
-function SettingsPage() {
+import CommonSidebar from '@/shared/components/CommonSidebar'
+
+export default function Settings() {
+
+
   return (
-    <CompactPage
-      title="Settings"
-      description="View your call history and manage your call settings"
-    >
-      <div>hello</div>
-    </CompactPage>
+    <>
+      <CommonSidebar
+        title="Настройки"
+        resize={true}
+        bodyContent={<><div></div></>} />
+       
+      
+    </>
   )
 }
-
-export default SettingsPage
