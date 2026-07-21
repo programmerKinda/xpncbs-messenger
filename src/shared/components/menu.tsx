@@ -1,8 +1,4 @@
-interface MenuItem {
-  icon: React.ReactNode
-  label: string
-  onClick: () => void
-}
+import type{MenuItem}  from '@/models/shared/menuItemModel'
 export default function Menu({ items }: { items: MenuItem[] }) {
   return (
     <ul className="menu">

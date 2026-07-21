@@ -1,37 +1,24 @@
-import { Menu as MenuButton, LogOut, Settings, User } from 'lucide-react'
-import Menu from '@/shared/components/menu'
-import { PopupProvider } from '@/shared/components/PopupProvider'
 
-export const CommonSidebarMenuButton = () => {
+import Menu from '@/shared/components/menu'
+
+import { PopupProvider } from '@/shared/components/PopupProvider'
+import type{commonSidebarMenuButtonProps} from '@/models/shared/commonSidebarMenuButton'
+export const CommonSidebarMenuButton = ({icon, menuItems}: commonSidebarMenuButtonProps) => {
+
   return (
     <PopupProvider
       placement="bottom"
       align="start"
       popup={
         <Menu
-          items={[
-            {
-              icon: <User />,
-              label: 'Профиль',
-              onClick: () => console.log('Профиль'),
-            },
-            {
-              icon: <Settings />,
-              label: 'Настройки',
-              onClick: () => console.log('Настройки'),
-            },
-            {
-              icon: <LogOut />,
-              label: 'Выход',
-              onClick: () => console.log('Выход'),
-            },
-          ]}
+          items={menuItems}
         />
       }
     >
       <button className="common-sidebar-menu-button">
-        <MenuButton />
+        {icon}
       </button>
     </PopupProvider>
   )
 }
+

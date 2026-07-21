@@ -4,18 +4,20 @@ import { SearchInput } from '@/shared'
 import { CommonSidebarMenuButton } from '@/shared/components/CommonSidebarMenuButton'
 import { CommonSidebarResizer } from '@/shared/components/CommonSidebarResizer'
 import { useChatsWidthStore } from '@/controllers/chatsWidthController'
-
+import type{commonSidebarMenuButtonProps} from '@/models/shared/commonSidebarMenuButton'
 interface CommonSidebarProps {
   title: string
   headerExtraContent?: React.ReactNode
   bodyContent?: React.ReactNode
   resize?: boolean
+  popupButton?: commonSidebarMenuButtonProps
 }
 export default function CommonSidebar({
   title,
   headerExtraContent,
   bodyContent,
   resize,
+  popupButton
 }: CommonSidebarProps) {
 
   const chatsWidth = useChatsWidthStore((state) => state.chatsWidth)
@@ -49,7 +51,7 @@ export default function CommonSidebar({
         <header className="common-sidebar__header">
           <div className="flex items-center justify-between">
             <h1 className="logo__title">{title}</h1>
-            <CommonSidebarMenuButton />
+            {popupButton && <CommonSidebarMenuButton {...popupButton} />}
           </div>
           <SearchInput />
 
