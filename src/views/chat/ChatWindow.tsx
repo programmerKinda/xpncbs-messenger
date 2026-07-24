@@ -33,7 +33,6 @@ export default function ChatWindow() {
     toggleMenu,
     handleToggleRecording,
     handleEmojiSelect,
-    draggedFiles,
     setDraggedFiles,
   } = useChatWindowController()
 

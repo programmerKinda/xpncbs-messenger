@@ -4,7 +4,7 @@ import { SearchInput } from '@/shared'
 import { CommonSidebarMenuButton } from '@/shared/components/CommonSidebarMenuButton'
 import { CommonSidebarResizer } from '@/shared/components/CommonSidebarResizer'
 import { useChatsWidthStore } from '@/controllers/chatsWidthController'
-import type{commonSidebarMenuButtonProps} from '@/models/shared/commonSidebarMenuButton'
+import type { commonSidebarMenuButtonProps } from '@/models/shared/commonSidebarMenuButton'
 interface CommonSidebarProps {
   title: string
   headerExtraContent?: React.ReactNode
@@ -17,9 +17,8 @@ export default function CommonSidebar({
   headerExtraContent,
   bodyContent,
   resize,
-  popupButton
+  popupButton,
 }: CommonSidebarProps) {
-
   const chatsWidth = useChatsWidthStore((state) => state.chatsWidth)
   const setChatsWidth = useChatsWidthStore((state) => state.setChatsWidth)
   const chatsRef = useRef<HTMLElement | null>(null)

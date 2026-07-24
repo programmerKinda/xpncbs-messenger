@@ -5,7 +5,7 @@ interface ModalProviderProps {
   modal: React.ReactNode
 }
 const ModalProvider = ({ children, modal }: ModalProviderProps) => {
-  const { setModalChildren, resetModalChildren } = useModalStore()
+  const { setModalChildren } = useModalStore()
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
     setModalChildren(modal)

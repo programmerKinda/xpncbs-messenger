@@ -15,6 +15,7 @@
 @import './components/chatFileSendModal.css';
 @import './components/compactPage.css';
 @import './ui/common.css';
+@import './components/settings.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

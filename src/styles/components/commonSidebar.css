@@ -23,6 +23,12 @@
 .item-chat {
   @apply flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-all duration-300;
 }
+.item-chat__header {
+  @apply flex items-center justify-between;
+}
+.item-chat__status {
+  @apply flex gap-1 items-center;
+}
 .item-chat__time {
   @apply text-sm;
 }

@@ -15,14 +15,7 @@ export const useChatsWidthStore = create<ChatsWidth>((set) => ({
 }))
 export const startResizing = (
   e: React.MouseEvent<HTMLDivElement>,
-  {
-    chatsWidth,
-    setChatsWidth,
-    onResizeMove,
-    onResizeStart,
-    onResizeEnd,
-    canCollapse = false,
-  }: ChatsResizerProps
+  { chatsWidth, setChatsWidth, onResizeMove, onResizeStart, onResizeEnd }: ChatsResizerProps
 ) => {
   e.preventDefault()
 
