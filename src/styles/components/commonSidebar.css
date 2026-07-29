@@ -6,7 +6,9 @@
 .common-sidebar__header {
   @apply flex flex-col gap-2 px-5 py-4 bg-gray-50;
 }
-
+.logo__title{
+  @apply text-2xl;
+}
 .common-sidebar__menu-btn {
   @apply border-none cursor-pointer bg-transparent;
 }
@@ -33,6 +35,9 @@
   @apply text-sm;
 }
 .last-message__text {
+    overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .item-chat__info {
   @apply w-[30%];
@@ -45,9 +50,10 @@
   .common-sidebar__header {
     @apply items-center justify-center;
   }
-  .logo {
+  .logo__title {
     @apply hidden;
   }
+  
   label.search {
     @apply hidden;
   }
@@ -72,4 +78,8 @@
   .message__status-icon {
     @apply hidden;
   }
+  .setting-item__info{
+    @apply hidden;
+  }
+
 }

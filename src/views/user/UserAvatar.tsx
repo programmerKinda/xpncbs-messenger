@@ -40,7 +40,7 @@ export default function UserAvatar({
         <img src={avatarURL} alt="" className="user-avatar__img" />
       ) : (
         <span
-          className={`user-avatar__name ${size ? '' : 'text-l'}`}
+          className={`user-avatar__name ${size ? '' : 'text-lg'}`}
           style={{ color: 'white', transform: `translateY(${offset})` }}
         >
           {letters}

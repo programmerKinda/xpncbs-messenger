@@ -1,5 +1,6 @@
 import CommonSidebar from '@/shared/components/CommonSidebar'
-
+import SettingItem from '@/views/settings.tsx/settingItem';
+import { FaUnlockAlt } from "react-icons/fa";
 export default function Settings() {
   return (
     <>
@@ -8,9 +9,10 @@ export default function Settings() {
         resize={true}
         bodyContent={
           <>
-            <div></div>
+            <SettingItem icon={ <FaUnlockAlt size={30}/>} title='Конфидециальность' subtitle='Блокировка,исцезающие сообщения'/>
           </>
         }
+             
       />
     </>
   )

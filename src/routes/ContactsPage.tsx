@@ -1,7 +1,8 @@
 import CommonSidebar from '@/shared/components/CommonSidebar'
-import { IoPersonAddSharp } from 'react-icons/io5'
+
 import { PopupProvider } from '@/shared/components/PopupProvider'
 
+import { IoEllipsisVertical } from "react-icons/io5";
 export default function Contacts() {
   return (
     <>
@@ -16,18 +17,9 @@ export default function Contacts() {
         }
         popupButton=
            {{
-        icon: <IoPersonAddSharp />,
+        icon: <IoEllipsisVertical size={25}/>,
         menuItems: [
-          {
-            label: 'Новый звонок',
-            icon: <IoPersonAddSharp />,
-            onClick: () => console.log('Новый звонок'),
-          },
-          {
-            label: 'Новая конференция',
-            icon: <IoPersonAddSharp />,
-            onClick: () => console.log('Новая конференция'),
-          },
+     
         ],
       }}
         

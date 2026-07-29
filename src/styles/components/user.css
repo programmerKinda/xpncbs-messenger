@@ -7,10 +7,14 @@
 }
 .user-avatar__name {
   @apply flex items-center justify-center w-full h-full;
+  font-weight: 300;
   line-height: 1;
   transform: translateY(-0.06em);
 }
 /* NAME */
 .user-name {
-  @apply text-xl font-medium;
+  @apply text-xl font-medium ;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

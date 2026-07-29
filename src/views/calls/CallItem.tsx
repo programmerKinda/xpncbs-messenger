@@ -1,15 +1,16 @@
 import UserAvatar from '../user/UserAvatar'
+import { HiPhone } from "react-icons/hi2";
 
 interface CallItemProps {
   name: string
   phone: string
   time: string
   direction: 'incoming' | 'outgoing'
-  callType: 'audio' | 'video'
+  callType: React.ReactNode
   status: 'accepted' | 'missed'
 }
 
-export default function CallItem({ name, phone, time }: CallItemProps) {
+export default function CallItem({ name, phone, time,callType }: CallItemProps) {
   return (
     <div className="call-item">
       <div className="call-item__avatar">
@@ -23,6 +24,7 @@ export default function CallItem({ name, phone, time }: CallItemProps) {
             {/* <div className="call-item__phone">{phone}</div> */}
             <span className="call-item__time">{time}</span>
           </div>
+          <button>{callType}</button>
         </div>
       </div>
     </div>

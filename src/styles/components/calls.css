@@ -1,11 +1,25 @@
 .calls-page {
-  @apply flex flex-col gap-3 p-2;
+  @apply flex flex-col  p-2;
 }
 
 .call-item {
-  @apply flex items-center gap-3   p-3  transition-all duration-200 hover:-translate-y-0.5 border-b border-gray-200;
+  @apply flex items-center p-2 gap-3 transition-all duration-200 hover:-translate-y-0.5 justify-center;
+  
 }
-
+@container (max-width: 86px) {
+  .call-item__time{
+    @apply hidden;
+  }
+  .call-item__name{
+    @apply hidden;
+  }
+  .call-item__main{
+    @apply hidden ;
+  }
+  .call-item{
+    @apply gap-0;
+  }
+}
 .call-item__avatar {
   @apply shrink-0;
 }
@@ -15,7 +29,7 @@
 }
 
 .call-item__meta {
-  @apply flex items-start justify-between gap-3;
+  @apply flex items-center justify-between gap-3;
 }
 
 .call-item__main {
@@ -23,7 +37,7 @@
 }
 
 .call-item__name {
-  @apply text-sm font-semibold text-gray-800;
+  @apply text-lg font-semibold text-gray-500;
 }
 
 .call-item__phone {
@@ -31,7 +45,7 @@
 }
 
 .call-item__time {
-  @apply whitespace-nowrap text-xs text-gray-400;
+  @apply whitespace-nowrap text-sm text-gray-500;
 }
 
 .call-item__footer {

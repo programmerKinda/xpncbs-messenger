@@ -2,7 +2,7 @@
   @apply flex gap-3 overflow-x-auto py-2 scroll relative list-none items-center;
 }
 .chat-folder {
-  @apply px-4 py-2 text-sm font-medium rounded-2xl bg-white text-[#6B7280] cursor-pointer list-none bg-[#C4C7DD]
+  @apply px-4 py-2 text-sm font-medium rounded-2xl bg-white text-[#6B7280] cursor-pointer list-none bg-[#c4c7dd8a]
          hover:bg-[#8F8FB1] hover:text-blue-500 transition-all duration-300 shadow-sm;
 }
 .chat-folder.active {
