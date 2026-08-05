@@ -1,8 +1,7 @@
 import { BiSolidMessageDetail } from 'react-icons/bi'
 import { FaUsers } from 'react-icons/fa'
 import { IoMdSettings } from 'react-icons/io'
-import { FaPhoneVolume } from 'react-icons/fa6'
-import { HiPhone } from "react-icons/hi2";
+import { HiPhone } from 'react-icons/hi2'
 
 export const sidebarElements = [
   {

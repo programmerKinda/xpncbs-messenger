@@ -16,6 +16,7 @@
 @import './components/compactPage.css';
 @import './ui/common.css';
 @import './components/settings.css';
+@import './components/auth.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

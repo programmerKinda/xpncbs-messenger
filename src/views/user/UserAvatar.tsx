@@ -14,12 +14,13 @@ export default function UserAvatar({
   const safeName = name?.trim() || 'User'
   const nameArray = safeName.split(/\s+/).filter(Boolean)
   const colorMain = colorHash.hex(safeName)
-  const lighterColor = chroma(colorMain).brighten(1.2).hex()
+  const darkerColor = chroma(colorMain).brighten(0.8).hex()
+  const lighterColor = chroma(colorMain).brighten(2).hex()
 
   const styles: React.CSSProperties = avatarURL
   ? {}
   : {
-      background: `linear-gradient(135deg, ${colorMain} 0%, ${lighterColor} 100%)`,
+      background: `linear-gradient(135deg, ${darkerColor} 0%, ${lighterColor} 100%)`,
     }
   if (size) {
     styles.width = `${size}px`

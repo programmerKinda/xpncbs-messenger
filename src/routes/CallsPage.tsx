@@ -1,13 +1,11 @@
 import CommonSidebar from '@/shared/components/CommonSidebar'
 import CallItem from '@/views/calls/CallItem'
-import { PiPhonePlusFill } from "react-icons/pi";
-import { FaUserTie } from "react-icons/fa";
-import { BsFillTelephonePlusFill } from "react-icons/bs";
-import { IoEllipsisVertical } from "react-icons/io5";
-import { IoVideocam } from "react-icons/io5";
-import { HiPhone } from "react-icons/hi2";
+import { FaUserTie } from 'react-icons/fa'
+import { BsFillTelephonePlusFill } from 'react-icons/bs'
+import { IoVideocam } from 'react-icons/io5'
+import { HiPhone } from 'react-icons/hi2'
 import '@/styles/components/calls.css'
-import { IoEllipsisHorizontal } from "react-icons/io5";
+import { IoEllipsisHorizontal } from 'react-icons/io5'
 export default function Calls() {
   return (
     <>

@@ -9,6 +9,8 @@ import SettingsPage from './routes/SettingsPage'
 import ContactsPage from './routes/ContactsPage'
 import CallsPage from './routes/CallsPage'
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
+import RegisterPage from './routes/authPages/registerPage'
+import LoginPage from './routes/authPages/loginPage'
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
@@ -34,11 +36,22 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
+          <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/login"
+            element={
+             
+                <LoginPage />
+              
+            }
+          />
           <Route element={<MainLayout />}>
+          
             <Route path="/" element={<MainPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/contacts" element={<ContactsPage />} />
             <Route path="/calls" element={<CallsPage />} />
+            
           </Route>
         </Routes>
       </BrowserRouter>

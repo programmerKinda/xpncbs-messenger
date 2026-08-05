@@ -1,8 +1,5 @@
 import CommonSidebar from '@/shared/components/CommonSidebar'
-
-import { PopupProvider } from '@/shared/components/PopupProvider'
-
-import { IoEllipsisVertical } from "react-icons/io5";
+import { IoEllipsisVertical } from 'react-icons/io5'
 export default function Contacts() {
   return (
     <>

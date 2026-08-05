@@ -1,4 +1,3 @@
-import { Logo } from './Logo'
 export const LogoWitchTitle = () => {
   return (
     <div className="logo">

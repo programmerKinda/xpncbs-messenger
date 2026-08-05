@@ -1,14 +1,33 @@
 .setting-item{
-  @apply flex items-center justify-center gap-4 hover:bg-gray-200 p-3 rounded-lg duration-500;
+  @apply flex items-center p-2 gap-3 transition-all duration-300 hover:bg-gray-200 justify-start rounded-lg;
 }
 .setting-item__icon{
-  
+  @apply shrink-0 block  object-cover;
+}
+
+.setting-item__icon > svg{
+  width: 2rem;
+  height: 2rem;
+  display: block;
 }
 .setting-item__title{
-    @apply text-gray-600 text-xl ;
-    font-weight: 400;
+    @apply text-lg font-semibold text-gray-600;
+    
     
 }
 .setting-item-subtitle{
-    
+    @apply text-base
+}
+
+.setting-item--large .setting-item__icon > svg{
+  width: 4rem;
+  height: 4rem;
+}
+
+.setting-item--highlight{
+  @apply border-gray-200 rounded-lg;
+}
+
+.setting-item--highlight .setting-item__info{
+  @apply ml-3;
 }
