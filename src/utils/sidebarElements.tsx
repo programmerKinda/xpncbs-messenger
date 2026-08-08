@@ -10,6 +10,6 @@ export const sidebarElements = [
     path: '/',
   },
   { icon: <FaUsers size={35} />, text: 'Контакты', path: '/contacts' },
-  { icon: <HiPhone  size={25} />, text: 'Звонки', path: '/calls' },
+  { icon: <HiPhone size={25} />, text: 'Звонки', path: '/calls' },
   { icon: <IoMdSettings size={35} />, text: 'Настройки', path: '/settings' },
 ]

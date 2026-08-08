@@ -10,7 +10,6 @@ export default function LogOutButton() {
     } catch (error) {
       console.error('Ошибка выхода:', error)
     }
-    
   }
   return (
     <button className="profile__leave" onClick={handleLogout}>

@@ -41,10 +41,7 @@ export default function LoginPage() {
       <div className="auth-container">
         <h1 className="auth-title">Войти в аккаунт</h1>
 
-        <form
-          className="auth-form"
-          onSubmit={emailForm.handleSubmit(onEmailSubmit)}
-        >
+        <form className="auth-form" onSubmit={emailForm.handleSubmit(onEmailSubmit)}>
           {/* Email или телефон */}
           <label className="auth-form__label">
             Email
@@ -55,9 +52,7 @@ export default function LoginPage() {
               {...emailForm.register('email')}
             />
             {emailForm.formState.errors.email && (
-              <p className="auth-form__error">
-                {emailForm.formState.errors.email.message}
-              </p>
+              <p className="auth-form__error">{emailForm.formState.errors.email.message}</p>
             )}
           </label>
 

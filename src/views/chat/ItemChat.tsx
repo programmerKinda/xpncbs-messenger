@@ -33,7 +33,6 @@ export default function ItemChat({ createdAt, watched }: ItemChatProps) {
             </span>
             <span className="item-chat__time">{timeString}</span>
           </span>
-
         </div>
         <LastMessage
           type="text"

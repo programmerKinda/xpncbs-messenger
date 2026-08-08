@@ -19,45 +19,42 @@ export default function Calls() {
               phone="+7 999 123-45-67"
               time="Сегодня, 14:20"
               direction="incoming"
-              
               status="accepted"
-              callType={<HiPhone size={23} color='#6B7280'/>}
+              callType={<HiPhone size={23} color="#6B7280" />}
             />
             <CallItem
               name="Максим"
               phone="+7 900 555-12-34"
               time="Вчера, 21:05"
               direction="outgoing"
-              callType={<IoVideocam size={25} color='#6B7280'/>}
+              callType={<IoVideocam size={25} color="#6B7280" />}
               status="missed"
-              
             />
             <CallItem
               name="Ольга"
               phone="+7 915 000-11-22"
               time="Вчера, 09:40"
               direction="incoming"
-              callType={<IoVideocam size={25} color='#6B7280'/> }
+              callType={<IoVideocam size={25} color="#6B7280" />}
               status="accepted"
             />
           </div>
         }
-                  popupButton=
-                   {{
-                icon: <IoEllipsisHorizontal size={35}/>,
-                menuItems: [
-                  {
-                    label: 'Новый звонок',
-                    icon: <BsFillTelephonePlusFill />,
-                    onClick: () => console.log('Новый звонок'),
-                  },
-                  {
-                    label: 'Новая конференция',
-                    icon: <FaUserTie />,
-                    onClick: () => console.log('Новая конференция'),
-                  },
-                ],
-              }}
+        popupButton={{
+          icon: <IoEllipsisHorizontal size={35} />,
+          menuItems: [
+            {
+              label: 'Новый звонок',
+              icon: <BsFillTelephonePlusFill />,
+              onClick: () => console.log('Новый звонок'),
+            },
+            {
+              label: 'Новая конференция',
+              icon: <FaUserTie />,
+              onClick: () => console.log('Новая конференция'),
+            },
+          ],
+        }}
       />
     </>
   )

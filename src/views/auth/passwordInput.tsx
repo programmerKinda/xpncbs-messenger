@@ -10,12 +10,7 @@ interface PasswordInputProps {
   register?: UseFormRegisterReturn
 }
 
-export default function PasswordInput({
-  label,
-  placeholder,
-  error,
-  register,
-}: PasswordInputProps) {
+export default function PasswordInput({ label, placeholder, error, register }: PasswordInputProps) {
   const [hasFocus, setHasFocus] = useState(false)
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
@@ -28,23 +23,15 @@ export default function PasswordInput({
       {label}
       <div className={`auth-form__div ${hasFocus ? 'focus' : ''}`}>
         <input
-        className=""
+          className=""
           type={isPasswordVisible ? 'text' : 'password'}
           placeholder={placeholder}
           onFocus={() => setHasFocus(true)}
           onBlur={() => setHasFocus(false)}
           {...register} // вот тут подключаем RHF
         />
-        <button
-          type="button"
-          onClick={togglePasswordVisibility}
-          className="auth-form__eye-btn"
-        >
-          {isPasswordVisible ? (
-            <EyeOff className="w-4 h-4" />
-          ) : (
-            <Eye className="w-4 h-4" />
-          )}
+        <button type="button" onClick={togglePasswordVisibility} className="auth-form__eye-btn">
+          {isPasswordVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
         </button>
       </div>
       {error && <p className="auth-form__error">{error}</p>}

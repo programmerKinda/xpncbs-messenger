@@ -11,6 +11,9 @@ import CallsPage from './routes/CallsPage'
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
 import RegisterPage from './routes/authPages/registerPage'
 import LoginPage from './routes/authPages/loginPage'
+import SettingLayout from './views/layouts/SettingLayout'
+import { Divide } from 'lucide-react'
+import SettingPageUser from './routes/settingPages/SettingPageUser'
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
@@ -37,21 +40,15 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/register" element={<RegisterPage />} />
-          <Route
-            path="/login"
-            element={
-             
-                <LoginPage />
-              
-            }
-          />
+          <Route path="/login" element={<LoginPage />} />
           <Route element={<MainLayout />}>
-          
             <Route path="/" element={<MainPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
+
             <Route path="/contacts" element={<ContactsPage />} />
             <Route path="/calls" element={<CallsPage />} />
-            
+          </Route>
+          <Route element={<SettingLayout />}>
+            <Route path="/settings" element={<SettingPageUser />} />
           </Route>
         </Routes>
       </BrowserRouter>

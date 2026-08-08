@@ -12,7 +12,7 @@ import {
   FaSignOutAlt,
 } from 'react-icons/fa'
 
-export default function Settings() {
+export default function SidebarSettings() {
   return (
     <>
       <CommonSidebar

@@ -18,10 +18,10 @@ export default function UserAvatar({
   const lighterColor = chroma(colorMain).brighten(2).hex()
 
   const styles: React.CSSProperties = avatarURL
-  ? {}
-  : {
-      background: `linear-gradient(135deg, ${darkerColor} 0%, ${lighterColor} 100%)`,
-    }
+    ? {}
+    : {
+        background: `linear-gradient(135deg, ${darkerColor} 0%, ${lighterColor} 100%)`,
+      }
   if (size) {
     styles.width = `${size}px`
     styles.height = `${size}px`

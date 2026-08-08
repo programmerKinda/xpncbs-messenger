@@ -8,10 +8,7 @@ import { emailRegisterSchema } from '@/validation/registerWithEmailSchema.ts'
 import GoogleLoginButton from '@/views/auth/googleLoginButton.tsx'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
-import { auth,db } from '@/api/firebase.ts'
-
-
-
+import { auth, db } from '@/api/firebase.ts'
 
 // Типы для TS
 type EmailForm = z.infer<typeof emailRegisterSchema>
@@ -28,11 +25,7 @@ export default function RegisterPage() {
 
   const onEmailSubmit = async (data: EmailForm) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      )
+      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password)
       const user = userCredential.user
 
       await setDoc(doc(db, 'users', user.uid), {
@@ -51,10 +44,7 @@ export default function RegisterPage() {
       <div className="auth-container">
         <h1 className="auth-title">Создать аккаунт</h1>
 
-        <form
-          className="auth-form"
-          onSubmit={emailForm.handleSubmit(onEmailSubmit)}
-        >
+        <form className="auth-form" onSubmit={emailForm.handleSubmit(onEmailSubmit)}>
           {/* Email */}
           <label className="auth-form__label">
             Имя
@@ -65,9 +55,7 @@ export default function RegisterPage() {
               {...emailForm.register('name')}
             />
             {emailForm.formState.errors.name && (
-              <p className="auth-form__error">
-                {emailForm.formState.errors.name.message}
-              </p>
+              <p className="auth-form__error">{emailForm.formState.errors.name.message}</p>
             )}
           </label>
           <label className="auth-form__label">
@@ -79,9 +67,7 @@ export default function RegisterPage() {
               {...emailForm.register('email')}
             />
             {emailForm.formState.errors.email && (
-              <p className="auth-form__error">
-                {emailForm.formState.errors.email.message}
-              </p>
+              <p className="auth-form__error">{emailForm.formState.errors.email.message}</p>
             )}
           </label>
 

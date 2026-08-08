@@ -10,21 +10,12 @@ export default function Contacts() {
           <>
             <div></div>
           </>
-          
         }
-        popupButton=
-           {{
-        icon: <IoEllipsisVertical size={25}/>,
-        menuItems: [
-     
-        ],
-      }}
-        
+        popupButton={{
+          icon: <IoEllipsisVertical size={25} />,
+          menuItems: [],
+        }}
       />
-
-
     </>
   )
 }
-
-

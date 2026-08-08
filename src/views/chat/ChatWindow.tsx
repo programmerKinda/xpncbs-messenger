@@ -12,7 +12,7 @@ import UserName from '../user/UserName'
 import { useChatWindowController } from '@/hooks/useChatWindowController'
 import { useModalStore } from '@/controllers/modalController'
 import ChatForm from './ChatForm'
-
+import CommonWindowHeader from '@/shared/components/commonWindowHeader'
 export default function ChatWindow() {
   const { setModalChildren, setModalHeaderContent } = useModalStore()
   const {
@@ -83,7 +83,7 @@ export default function ChatWindow() {
       onDragOver={handleDragOver}
       ref={chatWindowRef}
     >
-      <header className="chat-window__header">
+      <CommonWindowHeader>
         <div className="flex gap-1 items-start">
           <UserAvatar name="x p" avatarURL="" />
 
@@ -121,7 +121,7 @@ export default function ChatWindow() {
             <EllipsisVertical />
           </button>
         </PopupProvider>
-      </header>
+      </CommonWindowHeader>
       <div className="chat-window__body">
         <Message
           className="message--outgoing"

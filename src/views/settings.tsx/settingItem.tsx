@@ -19,12 +19,14 @@ export default function SettingItem({
 
   return (
     <div className={`setting-item ${large ? 'setting-item--large' : ''} ${className}`}>
-      <span className="setting-item__icon">{iconElement}</span>
+      <span className={`setting-item__icon ${large ? '' : 'p-4'} ${className}`}>{iconElement}</span>
       <div className="setting-item__info">
-        <h2 className={`setting-item__title ${large ? 'text-2xl' : ''}`}>
-          {title}
-        </h2>
-        {subtitle && <span className="setting-item-subtitle">{subtitle}</span>}
+        <h2 className={`setting-item__title ${large ? 'text-2xl' : 'text-base'}`}>{title}</h2>
+        {subtitle && (
+          <span className={`setting-item__icon ${large ? 'text-base' : 'text-sm'} ${className}`}>
+            {subtitle}
+          </span>
+        )}
       </div>
     </div>
   )

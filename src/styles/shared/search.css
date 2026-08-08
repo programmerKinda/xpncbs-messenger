@@ -4,14 +4,14 @@
 }
 
 .search--focused {
-  outline: 1px solid #C4C7DD;
+  outline: 1px solid #c4c7dd;
 }
 
 .search__input {
   @apply bg-transparent outline-none  text-[#6B7280] w-full  text-lg;
 }
-.search__input::placeholder{
-  @apply text-[#6B7280]
+.search__input::placeholder {
+  @apply text-[#6B7280];
 }
 .search__input:focus {
   @apply outline-none;
