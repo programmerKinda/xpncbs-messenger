@@ -1,12 +1,12 @@
 import UserAvatar from '@/views/user/UserAvatar'
-import CommonWindowHeader from '@/shared/components/commonWindowHeader'
+import CommonWindowHeader from '@/shared/components/CommonWindowHeader'
 import { HiEllipsisHorizontal } from 'react-icons/hi2'
 
 export default function SettingPageUser() {
   return (
-    <div className="setting-page-user">
+    <div className="setting-page">
       <CommonWindowHeader>
-        <h2 className="setting-page-user__title">Редактировать профиль</h2>
+        <h2 className="setting-page__title">Редактировать профиль</h2>
       </CommonWindowHeader>
 
       <form className="setting-page-user__form">
@@ -22,10 +22,17 @@ export default function SettingPageUser() {
           </div>
 
           <footer className="setting-page-user__actions">
-            <button type="button" className="setting-page-user__button setting-page-user__button--primary">
+            <button
+              type="button"
+              className="setting-page-user__button setting-page-user__button--primary"
+            >
               Выйти из аккаунта
             </button>
-            <button type="button" className="setting-page-user__button setting-page-user__button--icon" aria-label="Ещё">
+            <button
+              type="button"
+              className="setting-page-user__button setting-page-user__button--icon"
+              aria-label="Ещё"
+            >
               <HiEllipsisHorizontal size={25} />
             </button>
           </footer>

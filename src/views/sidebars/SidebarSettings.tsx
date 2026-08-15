@@ -27,27 +27,16 @@ export default function SidebarSettings() {
               subtitle="ivan@example.com"
               large
               className="setting-item--highlight"
+              path='/'
             />
 
-            {/* Инструменты для бизнеса */}
-            <SettingItem
-              icon={<FaStore size={22} />}
-              title="Инструменты для бизнеса"
-              subtitle="Быстрые ответы, ярлыки, каталог"
-            />
-
-            {/* Аккаунт */}
-            <SettingItem
-              icon={<FaKey size={22} />}
-              title="Аккаунт"
-              subtitle="Уведомления о безопасности, информация аккаунта"
-            />
 
             {/* Конфиденциальность */}
             <SettingItem
               icon={<FaUnlockAlt size={22} />}
               title="Конфиденциальность"
               subtitle="Заблокированные контакты, исчезающие сообщения"
+              path='secure'
             />
 
             {/* Чаты */}
@@ -55,6 +44,7 @@ export default function SidebarSettings() {
               icon={<FaRegCommentAlt size={22} />}
               title="Чаты"
               subtitle="Тема, обои, настройки чата"
+              path='chats'
             />
 
             {/* Уведомления */}
@@ -62,6 +52,7 @@ export default function SidebarSettings() {
               icon={<FaRegBell size={22} />}
               title="Уведомления"
               subtitle="Сообщения, группы, звуки"
+              path='notification'
             />
 
             {/* Сочетания клавиш */}
@@ -69,17 +60,13 @@ export default function SidebarSettings() {
               icon={<FaKeyboard size={22} />}
               title="Сочетания клавиш"
               subtitle="Быстрые действия"
+              path='hotKeys'
             />
 
-            {/* Помощь */}
-            <SettingItem
-              icon={<FaRegQuestionCircle size={22} />}
-              title="Помощь и отзывы"
-              subtitle="Справочный центр, связь с нами, политика конфиденциальности"
-            />
+
 
             {/* Выход */}
-            <SettingItem icon={<FaSignOutAlt size={22} color="#ef4444" />} title="Выход" />
+            <SettingItem icon={<FaSignOutAlt size={22} color="#ef4444" />} title="Выход" path='login'/>
           </>
         }
       />

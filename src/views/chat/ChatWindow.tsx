@@ -12,7 +12,7 @@ import UserName from '../user/UserName'
 import { useChatWindowController } from '@/hooks/useChatWindowController'
 import { useModalStore } from '@/controllers/modalController'
 import ChatForm from './ChatForm'
-import CommonWindowHeader from '@/shared/components/commonWindowHeader'
+import CommonWindowHeader from '@/shared/components/CommonWindowHeader'
 export default function ChatWindow() {
   const { setModalChildren, setModalHeaderContent } = useModalStore()
   const {

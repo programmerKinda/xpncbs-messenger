@@ -18,6 +18,7 @@
 @import './components/settings.css';
 @import './components/auth.css';
 @import './shared/commonWindowHeader.css';
+@import './shared/selectList.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

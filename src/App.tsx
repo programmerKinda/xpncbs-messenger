@@ -14,6 +14,7 @@ import LoginPage from './routes/authPages/loginPage'
 import SettingLayout from './views/layouts/SettingLayout'
 import { Divide } from 'lucide-react'
 import SettingPageUser from './routes/settingPages/SettingPageUser'
+import SettingPageSecure from './routes/settingPages/SettingPageSecure'
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
@@ -49,6 +50,7 @@ function App() {
           </Route>
           <Route element={<SettingLayout />}>
             <Route path="/settings" element={<SettingPageUser />} />
+            <Route path="/settings/secure" element={<SettingPageSecure />} />
           </Route>
         </Routes>
       </BrowserRouter>

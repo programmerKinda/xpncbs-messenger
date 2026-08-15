@@ -1,0 +1,11 @@
+.select-list {
+    @apply bg-gray-100  rounded cursor-pointer;
+}
+.select-list-dropdown {
+  @apply absolute left-0 w-max bg-white;
+  border: 1px solid #ccc;
+  z-index: 1000;
+}
+.select-list-item{
+  @apply px-4 py-2 cursor-pointer hover:bg-gray-100;
+}

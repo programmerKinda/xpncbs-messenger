@@ -6,6 +6,7 @@
 .common-sidebar__header {
   @apply flex flex-col gap-2 px-5 py-4 bg-gray-50;
 }
+
 .logo__title {
   @apply text-2xl;
 }
@@ -13,7 +14,7 @@
   @apply border-none cursor-pointer bg-transparent;
 }
 .common-sidebar__body {
-  @apply flex flex-col gap-4 p-4 overflow-hidden overflow-y-auto;
+  @apply flex flex-col p-4 overflow-hidden overflow-y-auto;
 }
 
 .common-sidebar__footer {
