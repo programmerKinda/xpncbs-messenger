@@ -35,7 +35,7 @@ body {
 }
 
 .main-layout {
-  @apply flex overflow-hidden;
+  @apply flex h-screen w-full overflow-hidden;
 }
 
 .App {

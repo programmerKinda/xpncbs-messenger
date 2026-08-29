@@ -3,14 +3,13 @@ import SelectList from '@/shared/components/SelectList'
 export default function SettingPageSecure() {
   const email = ['Все', 'Мои контакты', 'Никто']
   const avatar = ['Все', 'Мои контакты', 'Никто']
-  const information = ['Все', 'Мои контакты', 'Никто']
   const call = ['Все', 'Мои контакты', 'Никто']
   return (
     <div className="setting-page setting-page-secure">
       <CommonWindowHeader>
         <h2 className="setting-page__title">Безопасность</h2>
       </CommonWindowHeader>
-      <div className="flex flex-col gap-4 w-full h-max items-center justify-center overflow-y-auto">
+      <div className="flex-1 min-h-0 w-full overflow-y-auto py-6 flex flex-col items-center gap-4">
         {' '}
         <div className="setting-page-secure__body">
           <h2 className="setting-page-secure__title">Кто видит мою информацию</h2>
@@ -49,9 +48,10 @@ export default function SettingPageSecure() {
               <SelectList list={call} />
             </li>
           </ul>
-        </div>        <div className="setting-page-secure__body">
+        </div>{' '}
+        <div className="setting-page-secure__body">
           <h2 className="setting-page-secure__title">Черный список</h2>
-          <p className=''>Список тех, кто не может вам писать, звонить и добавлять в чаты</p>
+          <p className="">Список тех, кто не может вам писать, звонить и добавлять в чаты</p>
         </div>
       </div>
     </div>

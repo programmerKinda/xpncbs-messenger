@@ -28,7 +28,7 @@
 }
 
 .setting-page {
-  @apply flex min-h-full flex-auto flex-col bg-[#c4c7dd8a];
+  @apply flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-[#c4c7dd8a];
 }
 
 .setting-page__title {
