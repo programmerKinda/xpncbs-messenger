@@ -16,12 +16,15 @@ export default function SettingItem({
   subtitle,
   large = false,
   className = '',
-  path
+  path,
 }: SettingItemProps) {
   const iconElement = cloneElement(icon as any, { size: large ? 56 : 28 })
   const navigate = useNavigate()
   return (
-    <div className={`setting-item ${large ? 'setting-item--large' : ''} ${className}`} onClick={()=>navigate(`settings/${path}`)}>
+    <div
+      className={`setting-item ${large ? 'setting-item--large' : ''} ${className}`}
+      onClick={() => navigate(`settings/${path}`)}
+    >
       <span className={`setting-item__icon ${large ? '' : 'p-4'} ${className}`}>{iconElement}</span>
       <div className="setting-item__info">
         <h2 className={`setting-item__title ${large ? 'text-xl' : 'text-base'}`}>{title}</h2>

@@ -16,9 +16,24 @@ export default function SettingPageUser() {
           </header>
 
           <div className="setting-page-user__fields">
-            <input type="text" className="setting-page-user__field" placeholder="Имя" />
-            <input type="text" className="setting-page-user__field" placeholder="Никнейм" />
-            <input type="text" className="setting-page-user__field" placeholder="О себе" />
+            <input
+              type="text"
+              className="setting-page-user__field"
+              placeholder="Имя"
+              maxLength={59}
+            />
+            <input
+              type="text"
+              className="setting-page-user__field"
+              placeholder="Никнейм"
+              maxLength={59}
+            />
+            <textarea
+              className="setting-page-user__field resize-none"
+              placeholder="О себе"
+              rows={4}
+              maxLength={300}
+            />
           </div>
 
           <footer className="setting-page-user__actions">

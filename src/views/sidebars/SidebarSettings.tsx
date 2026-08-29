@@ -1,5 +1,5 @@
 import CommonSidebar from '@/shared/components/CommonSidebar'
-import SettingItem from '@/views/settings.tsx/settingItem'
+import SettingItem from '@/views/settings/settingItem'
 import UserAvatar from '@/views/user/UserAvatar'
 import {
   FaStore,
@@ -27,16 +27,15 @@ export default function SidebarSettings() {
               subtitle="ivan@example.com"
               large
               className="setting-item--highlight"
-              path='/'
+              path="/"
             />
-
 
             {/* Конфиденциальность */}
             <SettingItem
               icon={<FaUnlockAlt size={22} />}
               title="Конфиденциальность"
               subtitle="Заблокированные контакты, исчезающие сообщения"
-              path='secure'
+              path="secure"
             />
 
             {/* Чаты */}
@@ -44,7 +43,7 @@ export default function SidebarSettings() {
               icon={<FaRegCommentAlt size={22} />}
               title="Чаты"
               subtitle="Тема, обои, настройки чата"
-              path='chats'
+              path="chats"
             />
 
             {/* Уведомления */}
@@ -52,7 +51,7 @@ export default function SidebarSettings() {
               icon={<FaRegBell size={22} />}
               title="Уведомления"
               subtitle="Сообщения, группы, звуки"
-              path='notification'
+              path="notification"
             />
 
             {/* Сочетания клавиш */}
@@ -60,13 +59,15 @@ export default function SidebarSettings() {
               icon={<FaKeyboard size={22} />}
               title="Сочетания клавиш"
               subtitle="Быстрые действия"
-              path='hotKeys'
+              path="hotKeys"
             />
 
-
-
             {/* Выход */}
-            <SettingItem icon={<FaSignOutAlt size={22} color="#ef4444" />} title="Выход" path='login'/>
+            <SettingItem
+              icon={<FaSignOutAlt size={22} color="#ef4444" />}
+              title="Выход"
+              path="login"
+            />
           </>
         }
       />

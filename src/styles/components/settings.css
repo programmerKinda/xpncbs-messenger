@@ -54,6 +54,8 @@
 .setting-page-user__field {
   @apply w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 outline-none transition duration-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100;
 }
+.setting-page-user__field textarea {
+}
 
 .setting-page-user__actions {
   @apply flex w-full justify-between gap-2 pt-2;
@@ -70,12 +72,14 @@
 .setting-page-user__button--icon {
   @apply flex items-center justify-center bg-gray-100 text-lg text-gray-700 hover:bg-gray-200 rounded-xl w-10 h-10;
 }
-.setting-page-secure{
-  
+.setting-page-secure {
+}
+.setting-page-secure__title {
+  @apply text-lg p-2;
+  border-bottom: 1px solid gray;
 }
 .setting-page-secure__body {
-  @apply   bg-white;
-  width: max-content;
+  @apply bg-white h-max w-[50%] justify-center px-4 py-4 rounded-lg;
 }
 
 .setting-page-secure__list {
@@ -83,7 +87,7 @@
 }
 
 .setting-page-secure__item {
-  @apply   bg-white p-4  transition duration-200   flex gap-2 items-center justify-between;
+  @apply bg-white p-4  transition flex gap-20 items-center justify-between hover:bg-gray-100 duration-300;
 }
 
 .setting-page-secure__item-title {
