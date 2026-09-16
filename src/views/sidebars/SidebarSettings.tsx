@@ -34,33 +34,17 @@ export default function SidebarSettings() {
             <SettingItem
               icon={<FaUnlockAlt size={22} />}
               title="Конфиденциальность"
-              subtitle="Заблокированные контакты, исчезающие сообщения"
               path="secure"
             />
 
             {/* Чаты */}
-            <SettingItem
-              icon={<FaRegCommentAlt size={22} />}
-              title="Чаты"
-              subtitle="Тема, обои, настройки чата"
-              path="chats"
-            />
+            <SettingItem icon={<FaRegCommentAlt size={22} />} title="Чаты" path="chats" />
 
             {/* Уведомления */}
-            <SettingItem
-              icon={<FaRegBell size={22} />}
-              title="Уведомления"
-              subtitle="Сообщения, группы, звуки"
-              path="notification"
-            />
+            <SettingItem icon={<FaRegBell size={22} />} title="Уведомления" path="notification" />
 
             {/* Сочетания клавиш */}
-            <SettingItem
-              icon={<FaKeyboard size={22} />}
-              title="Сочетания клавиш"
-              subtitle="Быстрые действия"
-              path="hotKeys"
-            />
+            <SettingItem icon={<FaKeyboard size={22} />} title="Сочетания клавиш" path="hotKeys" />
 
             {/* Выход */}
             <SettingItem

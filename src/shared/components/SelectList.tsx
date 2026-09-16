@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { ArrowDown } from 'lucide-react'
+import { IoIosArrowDown } from "react-icons/io";
 interface SelectListProps {
   list: string[]
   defaultValue?: string
@@ -40,7 +40,7 @@ export default function SelectList({ list, defaultValue }: SelectListProps) {
           className="flex gap-2 "
         >
           {selected}
-          <ArrowDown />
+          <IoIosArrowDown size={25} color='gray'/>
         </p>
         {isOpen && (
           <>
