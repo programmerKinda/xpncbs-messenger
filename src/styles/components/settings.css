@@ -80,14 +80,13 @@
 }
 .setting-page-secure__title {
   @apply text-lg p-2;
-  
 }
 .setting-page-secure__body {
-  @apply  h-max w-[50%] justify-center  rounded-2xl;
+  @apply h-max w-[50%] justify-center  rounded-2xl;
 }
 
 .setting-page-secure__list {
-  @apply flex w-full max-w-xl flex-col gap-3 ; 
+  @apply flex w-full max-w-xl flex-col gap-3;
 }
 
 .setting-page-secure__item {
@@ -104,7 +103,7 @@
 }
 
 .setting-page-secure-password {
-  @apply flex gap-4 items-center hover:bg-gray-100 p-2 duration-300 rounded-lg ;
+  @apply flex gap-4 items-center hover:bg-gray-100 p-2 duration-300 rounded-lg;
 }
 
 .setting-list-item__content {
@@ -120,7 +119,7 @@
 .setting-list-item__content {
 }
 .setting-list-item__title {
-  @apply font-bold text-gray-700
+  @apply font-bold text-gray-700;
 }
 .setting-list-item__description {
 }

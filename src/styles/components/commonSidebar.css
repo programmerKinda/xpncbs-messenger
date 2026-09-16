@@ -1,13 +1,14 @@
 .common-sidebar {
   @apply h-screen flex flex-col relative;
-  background: var(--color-canvas);
-  box-shadow: inset -1px 0 0 var(--color-border);
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  box-shadow: none;
   container-type: inline-size;
 }
 
 .common-sidebar__header {
-  @apply flex flex-col gap-3 px-5 py-4;
-  background: var(--color-canvas);
+  @apply flex flex-col gap-3 px-4 py-3;
+  background: var(--color-surface);
 }
 
 .logo__title {
@@ -17,7 +18,7 @@
   @apply border-none cursor-pointer bg-transparent;
 }
 .common-sidebar__body {
-  @apply flex flex-col p-4 overflow-hidden overflow-y-auto;
+  @apply flex flex-col overflow-hidden overflow-y-auto;
 }
 
 .common-sidebar__footer {
@@ -29,15 +30,23 @@
   @apply absolute top-0 right-0 w-1 h-full bg-transparent cursor-e-resize;
 }
 .item-chat {
-  @apply flex items-center gap-3 p-2 cursor-pointer transition-all duration-200;
-  border-radius: var(--radius-sm);
+  @apply flex items-center gap-3 p-2 px-4 cursor-pointer transition-all duration-150;
 }
 .item-chat:hover {
-  background: var(--color-surface);
-  box-shadow: var(--shadow-soft);
+  background: var(--color-surface-muted);
+  box-shadow: none;
 }
 .item-chat:active {
   background: var(--color-accent-soft);
+}
+.item-chat.active {
+  background: var(--color-accent);
+  color: #ffffff;
+}
+.item-chat.active .user-name,
+.item-chat.active .last-message__text,
+.item-chat.active .item-chat__time {
+  color: rgba(255, 255, 255, 0.82);
 }
 .item-chat__header {
   @apply flex items-center justify-between;
@@ -46,7 +55,8 @@
   @apply flex gap-1 items-center;
 }
 .item-chat__time {
-  @apply text-sm;
+  @apply text-xs;
+  color: var(--color-text-muted);
 }
 .last-message__text {
   overflow: hidden;

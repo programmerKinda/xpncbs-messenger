@@ -2,30 +2,32 @@
   @apply w-max h-screen border-r;
   background: var(--color-surface);
   border-color: var(--color-border);
-  box-shadow: 2px 0 14px rgba(36, 52, 71, 0.04);
+  box-shadow: none;
 }
 
 .sidebar__items {
   @apply flex flex-col items-center h-full;
 }
 .sidebar__item-container {
-  @apply flex items-center w-[72px] h-[72px] justify-center cursor-pointer transition-all duration-200;
+  @apply flex items-center w-[64px] h-[64px] justify-center cursor-pointer transition-all duration-150;
   color: var(--color-text-muted);
+  border-left: 3px solid transparent;
 }
 .sidebar__item-container.active {
   color: var(--color-accent);
   background: var(--color-accent-soft);
+  border-left-color: var(--color-accent);
 }
 .sidebar__item-container:hover {
   color: var(--color-accent);
-  background: #f4f8fb;
+  background: var(--color-surface-muted);
 }
 .sidebar__item {
   @apply flex flex-col items-center justify-center cursor-pointer  text-current w-max h-max;
 }
 .sidebar__item-text {
-  @apply text-[11px] mt-1;
-  font-weight: 600;
+  @apply text-[10px] mt-1;
+  font-weight: 500;
 }
 .sidebar__item-container:last-of-type {
   margin-top: auto;

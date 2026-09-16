@@ -24,20 +24,22 @@
 @tailwind utilities;
 
 :root {
-  --color-canvas: #f4f7fb;
+  --color-canvas: #dfe9f1;
   --color-surface: #ffffff;
-  --color-surface-muted: #eef3f8;
-  --color-border: #dce4ec;
-  --color-border-strong: #cbd6e2;
-  --color-text: #243447;
-  --color-text-muted: #718096;
-  --color-accent: #247ba0;
-  --color-accent-soft: #e1f0f6;
-  --color-outgoing: #d9edf2;
-  --shadow-soft: 0 8px 24px rgba(36, 52, 71, 0.07);
-  --shadow-lifted: 0 12px 28px rgba(36, 52, 71, 0.12);
-  --radius-sm: 10px;
-  --radius-md: 14px;
+  --color-surface-muted: #f1f3f5;
+  --color-border: #e1e5e8;
+  --color-border-strong: #c8cdd1;
+  --color-text: #222222;
+  --color-text-muted: #707579;
+  --color-accent: #3390ec;
+  --color-accent-dark: #2b7dcc;
+  --color-accent-soft: #e8f3ff;
+  --color-outgoing: #effdde;
+  --color-chat-bubble: rgba(255, 255, 255, 0.94);
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-lifted: 0 8px 24px rgba(0, 0, 0, 0.16);
+  --radius-sm: 8px;
+  --radius-md: 10px;
 }
 
 * {
@@ -48,7 +50,7 @@
 
 body {
   overflow: hidden;
-  @apply text-[#718096];
+  @apply text-[#707579];
   background: var(--color-canvas);
   color: var(--color-text);
   font-family: 'Avenir Next', 'Segoe UI Variable', 'Segoe UI', sans-serif;
