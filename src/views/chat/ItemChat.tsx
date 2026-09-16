@@ -2,8 +2,7 @@ import UserAvatar from '../user/UserAvatar'
 import UserName from '../user/UserName'
 import LastMessage from './LastMessege'
 import { formatTime } from '@/utils/formatTime'
-import { IoCheckmarkDone } from 'react-icons/io5'
-import { FaCheck } from 'react-icons/fa6'
+import { Check, CheckCheck } from 'lucide-react'
 
 interface ItemChatProps {
   createdAt: Date
@@ -23,11 +22,11 @@ export default function ItemChat({ createdAt, watched }: ItemChatProps) {
             <span className="message__status-icon">
               {watched ? (
                 <>
-                  <IoCheckmarkDone size={14} className="inline tick-1" />
+                  <CheckCheck size={14} strokeWidth={2} className="inline tick-1" />
                 </>
               ) : (
                 <>
-                  <FaCheck size={14} className="inline tick-1" />
+                  <Check size={14} strokeWidth={2} className="inline tick-1" />
                 </>
               )}
             </span>

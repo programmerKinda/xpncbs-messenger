@@ -2,9 +2,7 @@ import ItemChat from '@/views/chat/ItemChat'
 import CommonSidebar from '@/shared/components/CommonSidebar'
 import ChatFolders from '@/views/chat/ChatFolders'
 
-import { IoEllipsisVertical } from 'react-icons/io5'
-import { FaUserGroup } from 'react-icons/fa6'
-import { LogOut } from 'lucide-react'
+import { LogOut, MoreVertical, UsersRound } from 'lucide-react'
 export default function ChatSidebar() {
   const chatFolders = [
     { id: 1, name: 'Все' },
@@ -21,16 +19,16 @@ export default function ChatSidebar() {
         bodyContent={<ItemChat createdAt={new Date()} watched={true} />}
         resize={true}
         popupButton={{
-          icon: <IoEllipsisVertical size={25} />,
+          icon: <MoreVertical size={22} strokeWidth={2} />,
           menuItems: [
             {
               label: 'Создать группу',
-              icon: <FaUserGroup size={25} />,
+              icon: <UsersRound size={22} strokeWidth={2} />,
               onClick: () => console.log('Новый звонок'),
             },
             {
               label: 'Выйти с аккаунта',
-              icon: <LogOut />,
+              icon: <LogOut size={22} strokeWidth={2} />,
               onClick: () => console.log('Новая конференция'),
             },
           ],

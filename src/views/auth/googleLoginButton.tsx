@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { auth, googleProvider } from '../../api/firebase'
 import { signInWithPopup } from 'firebase/auth'
-import { FaChrome } from 'react-icons/fa'
+import { Chrome } from 'lucide-react'
 
 export default function GoogleLoginButton() {
   const navigate = useNavigate()
@@ -23,7 +23,7 @@ export default function GoogleLoginButton() {
       onClick={handleGoogleLogin}
       aria-label="Вход через Google"
     >
-      <FaChrome size={20} />
+      <Chrome size={20} strokeWidth={2} />
       <span>Google</span>
     </button>
   )

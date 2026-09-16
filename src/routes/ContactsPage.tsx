@@ -1,5 +1,5 @@
 import CommonSidebar from '@/shared/components/CommonSidebar'
-import { IoEllipsisVertical } from 'react-icons/io5'
+import { MoreVertical } from 'lucide-react'
 export default function Contacts() {
   return (
     <>
@@ -12,7 +12,7 @@ export default function Contacts() {
           </>
         }
         popupButton={{
-          icon: <IoEllipsisVertical size={25} />,
+          icon: <MoreVertical size={22} strokeWidth={2} />,
           menuItems: [],
         }}
       />

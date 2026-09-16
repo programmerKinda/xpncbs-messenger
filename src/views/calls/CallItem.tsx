@@ -1,5 +1,5 @@
 import UserAvatar from '../user/UserAvatar'
-import { ImArrowDownLeft2, ImArrowUpRight2 } from 'react-icons/im'
+import { ArrowDownLeft, ArrowUpRight } from 'lucide-react'
 
 interface CallItemProps {
   name: string
@@ -25,9 +25,9 @@ export default function CallItem({ name, direction, time, callType }: CallItemPr
             <div className="call-item__footer">
               <span className="call-item__status">
                 {direction === 'incoming' ? (
-                  <ImArrowDownLeft2 size={12} color="#32D583" />
+                  <ArrowDownLeft size={14} strokeWidth={2} />
                 ) : (
-                  <ImArrowUpRight2 size={12} color="#FF5D73" />
+                  <ArrowUpRight size={14} strokeWidth={2} />
                 )}
               </span>
 

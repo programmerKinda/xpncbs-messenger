@@ -2,6 +2,7 @@ import React, { useState, useRef, useMemo, useEffect } from 'react'
 import { getDataUrl } from '@/utils/getDataUrl'
 import { type MessageVoiceContent } from '@/models/message'
 import { useMediaStore } from '@/controllers/mediaPlayController'
+import { Pause, Play } from 'lucide-react'
 
 export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ content }) => {
   const [isPlaying, setIsPlaying] = useState(false)
@@ -100,13 +101,9 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
 
       <button className="voice-play-btn" onClick={togglePlay} type="button">
         {isPlaying ? (
-          <svg viewBox="0 0 24 24" width="24" height="24">
-            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor" />
-          </svg>
+          <Pause size={20} strokeWidth={2} />
         ) : (
-          <svg viewBox="0 0 24 24" width="24" height="24">
-            <path d="M8 5v14l11-7z" fill="currentColor" />
-          </svg>
+          <Play size={20} strokeWidth={2} />
         )}
       </button>
 

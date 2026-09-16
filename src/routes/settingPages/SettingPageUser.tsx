@@ -1,6 +1,6 @@
 import UserAvatar from '@/views/user/UserAvatar'
 import CommonWindowHeader from '@/shared/components/CommonWindowHeader'
-import { HiEllipsisHorizontal } from 'react-icons/hi2'
+import { MoreHorizontal } from 'lucide-react'
 
 export default function SettingPageUser() {
   return (
@@ -48,7 +48,7 @@ export default function SettingPageUser() {
               className="setting-page-user__button setting-page-user__button--icon"
               aria-label="Ещё"
             >
-              <HiEllipsisHorizontal size={25} />
+              <MoreHorizontal size={22} strokeWidth={2} />
             </button>
           </footer>
         </div>

@@ -2,7 +2,7 @@ import CommonWindowHeader from '@/shared/components/CommonWindowHeader'
 import SettingListItem from './settingItems/SettingListItem'
 import SettingSecuritySection from './settingItems/SettingSecuritySection'
 
-import { FaKey } from 'react-icons/fa'
+import { KeyRound } from 'lucide-react'
 
 export default function SettingPageSecure() {
 const privacyOptions = ['Все', 'Мои контакты', 'Никто']
@@ -49,7 +49,7 @@ return ( <div className="setting-page setting-page-secure"> <CommonWindowHeader>
     <div className="setting-page-secure__body bg-white" >
       <SettingListItem
         
-        icon={<FaKey size={25} />}
+        icon={<KeyRound size={24} strokeWidth={2} />}
         title="Пароль для входа"
         description="Откл"
         onClick={() => {
@@ -62,7 +62,7 @@ return ( <div className="setting-page setting-page-secure"> <CommonWindowHeader>
     {/* Who can contact me */}
     <SettingSecuritySection
        bodyBg={true}
-        headerContent={<SettingListItem  icon={<FaKey size={25} /> }
+        headerContent={<SettingListItem  icon={<KeyRound size={24} strokeWidth={2} /> }
         title='dwd'
         description="Откл"
         onClick={() => {

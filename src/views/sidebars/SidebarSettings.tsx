@@ -1,16 +1,7 @@
 import CommonSidebar from '@/shared/components/CommonSidebar'
 import SettingItem from '@/views/settings/settingItem'
 import UserAvatar from '@/views/user/UserAvatar'
-import {
-  FaStore,
-  FaKey,
-  FaUnlockAlt,
-  FaRegCommentAlt,
-  FaRegBell,
-  FaKeyboard,
-  FaRegQuestionCircle,
-  FaSignOutAlt,
-} from 'react-icons/fa'
+import { Bell, Keyboard, LockKeyhole, LogOut, MessageCircle } from 'lucide-react'
 
 export default function SidebarSettings() {
   return (
@@ -32,23 +23,23 @@ export default function SidebarSettings() {
 
             {/* Конфиденциальность */}
             <SettingItem
-              icon={<FaUnlockAlt size={22} />}
+              icon={<LockKeyhole size={22} strokeWidth={2} />}
               title="Конфиденциальность"
               path="secure"
             />
 
             {/* Чаты */}
-            <SettingItem icon={<FaRegCommentAlt size={22} />} title="Чаты" path="chats" />
+            <SettingItem icon={<MessageCircle size={22} strokeWidth={2} />} title="Чаты" path="chats" />
 
             {/* Уведомления */}
-            <SettingItem icon={<FaRegBell size={22} />} title="Уведомления" path="notification" />
+            <SettingItem icon={<Bell size={22} strokeWidth={2} />} title="Уведомления" path="notification" />
 
             {/* Сочетания клавиш */}
-            <SettingItem icon={<FaKeyboard size={22} />} title="Сочетания клавиш" path="hotKeys" />
+            <SettingItem icon={<Keyboard size={22} strokeWidth={2} />} title="Сочетания клавиш" path="hotKeys" />
 
             {/* Выход */}
             <SettingItem
-              icon={<FaSignOutAlt size={22} color="#ef4444" />}
+              icon={<LogOut size={22} strokeWidth={2} color="#ef4444" />}
               title="Выход"
               path="login"
             />

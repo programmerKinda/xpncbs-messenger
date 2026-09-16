@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { IoIosArrowForward } from 'react-icons/io'
+import { ChevronRight } from 'lucide-react'
 
 interface SettingListItemProps {
 icon?: ReactNode
@@ -43,9 +43,10 @@ tabIndex={onClick ? 0 : undefined}
   </div>
 
   {showArrow && (
-    <IoIosArrowForward
+    <ChevronRight
       className="setting-list-item__arrow"
-      size={25}
+      size={20}
+      strokeWidth={2}
     />
   )}
 </div>

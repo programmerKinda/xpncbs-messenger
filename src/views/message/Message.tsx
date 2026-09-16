@@ -1,8 +1,7 @@
 import { type MessageProps, messageTypes } from '@/models/message'
 import { formatTime } from '@/utils/formatTime'
 import MessageContent from './MessageContent'
-import { FaCheck } from 'react-icons/fa6'
-import { IoCheckmarkDone } from 'react-icons/io5'
+import { Check, CheckCheck } from 'lucide-react'
 
 const Message: React.FC<MessageProps> = ({ message, className }) => {
   const timeString = formatTime(message.createdAt)
@@ -22,13 +21,13 @@ const Message: React.FC<MessageProps> = ({ message, className }) => {
               {message.watched ? (
                 <>
                   <span className="tick-1">
-                    <IoCheckmarkDone size={14} className="inline" />
+                    <CheckCheck size={14} strokeWidth={2} className="inline" />
                   </span>
                 </>
               ) : (
                 <>
                   <span className="tick-1">
-                    <FaCheck size={12} className="inline" />
+                    <Check size={12} strokeWidth={2} className="inline" />
                   </span>
                 </>
               )}

@@ -1,11 +1,7 @@
 import CommonSidebar from '@/shared/components/CommonSidebar'
 import CallItem from '@/views/calls/CallItem'
-import { FaUserTie } from 'react-icons/fa'
-import { BsFillTelephonePlusFill } from 'react-icons/bs'
-import { IoVideocam } from 'react-icons/io5'
-import { HiPhone } from 'react-icons/hi2'
+import { Phone, Video, PhoneCall, UsersRound, MoreHorizontal } from 'lucide-react'
 import '@/styles/components/calls.css'
-import { IoEllipsisHorizontal } from 'react-icons/io5'
 export default function Calls() {
   return (
     <>
@@ -20,14 +16,14 @@ export default function Calls() {
               time="Сегодня, 14:20"
               direction="incoming"
               status="accepted"
-              callType={<HiPhone size={23} color="#6B7280" />}
+              callType={<Phone size={22} strokeWidth={2} />}
             />
             <CallItem
               name="Максим"
               phone="+7 900 555-12-34"
               time="Вчера, 21:05"
               direction="outgoing"
-              callType={<IoVideocam size={25} color="#6B7280" />}
+              callType={<Video size={22} strokeWidth={2} />}
               status="missed"
             />
             <CallItem
@@ -35,22 +31,22 @@ export default function Calls() {
               phone="+7 915 000-11-22"
               time="Вчера, 09:40"
               direction="incoming"
-              callType={<IoVideocam size={25} color="#6B7280" />}
+              callType={<Video size={22} strokeWidth={2} />}
               status="accepted"
             />
           </div>
         }
         popupButton={{
-          icon: <IoEllipsisHorizontal size={35} />,
+          icon: <MoreHorizontal size={24} strokeWidth={2} />,
           menuItems: [
             {
               label: 'Новый звонок',
-              icon: <BsFillTelephonePlusFill />,
+              icon: <PhoneCall size={20} strokeWidth={2} />,
               onClick: () => console.log('Новый звонок'),
             },
             {
               label: 'Новая конференция',
-              icon: <FaUserTie />,
+              icon: <UsersRound size={20} strokeWidth={2} />,
               onClick: () => console.log('Новая конференция'),
             },
           ],
