@@ -29,7 +29,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #7b5cff;
+  background: #d96c75;
 }
 
 .timer {
@@ -52,7 +52,7 @@
 
 .bar {
   width: 4px;
-  background-color: #000000;
+  background-color: var(--color-accent);
   border-radius: 999px;
 
   transform-origin: bottom;

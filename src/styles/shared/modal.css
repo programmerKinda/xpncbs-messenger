@@ -9,8 +9,8 @@
   justify-content: center;
 }
 .modal__overlay {
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(8px);
+  background: rgba(27, 43, 57, 0.38);
+  backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(8px);
   animation: dropFadeIn 0.15s ease;
   position: fixed;
@@ -21,8 +21,9 @@
 
   width: min(100%, 28rem);
   background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lifted);
   position: relative;
   z-index: 1001;
 }

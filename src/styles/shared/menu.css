@@ -3,11 +3,12 @@
 }
 
 .menu__item {
-  @apply flex items-center gap-3 px-4 py-2 
-  text-gray-800 dark:text-gray-200
-  hover:bg-gray-100 dark:hover:bg-[#3a3a3a]
-  cursor-pointer hover:translate-x-2;
-  transition: all 0.3s ease;
+  @apply flex items-center gap-3 px-4 py-2 text-gray-800 cursor-pointer;
+  transition: background-color 0.2s ease;
+}
+
+.menu__item:hover {
+  background: var(--color-surface-muted);
 }
 
 .menu__icon {

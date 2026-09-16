@@ -1,18 +1,20 @@
 .chat-kinda-input {
-  @apply w-full h-full relative bg-transparent outline-none text-xl placeholder-gray-400 text-gray-700 border-none;
+  @apply w-full h-full relative bg-transparent outline-none text-base border-none;
+  color: var(--color-text);
 }
 .chat-kinda-input__content {
-  @apply w-full h-full outline-none text-xl placeholder-gray-400 text-gray-700 border-none overflow-hidden max-h-[150px] overflow-y-auto;
+  @apply w-full h-full outline-none text-base border-none overflow-hidden max-h-[150px] overflow-y-auto;
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
   word-break: break-word;
   text-overflow: break-word;
   color: transparent;
-  caret-color: black;
+  caret-color: var(--color-accent);
 }
 .chat-kinda-placeholder {
-  @apply text-gray-400 absolute inset-0 pointer-events-none;
+  @apply absolute inset-0 pointer-events-none;
+  color: var(--color-text-muted);
 }
 
 .emoji {
@@ -34,5 +36,5 @@
 }
 /* потомок класса .chat-kinda-input__content */
 .textBuffer {
-  color: black;
+  color: var(--color-text);
 }

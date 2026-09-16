@@ -1,10 +1,13 @@
 .common-sidebar {
-  @apply h-screen bg-gray-50 flex flex-col shadow-inner relative;
+  @apply h-screen flex flex-col relative;
+  background: var(--color-canvas);
+  box-shadow: inset -1px 0 0 var(--color-border);
   container-type: inline-size;
 }
 
 .common-sidebar__header {
-  @apply flex flex-col gap-2 px-5 py-4 bg-gray-50;
+  @apply flex flex-col gap-3 px-5 py-4;
+  background: var(--color-canvas);
 }
 
 .logo__title {
@@ -18,13 +21,23 @@
 }
 
 .common-sidebar__footer {
-  @apply mt-auto border-t border-gray-200 flex justify-center items-center text-gray-500 text-sm;
+  @apply mt-auto border-t flex justify-center items-center text-sm;
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
 }
 .common-sidebar__resizer {
   @apply absolute top-0 right-0 w-1 h-full bg-transparent cursor-e-resize;
 }
 .item-chat {
-  @apply flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-100 transition-all duration-300;
+  @apply flex items-center gap-3 p-2 cursor-pointer transition-all duration-200;
+  border-radius: var(--radius-sm);
+}
+.item-chat:hover {
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+.item-chat:active {
+  background: var(--color-accent-soft);
 }
 .item-chat__header {
   @apply flex items-center justify-between;

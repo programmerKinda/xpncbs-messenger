@@ -23,6 +23,23 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-canvas: #f4f7fb;
+  --color-surface: #ffffff;
+  --color-surface-muted: #eef3f8;
+  --color-border: #dce4ec;
+  --color-border-strong: #cbd6e2;
+  --color-text: #243447;
+  --color-text-muted: #718096;
+  --color-accent: #247ba0;
+  --color-accent-soft: #e1f0f6;
+  --color-outgoing: #d9edf2;
+  --shadow-soft: 0 8px 24px rgba(36, 52, 71, 0.07);
+  --shadow-lifted: 0 12px 28px rgba(36, 52, 71, 0.12);
+  --radius-sm: 10px;
+  --radius-md: 14px;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -31,7 +48,12 @@
 
 body {
   overflow: hidden;
-  @apply text-[#6B7280];
+  @apply text-[#718096];
+  background: var(--color-canvas);
+  color: var(--color-text);
+  font-family: 'Avenir Next', 'Segoe UI Variable', 'Segoe UI', sans-serif;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .main-layout {
@@ -41,7 +63,7 @@ body {
 .App {
   @apply flex h-screen relative;
   flex: 1 1 auto;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.25s ease;
 }
 
 .App .chat-menu {
@@ -53,4 +75,18 @@ body {
 .App--menu-closed .chat-menu {
   margin-left: -450px;
   transform: translateX(100%);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }

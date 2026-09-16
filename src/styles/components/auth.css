@@ -1,17 +1,18 @@
 /* Auth Pages Styles */
 
 .auth-page {
-  @apply flex items-center justify-center min-h-screen bg-gray-300 text-gray-500 p-4;
+  @apply flex items-center justify-center min-h-screen text-gray-500 p-4;
+  background: var(--color-canvas);
 }
 
 .auth-container {
-  @apply w-full max-w-[420px] bg-gray-100/95 border border-gray-200/10 rounded-[1rem] p-12;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  @apply w-full max-w-[420px] bg-white border rounded-2xl p-10;
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-lifted);
 }
 
 .auth-title {
-  @apply text-3xl font-bold text-center mb-10 text-gray-500;
+  @apply text-3xl font-bold text-center mb-10 text-gray-700;
 }
 
 /* OAuth Component Styles */
@@ -29,11 +30,11 @@
 }
 
 .oauth__button {
-  @apply flex items-center justify-center gap-3 px-4 py-3 bg-gray-300  rounded-2xl text-gray-500 text-sm font-medium cursor-pointer transition duration-300 ease-in-out;
+  @apply flex items-center justify-center gap-3 px-4 py-3 bg-gray-50 rounded-xl text-gray-600 text-sm font-medium cursor-pointer transition duration-200 ease-in-out border border-gray-200;
 }
 
 .oauth__button:hover {
-  @apply bg-gray-800/70 text-gray-500 shadow-[0_4px_12px_rgba(59,130,246,0.2)] -translate-y-0.5;
+  @apply bg-white text-gray-700 shadow-sm -translate-y-0.5;
 }
 
 .oauth__button:active {
@@ -67,7 +68,7 @@
 }
 
 .auth-form__input {
-  @apply w-full rounded-2xl bg-gray-300 px-4 py-3 text-sm text-gray-500 transition duration-500 ease-in-out;
+  @apply w-full rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-gray-700 transition duration-200 ease-in-out;
 }
 
 .auth-form__input::placeholder {
@@ -75,7 +76,7 @@
 }
 
 .auth-form__input:focus {
-  @apply outline-none;
+  @apply outline-none border-sky-500 ring-2 ring-sky-100;
 }
 
 .auth-form__input:-webkit-autofill {
@@ -102,11 +103,11 @@
 }
 
 .auth-form__button {
-  @apply mt-2 rounded-2xl border  bg-gradient-to-br bg-[#8E74FF]  text-sm font-semibold text-gray-50 px-4 py-3 transition duration-300 ease-in-out;
+  @apply mt-2 rounded-xl border-0 bg-[#247BA0] text-sm font-semibold text-white px-4 py-3 transition duration-200 ease-in-out;
 }
 
 .auth-form__button:hover {
-  @apply shadow-xl -translate-y-0.5 bg-gradient-to-br bg-[#7B5CFF];
+  @apply shadow-md -translate-y-0.5 bg-[#1D6685];
 }
 
 .auth-form__button:active {
@@ -114,7 +115,7 @@
 }
 
 .auth-form__back {
-  @apply px-4 py-3 rounded-2xl border border-gray-200/15 text-gray-400 text-sm font-medium transition duration-300 ease-in-out bg-transparent;
+  @apply px-4 py-3 rounded-xl border border-gray-200 text-gray-500 text-sm font-medium transition duration-200 ease-in-out bg-transparent;
 }
 
 .auth-form__back:hover {
@@ -138,7 +139,7 @@
 }
 
 .auth-form__div {
-  @apply flex items-center gap-2 rounded-2xl border bg-gray-300  px-4 py-3 text-sm text-gray-500 transition duration-300 ease-in-out;
+  @apply flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500 transition duration-200 ease-in-out;
 }
 
 .auth-form__div input {

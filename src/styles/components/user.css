@@ -13,7 +13,8 @@
 }
 /* NAME */
 .user-name {
-  @apply text-xl font-medium;
+  @apply text-base font-semibold;
+  color: var(--color-text);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

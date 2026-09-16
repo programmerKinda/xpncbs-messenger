@@ -2,14 +2,20 @@
   @apply flex gap-3 overflow-x-auto py-2 scroll relative list-none items-center;
 }
 .chat-folder {
-  @apply px-4 py-2 text-sm font-medium rounded-2xl bg-white text-[#6B7280] cursor-pointer list-none bg-[#c4c7dd8a]
-         hover:bg-[#8F8FB1] hover:text-blue-500 transition-all duration-300 shadow-sm;
+  @apply px-4 py-2 text-sm font-medium cursor-pointer list-none transition-all duration-200;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
 }
 .chat-folder.active {
-  @apply bg-blue-200 text-[#6546F5];
+  background: var(--color-accent-soft);
+  border-color: #b9d9e4;
+  color: var(--color-accent);
 }
 .chat-folder:hover {
-  @apply bg-blue-100 text-[#8E74FF];
+  background: #f1f7fa;
+  color: var(--color-accent);
 }
 .chat-folders__sticky-item {
   @apply sticky right-0 z-10 bg-gray-50 py-2;

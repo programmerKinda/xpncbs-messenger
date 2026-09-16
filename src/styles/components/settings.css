@@ -29,7 +29,8 @@
 }
 
 .setting-page {
-  @apply flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-[#c4c7dd8a];
+  @apply flex h-full min-h-0 flex-1 flex-col overflow-hidden;
+  background: var(--color-canvas);
 }
 
 .setting-page__title {
@@ -41,7 +42,9 @@
 }
 
 .setting-page-user__card {
-  @apply flex w-full max-w-lg flex-col items-center gap-3 p-4 shadow-sm backdrop-blur;
+  @apply flex w-full max-w-lg flex-col items-center gap-3 rounded-xl border bg-white p-5;
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-soft);
 }
 
 .setting-page-user__header {
@@ -53,7 +56,7 @@
 }
 
 .setting-page-user__field {
-  @apply w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 outline-none transition duration-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100;
+  @apply w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 outline-none transition duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-100;
 }
 .setting-page-user__field textarea {
 }
@@ -67,7 +70,7 @@
 }
 
 .setting-page-user__button--primary {
-  @apply bg-[#8E74FF] text-white hover:bg-[#7B5CFF] w-full;
+  @apply bg-[#247BA0] text-white hover:bg-[#1D6685] w-full;
 }
 
 .setting-page-user__button--icon {
@@ -88,7 +91,8 @@
 }
 
 .setting-page-secure__item {
-  @apply bg-white p-4  transition flex gap-20 items-center justify-between hover:bg-gray-100 duration-300;
+  @apply bg-white p-4 transition flex gap-20 items-center justify-between hover:bg-gray-50 duration-200;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .setting-page-secure__item-title {
