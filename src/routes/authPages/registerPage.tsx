@@ -1,43 +1,9 @@
-import { useNavigate } from 'react-router-dom'
-
 import PasswordInput from '../../views/auth/passwordInput.jsx'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { emailRegisterSchema } from '@/validation/registerWithEmailSchema.ts'
 import GoogleLoginButton from '@/views/auth/googleLoginButton.tsx'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { doc, setDoc } from 'firebase/firestore'
-import { auth, db } from '@/api/firebase.ts'
-
-// Типы для TS
-type EmailForm = z.infer<typeof emailRegisterSchema>
+import { useRegisterController } from '@/controllers/auth/useRegisterController'
 
 export default function RegisterPage() {
-  const navigate = useNavigate()
-
-  const handleLoginClick = () => navigate('/login')
-
-  const emailForm = useForm<EmailForm>({
-    resolver: zodResolver(emailRegisterSchema),
-    mode: 'onBlur',
-  })
-
-  const onEmailSubmit = async (data: EmailForm) => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password)
-      const user = userCredential.user
-
-      await setDoc(doc(db, 'users', user.uid), {
-        name: data.name,
-        createdAt: new Date(),
-      })
-      console.log('REGISTER DATA:', user)
-      navigate('/')
-    } catch (error) {
-      console.error('Ошибка регистрации:', error)
-    }
-  }
+  const { emailForm, handleLoginClick, onEmailSubmit } = useRegisterController()
 
   return (
     <div className="auth-page">

@@ -1,40 +1,9 @@
-import { useNavigate } from 'react-router-dom'
 import PasswordInput from '@/views/auth/passwordInput.tsx'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { emailLoginSchema } from '@/validation/loginWithEmailSchema.ts'
 import GoogleLoginButton from '@/views/auth/googleLoginButton.tsx'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '@/api/firebase.ts'
-
-// Типы для TS
-type EmailForm = z.infer<typeof emailLoginSchema>
+import { useLoginController } from '@/controllers/auth/useLoginController'
 
 export default function LoginPage() {
-  const navigate = useNavigate()
-
-  const handleRegisterClick = () => navigate('/register')
-
-  // useForm для email и phone
-  const emailForm = useForm<EmailForm>({
-    resolver: zodResolver(emailLoginSchema),
-    mode: 'onBlur',
-  })
-
-  const onEmailSubmit = async (data: EmailForm) => {
-    try {
-      await signInWithEmailAndPassword(auth, data.email, data.password)
-      console.log('Успешный вход')
-      navigate('/')
-    } catch (error) {
-      emailForm.setError('password', {
-        type: 'server',
-        message: 'Ошибка входа. Проверьте email и пароль',
-      })
-      console.error('Ошибка входа:', error)
-    }
-  }
+  const { emailForm, handleRegisterClick, onEmailSubmit } = useLoginController()
 
   return (
     <div className="auth-page">
