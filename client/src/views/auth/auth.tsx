@@ -1,38 +1,26 @@
-import { Mail, Phone } from 'lucide-react'
-import OAuth from './oauth'
+import PhoneInput from '../inputs/phoneInput/phoneInput'
+import Dropdown from '@/shared/components/dropdown/Dropdown'
+import countries from '../inputs/phoneInput/utils/countries'
+import FlagModule from 'react-world-flags'
 
-interface OAuthProps {
-  onEmailClick?: () => void
-  onPhoneClick?: () => void
-}
+const Flag = FlagModule.default
 
-export default function Auth({ onEmailClick, onPhoneClick }: OAuthProps) {
+export default function Auth() {
+  const countriesItems = Object.values(countries)
+  .sort((a, b) => a.name.localeCompare(b.name))
+  .map((country) => (
+    <div className="flex items-center">
+      <Flag code={country.iso} width={25} height={25} />
+      <span className="country-name flex-auto px-2">{country.name}</span>
+      <span>+{country.code}</span>
+    </div>
+  ))
   return (
-    <div className="oauth">
-      <p className="oauth__divider">Способы авторизации</p>
-      <div className="oauth__methods">
-        <button
-          type="button"
-          className="oauth__button oauth__button--email"
-          onClick={onEmailClick}
-          aria-label="Вход по email"
-        >
-          <Mail size={20} />
-          <span>Email</span>
-        </button>
-
-        <button
-          type="button"
-          className="oauth__button oauth__button--phone"
-          onClick={onPhoneClick}
-          aria-label="Вход по номеру телефона"
-        >
-          <Phone size={20} />
-          <span>Телефон</span>
-        </button>
-
-        <OAuth />
-      </div>
+    <div className="auth-page">
+      <form action="">
+        <Dropdown items={countriesItems} valueSelector=".country-name" />
+        <PhoneInput />
+      </form>
     </div>
   )
 }

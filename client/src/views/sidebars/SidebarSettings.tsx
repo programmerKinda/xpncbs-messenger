@@ -29,13 +29,25 @@ export default function SidebarSettings() {
             />
 
             {/* Чаты */}
-            <SettingItem icon={<MessageCircle size={22} strokeWidth={2} />} title="Чаты" path="chats" />
+            <SettingItem
+              icon={<MessageCircle size={22} strokeWidth={2} />}
+              title="Чаты"
+              path="chats"
+            />
 
             {/* Уведомления */}
-            <SettingItem icon={<Bell size={22} strokeWidth={2} />} title="Уведомления" path="notification" />
+            <SettingItem
+              icon={<Bell size={22} strokeWidth={2} />}
+              title="Уведомления"
+              path="notification"
+            />
 
             {/* Сочетания клавиш */}
-            <SettingItem icon={<Keyboard size={22} strokeWidth={2} />} title="Сочетания клавиш" path="hotKeys" />
+            <SettingItem
+              icon={<Keyboard size={22} strokeWidth={2} />}
+              title="Сочетания клавиш"
+              path="hotKeys"
+            />
 
             {/* Выход */}
             <SettingItem

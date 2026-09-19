@@ -100,11 +100,7 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
       />
 
       <button className="voice-play-btn" onClick={togglePlay} type="button">
-        {isPlaying ? (
-          <Pause size={20} strokeWidth={2} />
-        ) : (
-          <Play size={20} strokeWidth={2} />
-        )}
+        {isPlaying ? <Pause size={20} strokeWidth={2} /> : <Play size={20} strokeWidth={2} />}
       </button>
 
       <div className="voice-content" style={{ flexGrow: 1 }}>

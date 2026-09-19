@@ -1,0 +1,19 @@
+export const ad_mask = (value: string, setCountryCode: (code: string) => void) => {
+  setCountryCode('ad')
+  if (value.replace(/\D/g, '').length <= 3) {
+    value = value.replace(/\D/g, '')
+    value = `+${value}`
+    console.log(value.length)
+  } else if (value.replace(/\D/g, '').length <= 6) {
+    value = value.replace(/\D/g, '')
+    value = `+${value.slice(0, 3)} ${value.slice(3)}`
+  } else if (value.replace(/\D/g, '').length <= 7) {
+    value = value.replace(/\D/g, '')
+    value = `+${value.slice(0, 3)} ${value.slice(3, 6)}-${value.slice(6)}`
+  } else {
+    value = value.replace(/\D/g, '')
+    value = `+${value.slice(0, 3)} ${value.slice(3, 6)}-${value.slice(6, 9)}`
+  }
+
+  return value
+}

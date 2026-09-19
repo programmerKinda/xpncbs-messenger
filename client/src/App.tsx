@@ -8,8 +8,7 @@ import MainPage from './routes/MainPage'
 import ContactsPage from './routes/ContactsPage'
 import CallsPage from './routes/CallsPage'
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
-import RegisterPage from './routes/authPages/registerPage'
-import LoginPage from './routes/authPages/loginPage'
+import Auth from './views/auth/Auth'
 import SettingLayout from './views/layouts/SettingLayout'
 import SettingPageUser from './routes/settingPages/SettingPageUser'
 import SettingPageSecure from './routes/settingPages/SettingPageSecure'
@@ -49,8 +48,7 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/auth" element={<Auth />} />
           <Route element={<MainLayout />}>
             <Route path="/" element={<MainPage />} />
 
