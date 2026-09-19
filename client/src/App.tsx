@@ -5,21 +5,30 @@ import { useModalStore } from './controllers/modalController'
 import { usePopupStore } from './controllers/popupController'
 import MainLayout from './views/layouts/MainLayout'
 import MainPage from './routes/MainPage'
-import SettingsPage from './routes/SettingsPage'
 import ContactsPage from './routes/ContactsPage'
 import CallsPage from './routes/CallsPage'
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
 import RegisterPage from './routes/authPages/registerPage'
 import LoginPage from './routes/authPages/loginPage'
 import SettingLayout from './views/layouts/SettingLayout'
-import { Divide } from 'lucide-react'
 import SettingPageUser from './routes/settingPages/SettingPageUser'
 import SettingPageSecure from './routes/settingPages/SettingPageSecure'
+import { getBackendHealth, getBackendMessage } from './api/file'
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
   const { targetRef, children, onClose, placement, align } = usePopupStore()
   const { modalChildren } = useModalStore()
+
+  useEffect(() => {
+    void getBackendHealth().catch((error: unknown) => {
+      console.error('Backend is unavailable', error)
+    })
+
+    void getBackendMessage().then((message) => {
+      console.log('Backend test response:', message)
+    })
+  }, [])
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
