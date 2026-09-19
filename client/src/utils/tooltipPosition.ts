@@ -8,7 +8,8 @@ export const tooltipPosition = (
   tooltipRef: React.RefObject<HTMLElement | null> | null,
   parent: HTMLElement | null,
   placement: Placement = 'bottom',
-  align: Align = 'start'
+  align: Align = 'start',
+  flip = true
 ) => {
   const [position, setPosition] = useState({ top: 0, left: 0, ready: false })
   const observerRef = useRef<ResizeObserver | null>(null)
@@ -73,11 +74,11 @@ export const tooltipPosition = (
     }
 
     // 🔥 FLIP
-    if (placement === 'top' && top < 0) {
+    if (flip && placement === 'top' && top < 0) {
       top = targetRect.bottom + OFFSET
     }
 
-    if (placement === 'bottom' && top + tooltipRect.height > viewportHeight) {
+    if (flip && placement === 'bottom' && top + tooltipRect.height > viewportHeight) {
       top = targetRect.top - tooltipRect.height - OFFSET
     }
 

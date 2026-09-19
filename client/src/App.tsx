@@ -8,7 +8,7 @@ import MainPage from './routes/MainPage'
 import ContactsPage from './routes/ContactsPage'
 import CallsPage from './routes/CallsPage'
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
-import Auth from './views/auth/Auth'
+import Auth from './views/auth/auth'
 import SettingLayout from './views/layouts/SettingLayout'
 import SettingPageUser from './routes/settingPages/SettingPageUser'
 import SettingPageSecure from './routes/settingPages/SettingPageSecure'
@@ -16,7 +16,7 @@ import { getBackendHealth, getBackendMessage } from './api/file'
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
-  const { targetRef, children, onClose, placement, align } = usePopupStore()
+  const { targetRef, children, onClose, placement, align, flip } = usePopupStore()
   const { modalChildren } = useModalStore()
 
   useEffect(() => {
@@ -63,7 +63,7 @@ function App() {
       </BrowserRouter>
 
       {targetRef && children && (
-        <Popup ref={popupRef} targetRef={targetRef} placement={placement} align={align}>
+        <Popup ref={popupRef} targetRef={targetRef} placement={placement} align={align} flip={flip}>
           {children}
         </Popup>
       )}

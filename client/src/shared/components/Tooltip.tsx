@@ -9,14 +9,22 @@ type Props = {
   children: React.ReactNode
   placement?: 'top' | 'bottom' | 'left' | 'right'
   align?: 'start' | 'center' | 'end'
+  flip?: boolean
 }
 
 const Tooltip = forwardRef<HTMLDivElement, Props>(
-  ({ className, targetRef, children, placement = 'bottom', align = 'start' }, ref) => {
+  ({ className, targetRef, children, placement = 'bottom', align = 'start', flip = true }, ref) => {
     const parent = usePopupStore((s) => s.parent)
     const tooltipRef = useRef<HTMLDivElement>(null)
 
-    const { top, left, ready } = tooltipPosition(targetRef, tooltipRef, parent, placement, align)
+    const { top, left, ready } = tooltipPosition(
+      targetRef,
+      tooltipRef,
+      parent,
+      placement,
+      align,
+      flip
+    )
 
     if (!parent) return null
 

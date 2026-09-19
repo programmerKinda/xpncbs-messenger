@@ -9,12 +9,14 @@ interface TooltipStore {
 
   placement: Placement
   align: Align
+  flip: boolean
 
   setPopup: (data: {
     ref: React.RefObject<HTMLElement>
     children: React.ReactNode
     placement?: Placement
     align?: Align
+    flip?: boolean
   }) => void
 
   onClose: () => void
@@ -27,13 +29,15 @@ export const usePopupStore = create<TooltipStore>((set) => ({
 
   placement: 'bottom',
   align: 'start',
+  flip: true,
 
-  setPopup: ({ ref, children, placement = 'bottom', align = 'start' }) => {
+  setPopup: ({ ref, children, placement = 'bottom', align = 'start', flip = true }) => {
     set({
       targetRef: ref,
       children,
       placement,
       align,
+      flip,
       parent: ref.current?.parentElement || null,
     })
   },
@@ -45,6 +49,7 @@ export const usePopupStore = create<TooltipStore>((set) => ({
       parent: null,
       placement: 'bottom',
       align: 'start',
+      flip: true,
     })
   },
 }))

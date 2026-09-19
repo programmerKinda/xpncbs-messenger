@@ -6,6 +6,8 @@ interface PopupProviderProps {
   popup: React.ReactNode
   placement: Placement
   align: Align
+  flip?: boolean
+  wrapClassname?: string
 }
 
 export const PopupProvider: React.FC<PopupProviderProps> = ({
@@ -13,6 +15,8 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({
   popup,
   placement,
   align,
+  flip,
+  wrapClassname,
 }) => {
   const targetRef = useRef<HTMLElement | null>(null)
 
@@ -32,6 +36,7 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({
       children: popup,
       placement: placement,
       align: align,
+      flip,
     })
   }
 
@@ -50,7 +55,7 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({
   }
 
   return (
-    <div className="relative inline-flex">
+    <div className={`relative inline-flex ${wrapClassname}`}>
       {React.cloneElement(children, {
         ref: targetRef,
         onClick: handleClick,

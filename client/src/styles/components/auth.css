@@ -1,8 +1,38 @@
 /* Auth Pages Styles */
 
 .auth-page {
-  @apply flex items-center justify-center min-h-screen text-gray-500 p-4;
-  background: var(--color-canvas);
+  @apply flex min-h-screen items-center justify-center p-4;
+  position: relative;
+  overflow: hidden;
+  background: #a9d696;
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.18) 0 2px, transparent 2px),
+    radial-gradient(circle at 76% 64%, rgba(69, 137, 79, 0.14) 0 1px, transparent 1px),
+    linear-gradient(125deg, rgba(255, 255, 255, 0.12), transparent 42%, rgba(64, 132, 73, 0.12));
+  background-size:
+    38px 38px,
+    29px 29px,
+    100% 100%;
+}
+
+.auth-card {
+  @apply flex w-full max-w-[446px] flex-col items-center rounded-[30px] bg-white px-8 py-8;
+  position: relative;
+  z-index: 1;
+  min-height: 686px;
+  box-shadow: 0 18px 44px rgba(58, 107, 65, 0.18);
+}
+
+.auth-brand {
+  @apply flex h-[136px] w-[136px] items-center justify-center rounded-full text-white;
+  margin: 0 0 25px;
+  background: #3390ec;
+  transform: rotate(-8deg);
+}
+
+.auth-brand svg {
+  transform: rotate(8deg) translate(-2px, -1px);
+  fill: currentColor;
 }
 
 .auth-container {
@@ -12,7 +42,62 @@
 }
 
 .auth-title {
-  @apply text-3xl font-bold text-center mb-10 text-gray-700;
+  @apply mb-1 text-center text-[27px] font-bold text-[#111111];
+}
+
+.auth-subtitle {
+  @apply mb-8 text-center text-[18px] leading-[1.35] text-[#8b8f94];
+}
+
+.auth-field {
+  @apply relative w-full rounded-[18px] border border-[#dfe3e7] bg-white;
+  min-height: 58px;
+}
+
+.auth-country-field {
+  @apply mb-7 h-[58px];
+}
+
+.auth-field__label {
+  @apply absolute left-4 top-[-9px] z-[1] bg-white px-1 text-[14px] leading-none text-[#9da1a6];
+}
+
+.auth-country-field .dropdown {
+  @apply h-full w-full;
+}
+
+.auth-country-field .dropdown > button {
+  @apply h-full w-full cursor-pointer border-0 bg-transparent px-4 text-left text-[18px] text-[#16181a];
+  padding-right: 48px;
+}
+
+.auth-field__chevron {
+  @apply pointer-events-none absolute right-4 top-1/2 text-[#7c8389];
+  transform: translateY(-50%);
+}
+
+.auth-phone-field {
+  @apply mb-7 flex items-center px-4;
+}
+
+.auth-phone-field input {
+  @apply h-[56px] w-full border-0 bg-transparent text-[18px] text-[#16181a] outline-none;
+}
+
+.auth-next-button {
+  @apply mb-4 h-[55px] w-full rounded-[17px] border-0 bg-[#3390ec] text-[17px] font-bold text-white transition-colors;
+}
+
+.auth-next-button:hover {
+  background: #2b7dcc;
+}
+
+.auth-link-button {
+  @apply flex items-center justify-center gap-1 border-0 bg-transparent py-3 text-[17px] text-[#4d98ee] transition-colors;
+}
+
+.auth-link-button:hover {
+  color: #247dcc;
 }
 
 /* OAuth Component Styles */
@@ -178,6 +263,15 @@
 @media (max-width: 640px) {
   .auth-page {
     @apply p-4;
+  }
+
+  .auth-card {
+    @apply rounded-[24px] px-5 py-8;
+    min-height: auto;
+  }
+
+  .auth-brand {
+    @apply h-[112px] w-[112px];
   }
 
   .auth-container {

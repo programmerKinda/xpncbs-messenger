@@ -7,17 +7,15 @@ interface PhoneInputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const PhoneInput: React.FC<PhoneInputProps> = ({
   onChange,
-  value,
+  value = '',
   type = 'tel',
   className,
   ...props
 }) => {
-  const [phone, setPhone] = useState<string>('')
+  const [phone, setPhone] = useState<string>(() => phoneMaskSet(String(value)))
 
   useEffect(() => {
-    if (value !== undefined) {
-      setPhone(phoneMaskSet(String(value)))
-    }
+    setPhone(phoneMaskSet(String(value)))
   }, [value])
 
   const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
