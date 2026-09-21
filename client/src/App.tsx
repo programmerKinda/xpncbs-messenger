@@ -13,10 +13,12 @@ import SettingLayout from './views/layouts/SettingLayout'
 import SettingPageUser from './routes/settingPages/SettingPageUser'
 import SettingPageSecure from './routes/settingPages/SettingPageSecure'
 import { getBackendHealth, getBackendMessage } from './api/file'
+import { useDropdownStore } from './controllers/dropdownController'
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
   const { targetRef, children, onClose, placement, align, flip } = usePopupStore()
+  const { closeAll } = useDropdownStore()
   const { modalChildren } = useModalStore()
 
   useEffect(() => {
@@ -36,6 +38,7 @@ function App() {
       }
       if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
         onClose()
+        closeAll()
       }
     }
     document.addEventListener('click', handleClickOutside)

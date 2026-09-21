@@ -24,6 +24,9 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
+    if (children.props.onClick) {
+      children.props.onClick(e)
+    }
     if (!targetRef.current) return
 
     if (activeRef?.current === targetRef.current) {

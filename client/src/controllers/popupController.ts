@@ -18,6 +18,7 @@ interface TooltipStore {
     align?: Align
     flip?: boolean
   }) => void
+  updatePopup: (children: React.ReactNode) => void
 
   onClose: () => void
 }
@@ -41,6 +42,8 @@ export const usePopupStore = create<TooltipStore>((set) => ({
       parent: ref.current?.parentElement || null,
     })
   },
+
+  updatePopup: (children) => set({ children }),
 
   onClose: () => {
     set({

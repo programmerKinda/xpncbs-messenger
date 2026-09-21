@@ -55,7 +55,7 @@
 }
 
 .auth-country-field {
-  @apply mb-7 h-[58px];
+  @apply mb-7 h-[58px] px-5;
 }
 
 .auth-field__label {
@@ -72,8 +72,7 @@
 }
 
 .auth-field__chevron {
-  @apply pointer-events-none absolute right-4 top-1/2 text-[#7c8389];
-  transform: translateY(-50%);
+  @apply text-[#7c8389];
 }
 
 .auth-phone-field {
