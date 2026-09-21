@@ -92,7 +92,7 @@ export const tooltipPosition = (
 
     // 🔥 CLAMP (чтобы не вылезал за экран)
     left = Math.max(8, Math.min(left, viewportWidth - tooltipRect.width - 8))
-    top = Math.max(8, Math.min(top, viewportHeight - tooltipRect.height - 8))
+    top = flip ? Math.max(8, Math.min(top, viewportHeight - tooltipRect.height - 8)) : Math.max(8, top)
 
     // если есть parent (portal внутри контейнера)
     if (parent) {

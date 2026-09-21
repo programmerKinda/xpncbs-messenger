@@ -2,7 +2,7 @@ import PhoneInput from '../inputs/phoneInput/phoneInput'
 import countries from '../inputs/phoneInput/utils/countries'
 import { getCountry } from '../inputs/phoneInput/utils/phoneMaskSet'
 import FlagModule from 'react-world-flags'
-import { Send } from 'lucide-react'
+import { MessageSquareText } from 'lucide-react'
 import { type ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { useDropdownStore } from '@/controllers/dropdownController'
 import { useRef } from 'react'
@@ -31,31 +31,33 @@ export default function Auth() {
     setValue('countries', country?.name ?? 'Не выбрано')
   }
   const divRef = useRef<HTMLDivElement | null>(null)
-  const [width,setWidth] = useState("")
-  useEffect(()=>{
+  const [width, setWidth] = useState('')
+  useEffect(() => {
     const div = divRef.current
-    if(div){
-      const width = div.offsetWidth
-      setWidth(`${width}px`)
+    if (div) {
+      const widthValue = div.offsetWidth
+      setWidth(`${widthValue}px`)
     }
-  },[])
+  }, [])
+
   return (
     <div className="auth-page">
       <form className="auth-card" onSubmit={(event) => event.preventDefault()}>
         <div className="auth-brand" aria-hidden="true">
-          <Send size={58} strokeWidth={2.2} />
+          <MessageSquareText size={56} strokeWidth={2} />
         </div>
-        <h1 className="auth-title">Войти в Telegram</h1>
+
+        <p className="auth-kicker">XPNCBS Messenger</p>
+        <h1 className="auth-title">Войдите в аккаунт</h1>
         <p className="auth-subtitle">
-          Проверьте код страны и
+          Проверьте код страны и введите
           <br />
-          введите свой номер телефона.
+          номер телефона для входа.
         </p>
 
         <div className="auth-field auth-country-field" ref={divRef}>
           <span className="auth-field__label">Страна</span>
           <DropdownWithArrow
-          className='mt-2'
             id="countries"
             items={countriesItems}
             valueSelector=".country-name"
@@ -70,7 +72,7 @@ export default function Auth() {
         </label>
 
         <button className="auth-next-button" type="submit">
-          ДАЛЕЕ
+          Продолжить
         </button>
       </form>
     </div>
