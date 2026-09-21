@@ -111,57 +111,61 @@ export default function Contacts() {
       )}
       {showDetail && (
         <main className="compact-page__content contacts-page__content">
-        {isMobile && (
-          <button type="button" className="compact-page__back-button" onClick={() => setMobileDetailOpen(false)}>
-            Назад
-          </button>
-        )}
-        <header className="compact-page__header contacts-page__hero">
-          <div>
-            <p className="compact-page__eyebrow">Люди рядом</p>
-            <h1 className="compact-page__title">Контакты</h1>
-            <p className="compact-page__description">
-              Ваши собеседники и новые знакомства в одном месте.
-            </p>
-          </div>
-          <button type="button" className="compact-page__primary-button">
-            <UserRoundPlus size={17} /> Добавить контакт
-          </button>
-        </header>
-        <div className="contacts-page__toolbar">
-          <div className="contacts-page__search">
-            <Search size={17} />
-            <input placeholder="Найти контакт" />
-          </div>
-          <button
-            type="button"
-            className="contacts-page__icon-button"
-            aria-label="Добавить контакт"
-          >
-            <Plus size={19} />
-          </button>
-        </div>
-        <section className="contacts-page__list">
-          <div className="contacts-page__list-heading">
-            <h2>{groupTitle}</h2>
-            <span>{visibleContacts.length} контакта</span>
-          </div>
-          {visibleContacts.length > 0 ? (
-            visibleContacts.map((contact) => (
-              <article className="contacts-page__contact" key={contact.name}>
-                <UserAvatar name={contact.name} avatarURL="" size={48} />
-                <div>
-                  <h2>{contact.name}</h2>
-                  <p>{contact.status}</p>
-                </div>
-                <button type="button">Открыть чат</button>
-              </article>
-            ))
-          ) : (
-            <div className="contacts-page__empty">В этой категории пока ничего нет</div>
+          {isMobile && (
+            <button
+              type="button"
+              className="compact-page__back-button"
+              onClick={() => setMobileDetailOpen(false)}
+            >
+              Назад
+            </button>
           )}
-        </section>
-      </main>
+          <header className="compact-page__header contacts-page__hero">
+            <div>
+              <p className="compact-page__eyebrow">Люди рядом</p>
+              <h1 className="compact-page__title">Контакты</h1>
+              <p className="compact-page__description">
+                Ваши собеседники и новые знакомства в одном месте.
+              </p>
+            </div>
+            <button type="button" className="compact-page__primary-button">
+              <UserRoundPlus size={17} /> Добавить контакт
+            </button>
+          </header>
+          <div className="contacts-page__toolbar">
+            <div className="contacts-page__search">
+              <Search size={17} />
+              <input placeholder="Найти контакт" />
+            </div>
+            <button
+              type="button"
+              className="contacts-page__icon-button"
+              aria-label="Добавить контакт"
+            >
+              <Plus size={19} />
+            </button>
+          </div>
+          <section className="contacts-page__list">
+            <div className="contacts-page__list-heading">
+              <h2>{groupTitle}</h2>
+              <span>{visibleContacts.length} контакта</span>
+            </div>
+            {visibleContacts.length > 0 ? (
+              visibleContacts.map((contact) => (
+                <article className="contacts-page__contact" key={contact.name}>
+                  <UserAvatar name={contact.name} avatarURL="" size={48} />
+                  <div>
+                    <h2>{contact.name}</h2>
+                    <p>{contact.status}</p>
+                  </div>
+                  <button type="button">Открыть чат</button>
+                </article>
+              ))
+            ) : (
+              <div className="contacts-page__empty">В этой категории пока ничего нет</div>
+            )}
+          </section>
+        </main>
       )}
     </div>
   )

@@ -14,6 +14,7 @@
     "@hookform/resolvers": "^5.5.7",
     "@tailwindcss/typography": "^0.5.16",
     "autoprefixer": "^10.4.21",
+    "axios": "^1.20.0",
     "chroma-js": "^3.2.0",
     "color-hash": "^2.0.2",
     "emoji-mart": "^5.6.0",

@@ -72,15 +72,15 @@ export default function Calls() {
           ? 'Входящие'
           : 'Исходящие'
 
-    const showSidebar = !isMobile || !mobileDetailOpen
-    const showDetail = !isMobile || mobileDetailOpen
+  const showSidebar = !isMobile || !mobileDetailOpen
+  const showDetail = !isMobile || mobileDetailOpen
 
-    const handleFilterChange = (nextFilter: CallFilter) => {
-      setFilter(nextFilter)
-      if (isMobile) {
-        setMobileDetailOpen(true)
-      }
+  const handleFilterChange = (nextFilter: CallFilter) => {
+    setFilter(nextFilter)
+    if (isMobile) {
+      setMobileDetailOpen(true)
     }
+  }
 
   const renderCall = (call: (typeof callHistory)[number]) => (
     <CallItem
@@ -95,7 +95,9 @@ export default function Calls() {
   )
 
   return (
-    <div className={`compact-page calls-route ${isMobile && mobileDetailOpen ? 'calls-route--detail' : ''}`}>
+    <div
+      className={`compact-page calls-route ${isMobile && mobileDetailOpen ? 'calls-route--detail' : ''}`}
+    >
       {showSidebar && (
         <CommonSidebar
           title="Звонки"
@@ -164,49 +166,53 @@ export default function Calls() {
       )}
       {showDetail && (
         <main className="compact-page__content calls-route__content">
-        {isMobile && (
-          <button type="button" className="compact-page__back-button" onClick={() => setMobileDetailOpen(false)}>
-            Назад
-          </button>
-        )}
-        <header className="compact-page__header calls-route__hero">
-          <div>
-            <p className="compact-page__eyebrow">На связи</p>
-            <h1 className="compact-page__title">Звонки</h1>
-            <p className="compact-page__description">
-              История разговоров и быстрый доступ к знакомым.
-            </p>
-          </div>
-          <button type="button" className="compact-page__primary-button">
-            <PhoneCall size={17} /> Новый звонок
-          </button>
-        </header>
-        <section className="calls-route__stats">
-          <div>
-            <span>Всего звонков</span>
-            <strong>24</strong>
-          </div>
-          <div>
-            <span>Пропущено</span>
-            <strong className="calls-route__stat--warning">3</strong>
-          </div>
-          <div>
-            <span>Время в звонках</span>
-            <strong>4ч 18м</strong>
-          </div>
-        </section>
-        <section className="calls-route__history">
-          <div className="calls-route__section-title">
-            <h2>{filterTitle}</h2>
-            <span>{filteredCalls.length} из 24 звонков</span>
-          </div>
-          {filteredCalls.length > 0 ? (
-            filteredCalls.map(renderCall)
-          ) : (
-            <div className="calls-route__empty">В этом разделе пока нет звонков</div>
+          {isMobile && (
+            <button
+              type="button"
+              className="compact-page__back-button"
+              onClick={() => setMobileDetailOpen(false)}
+            >
+              Назад
+            </button>
           )}
-        </section>
-      </main>
+          <header className="compact-page__header calls-route__hero">
+            <div>
+              <p className="compact-page__eyebrow">На связи</p>
+              <h1 className="compact-page__title">Звонки</h1>
+              <p className="compact-page__description">
+                История разговоров и быстрый доступ к знакомым.
+              </p>
+            </div>
+            <button type="button" className="compact-page__primary-button">
+              <PhoneCall size={17} /> Новый звонок
+            </button>
+          </header>
+          <section className="calls-route__stats">
+            <div>
+              <span>Всего звонков</span>
+              <strong>24</strong>
+            </div>
+            <div>
+              <span>Пропущено</span>
+              <strong className="calls-route__stat--warning">3</strong>
+            </div>
+            <div>
+              <span>Время в звонках</span>
+              <strong>4ч 18м</strong>
+            </div>
+          </section>
+          <section className="calls-route__history">
+            <div className="calls-route__section-title">
+              <h2>{filterTitle}</h2>
+              <span>{filteredCalls.length} из 24 звонков</span>
+            </div>
+            {filteredCalls.length > 0 ? (
+              filteredCalls.map(renderCall)
+            ) : (
+              <div className="calls-route__empty">В этом разделе пока нет звонков</div>
+            )}
+          </section>
+        </main>
       )}
     </div>
   )

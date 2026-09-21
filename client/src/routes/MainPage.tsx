@@ -20,7 +20,9 @@ function MainPage() {
 
   if (isMobile) {
     return (
-      <section className={`App ${isOpen ? '' : 'App--menu-closed'} ${isChatOpen ? 'App--chat-open' : ''}`}>
+      <section
+        className={`App ${isOpen ? '' : 'App--menu-closed'} ${isChatOpen ? 'App--chat-open' : ''}`}
+      >
         {!isChatOpen ? <ChatSidebar /> : <ChatWindow />}
         {isOpen && <ChatMenu />}
       </section>
@@ -28,7 +30,9 @@ function MainPage() {
   }
 
   return (
-    <section className={`App ${isOpen ? '' : 'App--menu-closed'} ${isChatOpen ? 'App--chat-open' : ''}`}>
+    <section
+      className={`App ${isOpen ? '' : 'App--menu-closed'} ${isChatOpen ? 'App--chat-open' : ''}`}
+    >
       <ChatSidebar />
       <ChatWindow />
       <ChatMenu />
