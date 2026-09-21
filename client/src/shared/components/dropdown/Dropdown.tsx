@@ -13,6 +13,8 @@ interface DropdownProps {
   flip?: boolean
   dropdownBtnContent?: ReactNode
   search?: boolean
+  width?:string
+  className?:string
 }
 
 interface DropdownListProps {
@@ -46,7 +48,7 @@ const DropdownList = ({ items, onChoice }: DropdownListProps) => {
   }
 
   return (
-    <ul className="h-[300px] overflow-auto p-2" onScroll={handleScroll}>
+    <ul className="max-h-[300px] overflow-auto p-2" onScroll={handleScroll}>
       {items.slice(0, visibleItemsCount).map((item, index) => (
         <li key={index} className="cursor-pointer" onClick={onChoice}>
           {item}
@@ -65,6 +67,8 @@ const Dropdown = ({
   flip,
   dropdownBtnContent,
   search,
+  width,
+  className
 }: DropdownProps) => {
   const { values, setValue } = useDropdownStore()
   const { isOpen, setIsOpen } = useDropdownStore()
@@ -161,6 +165,8 @@ const Dropdown = ({
       placement="bottom"
       align="center"
       flip={flip}
+      width={width}
+      popupClassName={className}
       wrapClassname={wrapClassname}
     >
       <button className={buttonClassName} onClick={toggle}>

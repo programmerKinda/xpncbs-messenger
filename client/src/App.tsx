@@ -17,7 +17,8 @@ import { useDropdownStore } from './controllers/dropdownController'
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
-  const { targetRef, children, onClose, placement, align, flip } = usePopupStore()
+  const { targetRef, children, onClose, placement, align, flip, width, popupClassName } =
+    usePopupStore()
   const { closeAll } = useDropdownStore()
   const { modalChildren } = useModalStore()
 
@@ -66,7 +67,15 @@ function App() {
       </BrowserRouter>
 
       {targetRef && children && (
-        <Popup ref={popupRef} targetRef={targetRef} placement={placement} align={align} flip={flip}>
+        <Popup
+          ref={popupRef}
+          targetRef={targetRef}
+          placement={placement}
+          align={align}
+          flip={flip}
+          width={width}
+          popupClassName={popupClassName}
+        >
           {children}
         </Popup>
       )}

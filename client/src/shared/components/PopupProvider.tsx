@@ -7,6 +7,8 @@ interface PopupProviderProps {
   placement: Placement
   align: Align
   flip?: boolean
+  width?: string
+  popupClassName?: string
   wrapClassname?: string
 }
 
@@ -16,6 +18,8 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({
   placement,
   align,
   flip,
+  width,
+  popupClassName,
   wrapClassname,
 }) => {
   const targetRef = useRef<HTMLElement | null>(null)
@@ -40,6 +44,8 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({
       placement: placement,
       align: align,
       flip,
+      width,
+      popupClassName,
     })
   }
 

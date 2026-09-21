@@ -7,8 +7,10 @@ interface DropdownProps {
   items: ReactNode[]
   valueSelector: string
   search?: boolean
+  width?:string
+  className?:string
 }
-const DropdownWithArrow = ({ id, items, valueSelector, search }: DropdownProps) => {
+const DropdownWithArrow = ({ id, items, valueSelector, search,width,className }: DropdownProps) => {
   const { isOpen } = useDropdownStore()
   return (
     <Dropdown
@@ -19,6 +21,8 @@ const DropdownWithArrow = ({ id, items, valueSelector, search }: DropdownProps) 
       wrapClassname="w-full h-full"
       flip={false}
       search={search}
+      width={width}
+      className={className}
       dropdownBtnContent={
         <ChevronDown
           className={`auth-field__chevron dropdown-arrow ${isOpen[id] ? 'open' : ''}`}

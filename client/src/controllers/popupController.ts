@@ -10,6 +10,8 @@ interface TooltipStore {
   placement: Placement
   align: Align
   flip: boolean
+  width: string
+  popupClassName?: string
 
   setPopup: (data: {
     ref: React.RefObject<HTMLElement>
@@ -17,6 +19,8 @@ interface TooltipStore {
     placement?: Placement
     align?: Align
     flip?: boolean
+    width?: string
+    popupClassName?: string
   }) => void
   updatePopup: (children: React.ReactNode) => void
 
@@ -31,14 +35,25 @@ export const usePopupStore = create<TooltipStore>((set) => ({
   placement: 'bottom',
   align: 'start',
   flip: true,
+  width: 'max-content',
 
-  setPopup: ({ ref, children, placement = 'bottom', align = 'start', flip = true }) => {
+  setPopup: ({
+    ref,
+    children,
+    placement = 'bottom',
+    align = 'start',
+    flip = true,
+    width = 'max-content',
+    popupClassName,
+  }) => {
     set({
       targetRef: ref,
       children,
       placement,
       align,
       flip,
+      width,
+      popupClassName,
       parent: ref.current?.parentElement || null,
     })
   },
@@ -53,6 +68,8 @@ export const usePopupStore = create<TooltipStore>((set) => ({
       placement: 'bottom',
       align: 'start',
       flip: true,
+      width: 'max-content',
+      popupClassName: undefined,
     })
   },
 }))
