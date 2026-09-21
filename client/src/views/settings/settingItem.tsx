@@ -33,11 +33,7 @@ export default function SettingItem({
       </span>
       <div className="setting-item__info">
         <h2 className={`setting-item__title ${large ? 'text-xl' : 'text-base'}`}>{title}</h2>
-        {subtitle && (
-          <span className="setting-item__subtitle">
-            {subtitle}
-          </span>
-        )}
+        {subtitle && <span className="setting-item__subtitle">{subtitle}</span>}
       </div>
     </div>
   )

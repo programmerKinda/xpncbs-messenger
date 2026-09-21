@@ -2,8 +2,7 @@
   @apply flex-auto flex flex-col transition-all duration-300 ease-in-out relative;
   background:
     linear-gradient(rgba(255, 255, 255, 0.24) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.18) 1px, transparent 1px),
-    var(--color-canvas) !important;
+    linear-gradient(90deg, rgba(255, 255, 255, 0.18) 1px, transparent 1px), var(--color-canvas) !important;
   background-size: 24px 24px;
 }
 .chat-window__header {

@@ -7,10 +7,17 @@ interface DropdownProps {
   items: ReactNode[]
   valueSelector: string
   search?: boolean
-  width?:string
-  className?:string
+  width?: string
+  className?: string
 }
-const DropdownWithArrow = ({ id, items, valueSelector, search,width,className }: DropdownProps) => {
+const DropdownWithArrow = ({
+  id,
+  items,
+  valueSelector,
+  search,
+  width,
+  className,
+}: DropdownProps) => {
   const { isOpen } = useDropdownStore()
   return (
     <Dropdown

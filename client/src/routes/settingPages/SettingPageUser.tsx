@@ -11,7 +11,11 @@ export default function SettingPageUser() {
             <div className="setting-profile__identity">
               <div className="setting-profile__avatar-wrap">
                 <UserAvatar name="Иван Иванов" avatarURL="" size={96} />
-                <button type="button" className="setting-profile__avatar-action" aria-label="Изменить фото">
+                <button
+                  type="button"
+                  className="setting-profile__avatar-action"
+                  aria-label="Изменить фото"
+                >
                   <Camera size={16} strokeWidth={2.2} />
                 </button>
               </div>
@@ -29,35 +33,61 @@ export default function SettingPageUser() {
                 <p className="setting-section-heading__eyebrow">Профиль</p>
                 <h2>Личные данные</h2>
               </div>
-              <span className="setting-section-heading__status"><Check size={15} /> Синхронизировано</span>
+              <span className="setting-section-heading__status">
+                <Check size={15} /> Синхронизировано
+              </span>
             </div>
 
             <div className="setting-page-user__fields">
               <label className="setting-field">
                 <span>Имя</span>
-                <input type="text" className="setting-page-user__field" placeholder="Имя" maxLength={59} />
+                <input
+                  type="text"
+                  className="setting-page-user__field"
+                  placeholder="Имя"
+                  maxLength={59}
+                />
               </label>
               <label className="setting-field">
                 <span>Никнейм</span>
-                <input type="text" className="setting-page-user__field" placeholder="Никнейм" maxLength={59} />
+                <input
+                  type="text"
+                  className="setting-page-user__field"
+                  placeholder="Никнейм"
+                  maxLength={59}
+                />
               </label>
               <label className="setting-field setting-field--wide">
                 <span>О себе</span>
-                <textarea className="setting-page-user__field resize-none" placeholder="Расскажите о себе" rows={4} maxLength={300} />
+                <textarea
+                  className="setting-page-user__field resize-none"
+                  placeholder="Расскажите о себе"
+                  rows={4}
+                  maxLength={300}
+                />
               </label>
             </div>
 
             <footer className="setting-page-user__actions">
-              <button type="button" className="setting-page-user__button setting-page-user__button--primary">
+              <button
+                type="button"
+                className="setting-page-user__button setting-page-user__button--primary"
+              >
                 Сохранить изменения
               </button>
-              <button type="button" className="setting-page-user__button setting-page-user__button--icon" aria-label="Дополнительные действия">
+              <button
+                type="button"
+                className="setting-page-user__button setting-page-user__button--icon"
+                aria-label="Дополнительные действия"
+              >
                 <MoreHorizontal size={22} strokeWidth={2} />
               </button>
             </footer>
           </section>
 
-          <button type="button" className="setting-profile__logout">Выйти из аккаунта</button>
+          <button type="button" className="setting-profile__logout">
+            Выйти из аккаунта
+          </button>
         </div>
       </form>
     </div>

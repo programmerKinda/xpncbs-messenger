@@ -44,7 +44,9 @@ export default function SettingPageSecure() {
     <div className="setting-page setting-page-secure">
       <div className="setting-page-secure__content">
         <header className="setting-security-hero">
-          <div className="setting-security-hero__icon"><ShieldCheck size={28} strokeWidth={1.8} /></div>
+          <div className="setting-security-hero__icon">
+            <ShieldCheck size={28} strokeWidth={1.8} />
+          </div>
           <div>
             <p className="setting-profile__eyebrow">Центр контроля</p>
             <h1>Безопасность и приватность</h1>

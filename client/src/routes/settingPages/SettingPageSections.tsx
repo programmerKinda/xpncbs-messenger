@@ -111,10 +111,16 @@ export function SettingPageChats() {
         <SettingRow title="Отправка по Enter" description="Shift + Enter добавляет новую строку">
           <Toggle checked={enterToSend} onChange={setEnterToSend} />
         </SettingRow>
-        <SettingRow title="Предпросмотр ссылок" description="Показывать карточки ссылок в сообщениях">
+        <SettingRow
+          title="Предпросмотр ссылок"
+          description="Показывать карточки ссылок в сообщениях"
+        >
           <Toggle checked={true} onChange={() => undefined} />
         </SettingRow>
-        <SettingRow title="Автоматическая загрузка медиа" description="Загружать изображения и видео в открытом чате">
+        <SettingRow
+          title="Автоматическая загрузка медиа"
+          description="Загружать изображения и видео в открытом чате"
+        >
           <Toggle checked={autoDownload} onChange={setAutoDownload} />
         </SettingRow>
       </SettingGroup>
@@ -122,10 +128,16 @@ export function SettingPageChats() {
         <SettingRow title="Плотный список чатов" description="Больше диалогов помещается на экране">
           <Toggle checked={compactMode} onChange={setCompactMode} />
         </SettingRow>
-        <SettingRow title="Индикатор прочтения" description="Показывать собеседникам, что сообщение прочитано">
+        <SettingRow
+          title="Индикатор прочтения"
+          description="Показывать собеседникам, что сообщение прочитано"
+        >
           <Toggle checked={readReceipts} onChange={setReadReceipts} />
         </SettingRow>
-        <SettingRow title="Автовоспроизведение GIF" description="Запускать анимации при появлении в чате">
+        <SettingRow
+          title="Автовоспроизведение GIF"
+          description="Запускать анимации при появлении в чате"
+        >
           <Toggle checked={true} onChange={() => undefined} />
         </SettingRow>
         <SettingRow title="Размер текста">
@@ -150,22 +162,40 @@ export function SettingPageNotifications() {
       icon={<Bell size={27} />}
     >
       <SettingGroup title="Основные уведомления">
-        <SettingRow title="Уведомления на рабочем столе" description="Показывать новые сообщения поверх окон">
+        <SettingRow
+          title="Уведомления на рабочем столе"
+          description="Показывать новые сообщения поверх окон"
+        >
           <Toggle checked={desktop} onChange={setDesktop} />
         </SettingRow>
-        <SettingRow title="Звуки уведомлений" description="Воспроизводить короткий звук для новых сообщений">
+        <SettingRow
+          title="Звуки уведомлений"
+          description="Воспроизводить короткий звук для новых сообщений"
+        >
           <Toggle checked={sound} onChange={setSound} />
         </SettingRow>
-        <SettingRow title="Упоминания и ответы" description="Уведомлять, когда вас упоминают в чате">
+        <SettingRow
+          title="Упоминания и ответы"
+          description="Уведомлять, когда вас упоминают в чате"
+        >
           <Toggle checked={mentions} onChange={setMentions} />
         </SettingRow>
-        <SettingRow title="Предпросмотр сообщения" description="Показывать текст сообщения в уведомлении">
+        <SettingRow
+          title="Предпросмотр сообщения"
+          description="Показывать текст сообщения в уведомлении"
+        >
           <Toggle checked={previews} onChange={setPreviews} />
         </SettingRow>
       </SettingGroup>
       <SettingGroup title="Звук">
-        <SettingRow title="Мелодия уведомления" description="Текущая мелодия применяется ко всем чатам">
-          <div className="setting-control-with-icon"><Volume2 size={17} /><SelectControl value="Soft pop" options={['Soft pop', 'Glass', 'None']} /></div>
+        <SettingRow
+          title="Мелодия уведомления"
+          description="Текущая мелодия применяется ко всем чатам"
+        >
+          <div className="setting-control-with-icon">
+            <Volume2 size={17} />
+            <SelectControl value="Soft pop" options={['Soft pop', 'Glass', 'None']} />
+          </div>
         </SettingRow>
       </SettingGroup>
     </SettingPageShell>
@@ -191,11 +221,17 @@ export function SettingPageHotKeys() {
         {shortcuts.map(([label, ...keys]) => (
           <div className="setting-catalog__shortcut" key={label}>
             <span>{label}</span>
-            <div>{keys.map((key) => <KeyHint key={key}>{key}</KeyHint>)}</div>
+            <div>
+              {keys.map((key) => (
+                <KeyHint key={key}>{key}</KeyHint>
+              ))}
+            </div>
           </div>
         ))}
       </SettingGroup>
-      <p className="setting-catalog__note"><Info size={15} /> Сочетания работают, когда фокус находится вне поля ввода.</p>
+      <p className="setting-catalog__note">
+        <Info size={15} /> Сочетания работают, когда фокус находится вне поля ввода.
+      </p>
     </SettingPageShell>
   )
 }
@@ -216,17 +252,37 @@ export function SettingPageAppearance() {
         </SettingRow>
         <SettingRow title="Акцентный цвет">
           <div className="setting-swatches">
-            <button type="button" className="setting-swatch setting-swatch--blue" aria-label="Синий" />
-            <button type="button" className="setting-swatch setting-swatch--indigo setting-swatch--selected" aria-label="Индиго"><Check size={14} /></button>
-            <button type="button" className="setting-swatch setting-swatch--teal" aria-label="Бирюзовый" />
+            <button
+              type="button"
+              className="setting-swatch setting-swatch--blue"
+              aria-label="Синий"
+            />
+            <button
+              type="button"
+              className="setting-swatch setting-swatch--indigo setting-swatch--selected"
+              aria-label="Индиго"
+            >
+              <Check size={14} />
+            </button>
+            <button
+              type="button"
+              className="setting-swatch setting-swatch--teal"
+              aria-label="Бирюзовый"
+            />
           </div>
         </SettingRow>
       </SettingGroup>
       <SettingGroup title="Детали интерфейса">
-        <SettingRow title="Плавные переходы" description="Анимировать открытие меню и смену экранов">
+        <SettingRow
+          title="Плавные переходы"
+          description="Анимировать открытие меню и смену экранов"
+        >
           <Toggle checked={animations} onChange={setAnimations} />
         </SettingRow>
-        <SettingRow title="Показывать время сообщений" description="Отображать время рядом с каждым сообщением">
+        <SettingRow
+          title="Показывать время сообщений"
+          description="Отображать время рядом с каждым сообщением"
+        >
           <Toggle checked={true} onChange={() => undefined} />
         </SettingRow>
         <SettingRow title="Фон чатов">
@@ -246,20 +302,38 @@ export function SettingPageData() {
       icon={<HardDrive size={27} />}
     >
       <SettingGroup title="Хранилище">
-        <div className="setting-storage-meter"><span /></div>
-        <div className="setting-storage-summary"><strong>128 МБ</strong><span>из 2 ГБ используется</span></div>
-        <SettingRow title="Медиа и документы" description="Изображения, видео и прикреплённые файлы">
+        <div className="setting-storage-meter">
+          <span />
+        </div>
+        <div className="setting-storage-summary">
+          <strong>128 МБ</strong>
+          <span>из 2 ГБ используется</span>
+        </div>
+        <SettingRow
+          title="Медиа и документы"
+          description="Изображения, видео и прикреплённые файлы"
+        >
           <span className="setting-catalog__value">128 МБ</span>
         </SettingRow>
       </SettingGroup>
       <SettingGroup title="Действия">
-        <SettingRow title="Очистить кэш" description="Удалить временные файлы, не затрагивая переписки">
-          <button type="button" className="setting-outline-button"><RefreshCw size={15} /> Очистить</button>
+        <SettingRow
+          title="Очистить кэш"
+          description="Удалить временные файлы, не затрагивая переписки"
+        >
+          <button type="button" className="setting-outline-button">
+            <RefreshCw size={15} /> Очистить
+          </button>
         </SettingRow>
         <SettingRow title="Экспорт данных" description="Скачать копию профиля и настроек">
-          <button type="button" className="setting-outline-button">Экспортировать</button>
+          <button type="button" className="setting-outline-button">
+            Экспортировать
+          </button>
         </SettingRow>
-        <SettingRow title="Удаление старых медиа" description="Автоматически очищать файлы старше 30 дней">
+        <SettingRow
+          title="Удаление старых медиа"
+          description="Автоматически очищать файлы старше 30 дней"
+        >
           <SelectControl value="Никогда" options={['Никогда', '30 дней', '90 дней']} />
         </SettingRow>
       </SettingGroup>
@@ -282,7 +356,10 @@ export function SettingPageLanguage() {
       </SettingGroup>
       <SettingGroup title="Формат">
         <SettingRow title="Часовой пояс" description="Время сообщений и уведомлений">
-          <SelectControl value="Москва (UTC+3)" options={['Москва (UTC+3)', 'Лондон (UTC+0)', 'Нью-Йорк (UTC-5)']} />
+          <SelectControl
+            value="Москва (UTC+3)"
+            options={['Москва (UTC+3)', 'Лондон (UTC+0)', 'Нью-Йорк (UTC-5)']}
+          />
         </SettingRow>
         <SettingRow title="Формат времени">
           <SelectControl value="24 часа" options={['24 часа', '12 часов']} />
@@ -312,7 +389,10 @@ export function SettingPageAccessibility() {
         </SettingRow>
       </SettingGroup>
       <SettingGroup title="Движение">
-        <SettingRow title="Уменьшить анимации" description="Отключить большинство переходов интерфейса">
+        <SettingRow
+          title="Уменьшить анимации"
+          description="Отключить большинство переходов интерфейса"
+        >
           <Toggle checked={false} onChange={() => undefined} />
         </SettingRow>
       </SettingGroup>
@@ -329,11 +409,36 @@ export function SettingPageDevices() {
       icon={<HardDrive size={27} />}
     >
       <SettingGroup title="Текущий сеанс">
-        <div className="setting-device-row"><span className="setting-device-row__dot" /><div><strong>Это устройство</strong><p>Windows · Сейчас активен</p></div><span className="setting-device-row__current">Активен</span></div>
+        <div className="setting-device-row">
+          <span className="setting-device-row__dot" />
+          <div>
+            <strong>Это устройство</strong>
+            <p>Windows · Сейчас активен</p>
+          </div>
+          <span className="setting-device-row__current">Активен</span>
+        </div>
       </SettingGroup>
       <SettingGroup title="Другие сеансы">
-        <div className="setting-device-row"><span className="setting-device-row__dot setting-device-row__dot--muted" /><div><strong>Chrome на Android</strong><p>Последняя активность 2 дня назад</p></div><button type="button" className="setting-outline-button">Завершить</button></div>
-        <div className="setting-device-row"><span className="setting-device-row__dot setting-device-row__dot--muted" /><div><strong>Safari на iPhone</strong><p>Последняя активность 5 дней назад</p></div><button type="button" className="setting-outline-button">Завершить</button></div>
+        <div className="setting-device-row">
+          <span className="setting-device-row__dot setting-device-row__dot--muted" />
+          <div>
+            <strong>Chrome на Android</strong>
+            <p>Последняя активность 2 дня назад</p>
+          </div>
+          <button type="button" className="setting-outline-button">
+            Завершить
+          </button>
+        </div>
+        <div className="setting-device-row">
+          <span className="setting-device-row__dot setting-device-row__dot--muted" />
+          <div>
+            <strong>Safari на iPhone</strong>
+            <p>Последняя активность 5 дней назад</p>
+          </div>
+          <button type="button" className="setting-outline-button">
+            Завершить
+          </button>
+        </div>
       </SettingGroup>
     </SettingPageShell>
   )
@@ -351,16 +456,27 @@ export function SettingPageAdvanced() {
       icon={<SlidersHorizontal size={27} />}
     >
       <SettingGroup title="Инструменты">
-        <SettingRow title="Проверка орфографии" description="Подсвечивать опечатки в поле сообщения">
+        <SettingRow
+          title="Проверка орфографии"
+          description="Подсвечивать опечатки в поле сообщения"
+        >
           <Toggle checked={spellcheck} onChange={setSpellcheck} />
         </SettingRow>
-        <SettingRow title="Режим разработчика" description="Показывать техническую информацию интерфейса">
+        <SettingRow
+          title="Режим разработчика"
+          description="Показывать техническую информацию интерфейса"
+        >
           <Toggle checked={developerMode} onChange={setDeveloperMode} />
         </SettingRow>
       </SettingGroup>
       <SettingGroup title="Сброс">
-        <SettingRow title="Сбросить настройки" description="Вернуть параметры приложения к значениям по умолчанию">
-          <button type="button" className="setting-outline-button">Сбросить</button>
+        <SettingRow
+          title="Сбросить настройки"
+          description="Вернуть параметры приложения к значениям по умолчанию"
+        >
+          <button type="button" className="setting-outline-button">
+            Сбросить
+          </button>
         </SettingRow>
       </SettingGroup>
     </SettingPageShell>
@@ -376,12 +492,27 @@ export function SettingPageAbout() {
       icon={<Info size={27} />}
     >
       <SettingGroup title="Версия">
-        <div className="setting-about-version"><span className="setting-about-version__mark">X</span><div><strong>XPNCBS Messenger</strong><p>Версия 0.1.0 · стабильный канал</p></div></div>
+        <div className="setting-about-version">
+          <span className="setting-about-version__mark">X</span>
+          <div>
+            <strong>XPNCBS Messenger</strong>
+            <p>Версия 0.1.0 · стабильный канал</p>
+          </div>
+        </div>
       </SettingGroup>
       <SettingGroup title="Помощь и документы">
-        <button type="button" className="setting-link-row"><span>Центр помощи</span><ChevronRight size={18} /></button>
-        <button type="button" className="setting-link-row"><span>Политика конфиденциальности</span><ChevronRight size={18} /></button>
-        <button type="button" className="setting-link-row"><span>Условия использования</span><ChevronRight size={18} /></button>
+        <button type="button" className="setting-link-row">
+          <span>Центр помощи</span>
+          <ChevronRight size={18} />
+        </button>
+        <button type="button" className="setting-link-row">
+          <span>Политика конфиденциальности</span>
+          <ChevronRight size={18} />
+        </button>
+        <button type="button" className="setting-link-row">
+          <span>Условия использования</span>
+          <ChevronRight size={18} />
+        </button>
       </SettingGroup>
     </SettingPageShell>
   )

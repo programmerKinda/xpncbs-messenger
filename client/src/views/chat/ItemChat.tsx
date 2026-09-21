@@ -10,7 +10,12 @@ interface ItemChatProps {
   name?: string
   message?: string
 }
-export default function ItemChat({ createdAt, watched, name = 'Анна Кузнецова', message = 'Привет! Как проходит день?' }: ItemChatProps) {
+export default function ItemChat({
+  createdAt,
+  watched,
+  name = 'Анна Кузнецова',
+  message = 'Привет! Как проходит день?',
+}: ItemChatProps) {
   const timeString = formatTime(createdAt)
   return (
     <div className="item-chat">
@@ -18,7 +23,7 @@ export default function ItemChat({ createdAt, watched, name = 'Анна Кузн
 
       <div className="item-chat__info">
         <div className="item-chat__header">
-            <UserName name={name} phone="" contactName="" />
+          <UserName name={name} phone="" contactName="" />
 
           <span className="item-chat__status">
             <span className="message__status-icon">
@@ -35,10 +40,7 @@ export default function ItemChat({ createdAt, watched, name = 'Анна Кузн
             <span className="item-chat__time">{timeString}</span>
           </span>
         </div>
-        <LastMessage
-          type="text"
-          content={message}
-        />
+        <LastMessage type="text" content={message} />
       </div>
     </div>
   )

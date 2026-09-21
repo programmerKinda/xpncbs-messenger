@@ -67,7 +67,8 @@ body {
 
 .main-layout {
   @apply flex h-screen w-full overflow-hidden;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.26) 1px, transparent 1px),
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.26) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
   background-size: 24px 24px;
 }

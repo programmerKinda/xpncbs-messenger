@@ -13,8 +13,8 @@ interface DropdownProps {
   flip?: boolean
   dropdownBtnContent?: ReactNode
   search?: boolean
-  width?:string
-  className?:string
+  width?: string
+  className?: string
 }
 
 interface DropdownListProps {
@@ -68,7 +68,7 @@ const Dropdown = ({
   dropdownBtnContent,
   search,
   width,
-  className
+  className,
 }: DropdownProps) => {
   const { values, setValue } = useDropdownStore()
   const { isOpen, setIsOpen } = useDropdownStore()
