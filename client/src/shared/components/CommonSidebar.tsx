@@ -11,6 +11,8 @@ interface CommonSidebarProps {
   bodyContent?: React.ReactNode
   resize?: boolean
   popupButton?: commonSidebarMenuButtonProps
+  showSearch?: boolean
+  footerContent?: React.ReactNode
 }
 export default function CommonSidebar({
   title,
@@ -18,6 +20,8 @@ export default function CommonSidebar({
   bodyContent,
   resize,
   popupButton,
+  showSearch = true,
+  footerContent,
 }: CommonSidebarProps) {
   const chatsWidth = useChatsWidthStore((state) => state.chatsWidth)
   const setChatsWidth = useChatsWidthStore((state) => state.setChatsWidth)
@@ -52,13 +56,13 @@ export default function CommonSidebar({
             <h1 className="logo__title">{title}</h1>
             {popupButton && <CommonSidebarMenuButton {...popupButton} />}
           </div>
-          <SearchInput />
+          {showSearch && <SearchInput />}
 
           {headerExtraContent}
         </header>
 
         <div className="common-sidebar__body">{bodyContent}</div>
-        <footer className="common-sidebar__footer"></footer>
+        <footer className="common-sidebar__footer">{footerContent}</footer>
         {resize && (
           <CommonSidebarResizer
             chatsWidth={chatsWidth}

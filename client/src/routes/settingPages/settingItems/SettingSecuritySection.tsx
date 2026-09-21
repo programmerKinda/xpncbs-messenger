@@ -19,15 +19,14 @@ export default function SettingSecuritySection({
 }: SettingSecuritySectionProps) {
   return (
     <div
-      className={`setting-page-secure__body ${bodyBg ? 'p-4' : ''}`}
-      style={{ background: bodyBg ? 'white' : 'none' }}
+      className={`setting-page-secure__body setting-page-secure__section ${bodyBg ? 'setting-page-secure__section--card' : ''}`}
     >
-      <div className={bodyBg ? 'border-b border-gray' : ''}>
+      <div className="setting-page-secure__section-header">
         {title && <h2 className="setting-page-secure__title">{title}</h2>}
         {headerContent && headerContent}
       </div>
 
-      <ul className={`setting-page-secure__list bg-white rounded-2xl ${bodyBg ? '' : 'p-4'}`}>
+      <ul className="setting-page-secure__list">
         {items.map((item) => (
           <SettingSecurityItem key={item.title} title={item.title} list={item.list} />
         ))}

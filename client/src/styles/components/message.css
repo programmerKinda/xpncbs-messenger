@@ -4,7 +4,7 @@
 .message {
   @apply relative w-fit max-w-[85%] sm:max-w-[480px] mb-2 px-3 py-2 min-h-[34px] text-[15px] leading-[1.4];
   border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(36, 52, 71, 0.06);
+  box-shadow: 0 4px 12px rgba(48, 61, 94, 0.07);
 }
 
 /* --------------------- */
@@ -12,9 +12,9 @@
 /* --------------------- */
 .message--outgoing {
   @apply self-end ml-auto rounded-br-none mr-2;
-  color: #21434d;
+  color: #29356b;
   background: var(--color-outgoing);
-  border: 1px solid #c5e1e8;
+  border: 1px solid #d9defb;
 }
 
 .message--outgoing::after {
@@ -28,8 +28,9 @@
 /* ВХОДЯЩЕЕ (БЕЛОЕ)     */
 /* --------------------- */
 .message--incoming {
-  @apply self-start mr-auto bg-white rounded-bl-none ml-2;
+  @apply self-start mr-auto rounded-bl-none ml-2;
   color: var(--color-text);
+  background: var(--color-chat-bubble);
   border: 1px solid var(--color-border);
 }
 

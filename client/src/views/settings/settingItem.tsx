@@ -1,5 +1,5 @@
 import { cloneElement } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 interface SettingItemProps {
   icon: React.ReactElement<any, any>
@@ -20,16 +20,21 @@ export default function SettingItem({
 }: SettingItemProps) {
   const iconElement = cloneElement(icon as any, { size: large ? 56 : 28 })
   const navigate = useNavigate()
+  const location = useLocation()
+  const targetPath = path === '/' ? '/settings' : path === 'login' ? '/auth' : `/settings/${path}`
+  const isActive = location.pathname === targetPath
   return (
     <div
-      className={`setting-item ${large ? 'setting-item--large' : ''} ${className}`}
-      onClick={() => navigate(`settings/${path}`)}
+      className={`setting-item ${large ? 'setting-item--large' : ''} ${isActive ? 'setting-item--active' : ''} ${className}`}
+      onClick={() => navigate(targetPath)}
     >
-      <span className={`setting-item__icon ${large ? '' : 'p-4'} ${className}`}>{iconElement}</span>
+      <span className={`setting-item__icon ${large ? 'setting-item__icon--large' : ''}`}>
+        {iconElement}
+      </span>
       <div className="setting-item__info">
         <h2 className={`setting-item__title ${large ? 'text-xl' : 'text-base'}`}>{title}</h2>
         {subtitle && (
-          <span className={`setting-item__icon ${large ? 'text-sm' : 'text-xs'} ${className}`}>
+          <span className="setting-item__subtitle">
             {subtitle}
           </span>
         )}

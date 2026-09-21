@@ -77,7 +77,6 @@ export default function ChatWindow() {
   return (
     <div
       className="chat-window"
-      style={{ backgroundColor: '#c4c7dd8a' }}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
@@ -87,8 +86,9 @@ export default function ChatWindow() {
         <div className="flex gap-1 items-start">
           <UserAvatar name="x p" avatarURL="" />
 
-          <div onClick={toggleMenu}>
-            <UserName name="" phone="123-456-7890" contactName="" />
+          <div className="chat-window__contact" onClick={toggleMenu}>
+            <UserName name="Анна Кузнецова" phone="" contactName="" />
+            <span>была недавно</span>
           </div>
         </div>
 

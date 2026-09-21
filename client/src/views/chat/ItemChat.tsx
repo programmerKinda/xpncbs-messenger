@@ -7,16 +7,18 @@ import { Check, CheckCheck } from 'lucide-react'
 interface ItemChatProps {
   createdAt: Date
   watched: boolean
+  name?: string
+  message?: string
 }
-export default function ItemChat({ createdAt, watched }: ItemChatProps) {
+export default function ItemChat({ createdAt, watched, name = 'Анна Кузнецова', message = 'Привет! Как проходит день?' }: ItemChatProps) {
   const timeString = formatTime(createdAt)
   return (
     <div className="item-chat">
-      <UserAvatar name="e o" avatarURL="" />
+      <UserAvatar name={name} avatarURL="" />
 
       <div className="item-chat__info">
         <div className="item-chat__header">
-          <UserName name="xsSADADADADADAD p" phone="123-456-7890" contactName="" />
+            <UserName name={name} phone="" contactName="" />
 
           <span className="item-chat__status">
             <span className="message__status-icon">
@@ -35,7 +37,7 @@ export default function ItemChat({ createdAt, watched }: ItemChatProps) {
         </div>
         <LastMessage
           type="text"
-          content="Привет, кк дела?ssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
+          content={message}
         />
       </div>
     </div>

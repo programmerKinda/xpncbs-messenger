@@ -15,7 +15,13 @@ export default function ChatSidebar() {
       <CommonSidebar
         title="Чаты"
         headerExtraContent={<ChatFolders chatFolders={chatFolders} />}
-        bodyContent={<ItemChat createdAt={new Date()} watched={true} />}
+        bodyContent={
+          <>
+            <ItemChat createdAt={new Date()} watched={true} name="Анна Кузнецова" message="Привет! Как проходит день?" />
+            <ItemChat createdAt={new Date(Date.now() - 1000 * 60 * 42)} watched={false} name="Максим Орлов" message="Созвонимся вечером?" />
+            <ItemChat createdAt={new Date(Date.now() - 1000 * 60 * 60 * 3)} watched={true} name="Ольга Смирнова" message="Файл уже отправила" />
+          </>
+        }
         resize={true}
       />
     </>

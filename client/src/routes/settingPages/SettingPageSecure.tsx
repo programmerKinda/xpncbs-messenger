@@ -1,8 +1,7 @@
-import CommonWindowHeader from '@/shared/components/CommonWindowHeader'
 import SettingListItem from './settingItems/SettingListItem'
 import SettingSecuritySection from './settingItems/SettingSecuritySection'
 
-import { KeyRound } from 'lucide-react'
+import { KeyRound, ShieldCheck } from 'lucide-react'
 
 export default function SettingPageSecure() {
   const privacyOptions = ['Все', 'Мои контакты', 'Никто']
@@ -43,14 +42,18 @@ export default function SettingPageSecure() {
 
   return (
     <div className="setting-page setting-page-secure">
-      {' '}
-      <CommonWindowHeader>
-        {' '}
-        <h2 className="setting-page__title">Безопасность</h2>{' '}
-      </CommonWindowHeader>
-      <div className="flex-1 min-h-0 w-full overflow-y-auto py-6 flex flex-col items-center gap-4">
-        {/* Password */}
-        <div className="setting-page-secure__body bg-white">
+      <div className="setting-page-secure__content">
+        <header className="setting-security-hero">
+          <div className="setting-security-hero__icon"><ShieldCheck size={28} strokeWidth={1.8} /></div>
+          <div>
+            <p className="setting-profile__eyebrow">Центр контроля</p>
+            <h1>Безопасность и приватность</h1>
+            <p>Управляйте тем, кто видит ваши данные и может связаться с вами.</p>
+          </div>
+        </header>
+
+        <div className="setting-security__intro">Доступ и вход</div>
+        <section className="setting-page-secure__body setting-page-secure__standalone">
           <SettingListItem
             icon={<KeyRound size={24} strokeWidth={2} />}
             title="Пароль для входа"
@@ -60,16 +63,15 @@ export default function SettingPageSecure() {
             }}
             className="setting-page-secure-password"
           />
-        </div>
+        </section>
 
-        {/* Who can contact me */}
         <SettingSecuritySection
           bodyBg={true}
           headerContent={
             <SettingListItem
               icon={<KeyRound size={24} strokeWidth={2} />}
-              title="dwd"
-              description="Откл"
+              title="Кто может связаться со мной"
+              description="Управление доступом к контактам"
               onClick={() => {
                 //тут хз я не придумал проде надо чтобы на сервак это кудато уходило
               }}
@@ -79,11 +81,9 @@ export default function SettingPageSecure() {
           items={whoCanContactItems}
         />
 
-        {/* Personal information */}
         <SettingSecuritySection bodyBg={false} title="Моя информация" items={personalInfoItems} />
 
-        {/* Blacklist */}
-        <div className="setting-page-secure__body bg-white">
+        <section className="setting-page-secure__body setting-page-secure__standalone">
           <SettingListItem
             title="Чёрный список"
             description="Список тех, кто не может вам писать, звонить и добавлять в чаты"
@@ -92,7 +92,7 @@ export default function SettingPageSecure() {
             }}
             className="setting-page-secure-password"
           />
-        </div>
+        </section>
       </div>
     </div>
   )
