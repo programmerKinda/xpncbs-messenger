@@ -1,9 +1,10 @@
 .chat-kinda-input {
-  @apply w-full h-full relative bg-transparent outline-none text-base border-none;
+  @apply relative h-full w-full min-w-0 flex-1 bg-transparent outline-none text-base border-none;
   color: var(--color-text);
 }
 .chat-kinda-input__content {
-  @apply w-full h-full outline-none text-base border-none overflow-hidden max-h-[150px] overflow-y-auto;
+  @apply w-full h-full min-h-[36px] outline-none text-base border-none overflow-hidden max-h-[150px] overflow-y-auto;
+  padding: 7px 0;
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -14,6 +15,7 @@
 }
 .chat-kinda-placeholder {
   @apply absolute inset-0 pointer-events-none;
+  padding: 7px 0;
   color: var(--color-text-muted);
 }
 

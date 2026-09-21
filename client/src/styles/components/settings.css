@@ -60,6 +60,32 @@
   background-size: 24px 24px;
 }
 
+.settings-mobile-back {
+  display: none;
+}
+
+@media (max-width: 560px) {
+  .settings-mobile-back {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 38px;
+    padding: 0 12px 0 9px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: var(--shadow-soft);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+  }
+}
+
 .setting-page__title {
   @apply flex-auto text-center text-gray-700;
 }

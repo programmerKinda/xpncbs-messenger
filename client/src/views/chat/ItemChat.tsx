@@ -9,16 +9,18 @@ interface ItemChatProps {
   watched: boolean
   name?: string
   message?: string
+  onClick?: () => void
 }
 export default function ItemChat({
   createdAt,
   watched,
   name = 'Анна Кузнецова',
   message = 'Привет! Как проходит день?',
+  onClick,
 }: ItemChatProps) {
   const timeString = formatTime(createdAt)
   return (
-    <div className="item-chat">
+    <button type="button" className="item-chat" onClick={onClick}>
       <UserAvatar name={name} avatarURL="" />
 
       <div className="item-chat__info">
@@ -42,6 +44,6 @@ export default function ItemChat({
         </div>
         <LastMessage type="text" content={message} />
       </div>
-    </div>
+    </button>
   )
 }

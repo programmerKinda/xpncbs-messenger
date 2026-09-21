@@ -11,7 +11,7 @@ import {
   MoreHorizontal,
 } from 'lucide-react'
 import '@/styles/components/calls.css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type CallFilter = 'all' | 'missed' | 'incoming' | 'outgoing'
 
@@ -44,6 +44,19 @@ const callHistory = [
 
 export default function Calls() {
   const [filter, setFilter] = useState<CallFilter>('all')
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 560)
+  const [mobileDetailOpen, setMobileDetailOpen] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 560px)')
+    const updateMobileState = () => setIsMobile(mediaQuery.matches)
+
+    updateMobileState()
+    mediaQuery.addEventListener('change', updateMobileState)
+
+    return () => mediaQuery.removeEventListener('change', updateMobileState)
+  }, [])
+
   const filteredCalls = callHistory.filter(
     (call) =>
       filter === 'all' ||
@@ -59,6 +72,16 @@ export default function Calls() {
           ? 'Входящие'
           : 'Исходящие'
 
+    const showSidebar = !isMobile || !mobileDetailOpen
+    const showDetail = !isMobile || mobileDetailOpen
+
+    const handleFilterChange = (nextFilter: CallFilter) => {
+      setFilter(nextFilter)
+      if (isMobile) {
+        setMobileDetailOpen(true)
+      }
+    }
+
   const renderCall = (call: (typeof callHistory)[number]) => (
     <CallItem
       key={`${call.name}-${call.time}`}
@@ -72,72 +95,80 @@ export default function Calls() {
   )
 
   return (
-    <div className="compact-page calls-route">
-      <CommonSidebar
-        title="Звонки"
-        resize={true}
-        bodyContent={
-          <nav className="calls-sidebar__nav" aria-label="Фильтры звонков">
-            <button
-              type="button"
-              onClick={() => setFilter('all')}
-              className={`calls-sidebar__item ${filter === 'all' ? 'calls-sidebar__item--active' : ''}`}
-            >
-              <Phone size={18} />
-              <span>Все звонки</span>
-              <b>24</b>
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilter('missed')}
-              className={`calls-sidebar__item ${filter === 'missed' ? 'calls-sidebar__item--active' : ''}`}
-            >
-              <PhoneMissed size={18} />
-              <span>Пропущенные</span>
-              <b className="calls-sidebar__count--warning">3</b>
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilter('incoming')}
-              className={`calls-sidebar__item ${filter === 'incoming' ? 'calls-sidebar__item--active' : ''}`}
-            >
-              <PhoneIncoming size={18} />
-              <span>Входящие</span>
-              <b>12</b>
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilter('outgoing')}
-              className={`calls-sidebar__item ${filter === 'outgoing' ? 'calls-sidebar__item--active' : ''}`}
-            >
-              <PhoneOutgoing size={18} />
-              <span>Исходящие</span>
-              <b>9</b>
-            </button>
-            <div className="calls-sidebar__summary">
-              <span>Время разговоров</span>
-              <strong>4ч 18м</strong>
-              <small>за последние 7 дней</small>
-            </div>
-          </nav>
-        }
-        popupButton={{
-          icon: <MoreHorizontal size={24} strokeWidth={2} />,
-          menuItems: [
-            {
-              label: 'Новый звонок',
-              icon: <PhoneCall size={20} strokeWidth={2} />,
-              onClick: () => console.log('Новый звонок'),
-            },
-            {
-              label: 'Новая конференция',
-              icon: <UsersRound size={20} strokeWidth={2} />,
-              onClick: () => console.log('Новая конференция'),
-            },
-          ],
-        }}
-      />
-      <main className="compact-page__content calls-route__content">
+    <div className={`compact-page calls-route ${isMobile && mobileDetailOpen ? 'calls-route--detail' : ''}`}>
+      {showSidebar && (
+        <CommonSidebar
+          title="Звонки"
+          resize={true}
+          bodyContent={
+            <nav className="calls-sidebar__nav" aria-label="Фильтры звонков">
+              <button
+                type="button"
+                onClick={() => handleFilterChange('all')}
+                className={`calls-sidebar__item ${filter === 'all' ? 'calls-sidebar__item--active' : ''}`}
+              >
+                <Phone size={18} />
+                <span>Все звонки</span>
+                <b>24</b>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleFilterChange('missed')}
+                className={`calls-sidebar__item ${filter === 'missed' ? 'calls-sidebar__item--active' : ''}`}
+              >
+                <PhoneMissed size={18} />
+                <span>Пропущенные</span>
+                <b className="calls-sidebar__count--warning">3</b>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleFilterChange('incoming')}
+                className={`calls-sidebar__item ${filter === 'incoming' ? 'calls-sidebar__item--active' : ''}`}
+              >
+                <PhoneIncoming size={18} />
+                <span>Входящие</span>
+                <b>12</b>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleFilterChange('outgoing')}
+                className={`calls-sidebar__item ${filter === 'outgoing' ? 'calls-sidebar__item--active' : ''}`}
+              >
+                <PhoneOutgoing size={18} />
+                <span>Исходящие</span>
+                <b>9</b>
+              </button>
+              <div className="calls-sidebar__summary">
+                <span>Время разговоров</span>
+                <strong>4ч 18м</strong>
+                <small>за последние 7 дней</small>
+              </div>
+            </nav>
+          }
+          popupButton={{
+            icon: <MoreHorizontal size={24} strokeWidth={2} />,
+            menuItems: [
+              {
+                label: 'Новый звонок',
+                icon: <PhoneCall size={20} strokeWidth={2} />,
+                onClick: () => console.log('Новый звонок'),
+              },
+              {
+                label: 'Новая конференция',
+                icon: <UsersRound size={20} strokeWidth={2} />,
+                onClick: () => console.log('Новая конференция'),
+              },
+            ],
+          }}
+        />
+      )}
+      {showDetail && (
+        <main className="compact-page__content calls-route__content">
+        {isMobile && (
+          <button type="button" className="compact-page__back-button" onClick={() => setMobileDetailOpen(false)}>
+            Назад
+          </button>
+        )}
         <header className="compact-page__header calls-route__hero">
           <div>
             <p className="compact-page__eyebrow">На связи</p>
@@ -176,6 +207,7 @@ export default function Calls() {
           )}
         </section>
       </main>
+      )}
     </div>
   )
 }

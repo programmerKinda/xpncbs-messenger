@@ -6,6 +6,7 @@ import { CommonSidebarResizer } from '@/shared/components/CommonSidebarResizer'
 import { useChatsWidthStore } from '@/controllers/chatsWidthController'
 import type { commonSidebarMenuButtonProps } from '@/models/shared/commonSidebarMenuButton'
 interface CommonSidebarProps {
+  className?: string
   title: string
   headerExtraContent?: React.ReactNode
   bodyContent?: React.ReactNode
@@ -15,6 +16,7 @@ interface CommonSidebarProps {
   footerContent?: React.ReactNode
 }
 export default function CommonSidebar({
+  className = '',
   title,
   headerExtraContent,
   bodyContent,
@@ -50,7 +52,11 @@ export default function CommonSidebar({
 
   return (
     <>
-      <section ref={chatsRef} className="common-sidebar" style={{ width: `${chatsWidth}px` }}>
+      <section
+        ref={chatsRef}
+        className={`common-sidebar ${className}`.trim()}
+        style={{ width: `${chatsWidth}px` }}
+      >
         <header className="common-sidebar__header">
           <div className="flex items-center justify-between">
             <h1 className="logo__title">{title}</h1>

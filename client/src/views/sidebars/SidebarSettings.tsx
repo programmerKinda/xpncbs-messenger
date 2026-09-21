@@ -20,6 +20,7 @@ export default function SidebarSettings() {
   return (
     <>
       <CommonSidebar
+        className="settings-sidebar"
         title="Настройки"
         resize={true}
         showSearch={false}

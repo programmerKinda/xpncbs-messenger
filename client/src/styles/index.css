@@ -42,6 +42,14 @@
   --radius-md: 16px;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -67,6 +75,7 @@ body {
 
 .main-layout {
   @apply flex h-screen w-full overflow-hidden;
+  min-width: 0;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.26) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
@@ -76,6 +85,7 @@ body {
 .App {
   @apply flex h-screen relative;
   flex: 1 1 auto;
+  min-width: 0;
   transition: all 0.25s ease;
 }
 
@@ -88,6 +98,53 @@ body {
 .App--menu-closed .chat-menu {
   margin-left: -450px;
   transform: translateX(100%);
+}
+
+@media (max-width: 980px) {
+  .main-layout {
+    min-width: 0;
+  }
+
+  .App {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    overflow: hidden;
+  }
+
+  .main-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+  }
+
+  .App {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: calc(100dvh - 64px);
+    overflow: hidden;
+  }
+
+  .main-layout--chat-open > .sidebar {
+    display: none;
+  }
+
+  .main-layout--detail > .sidebar,
+  .main-layout:has(.contacts-page--detail) > .sidebar,
+  .main-layout:has(.calls-route--detail) > .sidebar {
+    display: none;
+  }
+
+  .main-layout--chat-open > .App,
+  .main-layout--detail > .setting-page,
+  .main-layout:has(.contacts-page--detail) > .compact-page,
+  .main-layout:has(.calls-route--detail) > .compact-page {
+    height: 100dvh;
+  }
 }
 
 button,

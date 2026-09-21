@@ -10,7 +10,7 @@ import {
   UserRoundPlus,
   UsersRound,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type ContactGroup = 'all' | 'favorites' | 'recent' | 'groups'
 
@@ -22,6 +22,19 @@ const contacts = [
 
 export default function Contacts() {
   const [group, setGroup] = useState<ContactGroup>('all')
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 560)
+  const [mobileDetailOpen, setMobileDetailOpen] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 560px)')
+    const updateMobileState = () => setIsMobile(mediaQuery.matches)
+
+    updateMobileState()
+    mediaQuery.addEventListener('change', updateMobileState)
+
+    return () => mediaQuery.removeEventListener('change', updateMobileState)
+  }, [])
+
   const visibleContacts = contacts.filter((contact) => group === 'all' || contact.group === group)
   const groupTitle =
     group === 'all'
@@ -32,57 +45,77 @@ export default function Contacts() {
           ? 'Недавние'
           : 'Группы'
 
+  const showSidebar = !isMobile || !mobileDetailOpen
+  const showDetail = !isMobile || mobileDetailOpen
+
+  const handleGroupChange = (nextGroup: ContactGroup) => {
+    setGroup(nextGroup)
+    if (isMobile) {
+      setMobileDetailOpen(true)
+    }
+  }
+
   return (
-    <div className="compact-page contacts-page">
-      <CommonSidebar
-        title="Контакты"
-        resize={true}
-        bodyContent={
-          <nav className="contacts-sidebar__nav" aria-label="Категории контактов">
-            <button
-              type="button"
-              onClick={() => setGroup('all')}
-              className={`contacts-sidebar__nav-item ${group === 'all' ? 'contacts-sidebar__nav-item--active' : ''}`}
-            >
-              <UserRound size={18} />
-              <span>Все контакты</span>
-              <b>3</b>
-            </button>
-            <button
-              type="button"
-              onClick={() => setGroup('favorites')}
-              className={`contacts-sidebar__nav-item ${group === 'favorites' ? 'contacts-sidebar__nav-item--active' : ''}`}
-            >
-              <Star size={18} />
-              <span>Избранные</span>
-              <b>1</b>
-            </button>
-            <button
-              type="button"
-              onClick={() => setGroup('recent')}
-              className={`contacts-sidebar__nav-item ${group === 'recent' ? 'contacts-sidebar__nav-item--active' : ''}`}
-            >
-              <Clock3 size={18} />
-              <span>Недавние</span>
-              <b>2</b>
-            </button>
-            <button
-              type="button"
-              onClick={() => setGroup('groups')}
-              className={`contacts-sidebar__nav-item ${group === 'groups' ? 'contacts-sidebar__nav-item--active' : ''}`}
-            >
-              <UsersRound size={18} />
-              <span>Группы</span>
-              <b>0</b>
-            </button>
-          </nav>
-        }
-        popupButton={{
-          icon: <MoreVertical size={22} strokeWidth={2} />,
-          menuItems: [],
-        }}
-      />
-      <main className="compact-page__content contacts-page__content">
+    <div
+      className={`compact-page contacts-page ${isMobile && mobileDetailOpen ? 'contacts-page--detail' : ''}`}
+    >
+      {showSidebar && (
+        <CommonSidebar
+          title="Контакты"
+          resize={true}
+          bodyContent={
+            <nav className="contacts-sidebar__nav" aria-label="Категории контактов">
+              <button
+                type="button"
+                onClick={() => handleGroupChange('all')}
+                className={`contacts-sidebar__nav-item ${group === 'all' ? 'contacts-sidebar__nav-item--active' : ''}`}
+              >
+                <UserRound size={18} />
+                <span>Все контакты</span>
+                <b>3</b>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleGroupChange('favorites')}
+                className={`contacts-sidebar__nav-item ${group === 'favorites' ? 'contacts-sidebar__nav-item--active' : ''}`}
+              >
+                <Star size={18} />
+                <span>Избранные</span>
+                <b>1</b>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleGroupChange('recent')}
+                className={`contacts-sidebar__nav-item ${group === 'recent' ? 'contacts-sidebar__nav-item--active' : ''}`}
+              >
+                <Clock3 size={18} />
+                <span>Недавние</span>
+                <b>2</b>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleGroupChange('groups')}
+                className={`contacts-sidebar__nav-item ${group === 'groups' ? 'contacts-sidebar__nav-item--active' : ''}`}
+              >
+                <UsersRound size={18} />
+                <span>Группы</span>
+                <b>0</b>
+              </button>
+            </nav>
+          }
+          popupButton={{
+            icon: <MoreVertical size={22} strokeWidth={2} />,
+            menuItems: [],
+          }}
+        />
+      )}
+      {showDetail && (
+        <main className="compact-page__content contacts-page__content">
+        {isMobile && (
+          <button type="button" className="compact-page__back-button" onClick={() => setMobileDetailOpen(false)}>
+            Назад
+          </button>
+        )}
         <header className="compact-page__header contacts-page__hero">
           <div>
             <p className="compact-page__eyebrow">Люди рядом</p>
@@ -129,6 +162,7 @@ export default function Contacts() {
           )}
         </section>
       </main>
+      )}
     </div>
   )
 }

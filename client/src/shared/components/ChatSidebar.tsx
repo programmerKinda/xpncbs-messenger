@@ -1,9 +1,11 @@
 import ItemChat from '@/views/chat/ItemChat'
 import CommonSidebar from '@/shared/components/CommonSidebar'
 import ChatFolders from '@/views/chat/ChatFolders'
+import { useChatMenuStore } from '@/controllers/chatMenuController'
 
 import { LogOut, MoreVertical, UsersRound } from 'lucide-react'
 export default function ChatSidebar() {
+  const { setChatOpen } = useChatMenuStore()
   const chatFolders = [
     { id: 1, name: 'Все' },
     { id: 2, name: 'Групповые' },
@@ -16,7 +18,11 @@ export default function ChatSidebar() {
       <CommonSidebar
         title="Чаты"
         headerExtraContent={<ChatFolders chatFolders={chatFolders} />}
-        bodyContent={<ItemChat createdAt={new Date()} watched={true} />}
+        bodyContent={
+          <div onClick={() => setChatOpen(true)} style={{ cursor: 'pointer' }}>
+            <ItemChat createdAt={new Date()} watched={true} />
+          </div>
+        }
         resize={true}
         popupButton={{
           icon: <MoreVertical size={22} strokeWidth={2} />,

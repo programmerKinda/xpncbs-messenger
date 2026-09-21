@@ -11,10 +11,12 @@ import UserName from '../user/UserName'
 
 import { useChatWindowController } from '@/hooks/useChatWindowController'
 import { useModalStore } from '@/controllers/modalController'
+import { useChatMenuStore } from '@/controllers/chatMenuController'
 import ChatForm from './ChatForm'
 import CommonWindowHeader from '@/shared/components/CommonWindowHeader'
 export default function ChatWindow() {
   const { setModalChildren, setModalHeaderContent } = useModalStore()
+  const { setChatOpen } = useChatMenuStore()
   const {
     isRecording,
     setIsRecording,
@@ -84,6 +86,15 @@ export default function ChatWindow() {
     >
       <CommonWindowHeader>
         <div className="flex gap-1 items-start">
+          <button
+            type="button"
+            className="chat-window__back"
+            onClick={() => setChatOpen(false)}
+            aria-label="Вернуться к списку чатов"
+            style={{ display: 'none' }}
+          >
+            ←
+          </button>
           <UserAvatar name="x p" avatarURL="" />
 
           <div className="chat-window__contact" onClick={toggleMenu}>
