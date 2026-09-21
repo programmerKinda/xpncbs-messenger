@@ -1,0 +1,189 @@
+.calls-page {
+  @apply flex flex-col p-2;
+}
+
+.calls-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 8px;
+}
+
+.calls-sidebar__item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 12px;
+  color: var(--color-text-muted);
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
+}
+
+.calls-sidebar__item:hover,
+.calls-sidebar__item--active {
+  color: var(--color-accent-dark);
+  background: var(--color-accent-soft);
+}
+
+.calls-sidebar__item b {
+  min-width: 22px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  color: currentColor;
+  background: rgba(79, 70, 229, 0.08);
+  font-size: 11px;
+  text-align: center;
+}
+
+.calls-sidebar__count--warning {
+  color: #dc2626 !important;
+  background: #fef2f2 !important;
+}
+
+.calls-sidebar__summary {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 18px 8px 0;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface-muted);
+}
+
+.calls-sidebar__summary span,
+.calls-sidebar__summary small {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.calls-sidebar__summary strong {
+  color: var(--color-text);
+  font-size: 20px;
+}
+
+.call-item {
+  @apply flex items-center gap-3 rounded-[16px] p-3 transition-all duration-200 hover:bg-indigo-50;
+  border: 1px solid transparent;
+}
+
+.call-item:hover {
+  border-color: var(--color-border);
+}
+
+@container (max-width: 86px) {
+  .call-item__time {
+    @apply hidden;
+  }
+
+  .call-item__name {
+    @apply hidden;
+  }
+
+  .call-item__main {
+    @apply hidden;
+  }
+
+  .call-item {
+    @apply gap-0;
+  }
+
+  .call-item__type {
+    @apply hidden;
+  }
+
+  .call-item__right {
+    @apply hidden;
+  }
+}
+
+.call-item__avatar {
+  @apply shrink-0;
+}
+
+.call-item__content {
+  @apply flex-1 min-w-0;
+}
+
+.call-item__meta {
+  @apply flex items-start justify-between gap-3;
+}
+
+.call-item__main {
+  @apply min-w-0 flex-1;
+}
+
+.call-item__name {
+  @apply text-lg font-semibold text-gray-500;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.call-item__phone {
+  @apply truncate text-sm text-gray-500;
+}
+
+.call-item__footer {
+  @apply mt-1 flex items-center gap-2;
+}
+
+.call-item__status {
+  @apply flex items-center;
+}
+
+.call-item__direction {
+  @apply text-sm text-gray-500;
+}
+
+.call-item__right {
+  @apply flex flex-col items-center justify-center gap-2;
+}
+
+.call-item__time {
+  @apply text-sm text-gray-500;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.call-item__icon {
+  @apply flex h-7 w-7 items-center justify-center rounded-full;
+}
+
+.call-item__icon--incoming {
+  @apply bg-emerald-100 text-emerald-600;
+}
+
+.call-item__icon--outgoing {
+  @apply bg-sky-100 text-sky-600;
+}
+
+.call-item__icon--missed {
+  @apply bg-rose-100 text-rose-600;
+}
+
+.call-item__badge {
+  @apply rounded-full px-2.5 py-1 text-xs font-medium;
+}
+
+.call-item__badge--incoming {
+  @apply bg-emerald-50 text-emerald-600;
+}
+
+.call-item__badge--outgoing {
+  @apply bg-sky-50 text-sky-600;
+}
+
+.call-item__badge--missed {
+  @apply bg-rose-50 text-rose-600;
+}
+
+.call-item__type {
+  @apply text-xs text-gray-500;
+}

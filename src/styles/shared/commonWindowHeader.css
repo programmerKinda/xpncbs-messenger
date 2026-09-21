@@ -1,3 +1,0 @@
-.common-window__header {
-  @apply flex items-center gap-2 border-b border-gray-300 justify-between p-4 bg-white text-gray-700;
-}

@@ -1,0 +1,20 @@
+.menu {
+  @apply flex flex-col;
+}
+
+.menu__item {
+  @apply flex items-center gap-3 px-4 py-2 text-gray-800 cursor-pointer;
+  transition: background-color 0.2s ease;
+}
+
+.menu__item:hover {
+  background: var(--color-surface-muted);
+}
+
+.menu__icon {
+  @apply text-lg opacity-70;
+}
+
+.menu__button {
+  @apply flex-1 text-left bg-transparent border-none outline-none;
+}

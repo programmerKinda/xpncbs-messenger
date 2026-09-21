@@ -1,0 +1,229 @@
+/* ===================== */
+/*  БАЗОВЫЕ СТИЛИ СООБЩЕНИЯ  */
+/* ===================== */
+.message {
+  @apply relative w-fit max-w-[85%] sm:max-w-[480px] mb-2 px-3 py-2 min-h-[34px] text-[15px] leading-[1.4];
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(48, 61, 94, 0.07);
+}
+
+/* --------------------- */
+/* ИСХОДЯЩЕЕ (ЗЕЛЕНОЕ) */
+/* --------------------- */
+.message--outgoing {
+  @apply self-end ml-auto rounded-br-none mr-2;
+  color: #29356b;
+  background: var(--color-outgoing);
+  border: 1px solid #d9defb;
+}
+
+.message--outgoing::after {
+  content: '';
+  @apply absolute bottom-0 -right-[5px] w-[10px] h-[15px];
+  background: var(--color-outgoing);
+  clip-path: polygon(0 0, 0 100%, 100% 100%, 15% 45%);
+}
+
+/* --------------------- */
+/* ВХОДЯЩЕЕ (БЕЛОЕ)     */
+/* --------------------- */
+.message--incoming {
+  @apply self-start mr-auto rounded-bl-none ml-2;
+  color: var(--color-text);
+  background: var(--color-chat-bubble);
+  border: 1px solid var(--color-border);
+}
+
+.message--incoming::before {
+  content: '';
+  @apply absolute bottom-0 -left-[5px] w-[10px] h-[15px] bg-white;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%, 85% 45%);
+}
+.message.circle {
+  @apply bg-transparent shadow-none;
+}
+/* --------------------- */
+/* КОНТЕНТ СООБЩЕНИЯ     */
+/* --------------------- */
+.message-content {
+  @apply block w-full;
+}
+
+.message-text {
+  @apply m-0 inline align-middle text-[15px] leading-[1.4] break-words whitespace-pre-wrap text-inherit;
+}
+
+.message-text::after {
+  content: '';
+  @apply inline-block w-[95px] h-0;
+}
+
+.message-text:empty {
+  display: none;
+}
+
+.message-text:empty::after {
+  display: none;
+}
+
+/* --------------------- */
+/* ФУТЕР И МЕТАДАННЫЕ    */
+/* --------------------- */
+.message__footer {
+  @apply float-right mt-[-14px] ml-auto flex items-center flex-nowrap gap-1 text-[11px] font-medium leading-none select-none relative z-10 h-[14px];
+  color: var(--color-text-muted);
+}
+
+.message--incoming .message__footer {
+  color: var(--color-text-muted);
+}
+
+.message__time {
+  @apply opacity-80 leading-none whitespace-nowrap;
+}
+
+.message__status-icon {
+  @apply relative;
+}
+
+.tick-1 {
+  @apply relative top-0 left-0;
+}
+
+.tick-2 {
+  @apply absolute top-0 left-[3px];
+}
+
+/* Если текста нет (voice) — футер не ломает поток */
+.message-text:empty ~ .message__footer {
+  @apply mt-1 static float-none;
+}
+
+/* ===================== */
+/*  ГОЛОСОВОЕ СООБЩЕНИЕ  */
+/* ===================== */
+.voice-message-container {
+  @apply flex items-center gap-2 min-w-[220px] py-1;
+}
+
+.voice-play-btn {
+  @apply w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all active:scale-90 border-none;
+}
+
+/* Цвет кнопки Play */
+.message--outgoing .voice-play-btn {
+  @apply text-white;
+  background: var(--color-accent);
+}
+
+.message--incoming .voice-play-btn {
+  @apply text-white;
+  background: #4d9a8a;
+}
+
+/* Контент и длительность */
+.voice-content {
+  @apply flex-1 flex flex-col gap-0.5;
+}
+
+.voice-duration {
+  @apply text-[11px] opacity-60 font-normal leading-none;
+}
+
+/* Waveform */
+.voice-waveform-wrapper {
+  @apply relative w-full h-8 flex items-center cursor-pointer;
+}
+
+.voice-waveform-svg {
+  @apply w-full h-6;
+}
+/* Непрослушанная часть волны — тёмная */
+.waveform-bg {
+  fill: #444444; /* ещё темнее для максимального контраста */
+}
+
+/* Исходящие — тёмно-зелёная непрослушанная часть */
+.message--outgoing .waveform-bg {
+  fill: #336633; /* насыщенный тёмно-зелёный */
+}
+
+/* Прогресс (прослушанная часть) */
+.waveform-progress {
+  fill: #4aaa54; /* входящие — ярко-зелёный */
+}
+
+.message--outgoing .waveform-progress {
+  fill: #5db05b; /* исходящие — яркий зелёный прогресс */
+}
+
+/* --------------------- */
+/*  Дополнительно hover  */
+/* --------------------- */
+.voice-waveform-wrapper:hover .voice-waveform {
+  @apply h-[5px];
+}
+
+/* Адаптация футера для голосовых сообщений */
+.voice-message-container ~ .message__footer {
+  @apply mt-0 static float-right;
+}
+.video-circle {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.video-circle:active {
+  transform: scale(0.97);
+}
+
+/* видео */
+.video-circle__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* скрываем встроенные кнопки браузера */
+.video-circle__video::-webkit-media-controls {
+  display: none !important;
+}
+.video-circle__video::-webkit-media-controls-enclosure {
+  display: none !important;
+}
+.video-circle__video::-webkit-media-controls-play-button {
+  display: none !important;
+}
+.video-circle__video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+}
+
+/* лёгкое затемнение */
+.video-circle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* при паузе/без звука */
+.video-circle.paused::after {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* SVG прогресса */
+.video-circle__progress {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.video-circle__progress circle {
+  transition: stroke-dashoffset 0.1s linear;
+}

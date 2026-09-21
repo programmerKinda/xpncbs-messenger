@@ -1,0 +1,21 @@
+.user-avatar {
+  @apply overflow-hidden rounded-full inline-flex flex-shrink-0;
+  aspect-ratio: 1 / 1;
+}
+.user-avatar__img {
+  @apply block w-full h-full object-cover;
+}
+.user-avatar__name {
+  @apply flex items-center justify-center w-full h-full;
+  font-weight: 300;
+  line-height: 1;
+  transform: translateY(-0.06em);
+}
+/* NAME */
+.user-name {
+  @apply text-base font-semibold;
+  color: var(--color-text);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

@@ -1,7 +1,0 @@
-.chat-window__header .chat-window__title,
-.chat-window__header button,
-.chat-window__header .user-name,
-.chat-window__header .logo__title,
-.chat-window__header .common-sidebar-menu-button {
-  @apply text-gray-700;
-}
