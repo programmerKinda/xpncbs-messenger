@@ -336,9 +336,6 @@
   @apply mt-1 text-sm text-red-400;
 }
 
-
-
-
 /* Verification Code */
 
 .auth-code {
@@ -382,8 +379,7 @@
 .auth-code__box--active {
   border-color: rgba(79, 70, 229, 0.55);
 
-  box-shadow:
-    0 0 0 3px rgba(79, 70, 229, 0.08);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.08);
 }
 
 .auth-code__box--filled {
@@ -422,15 +418,13 @@
 
   transform: none;
 
-  box-shadow:
-    0 8px 16px rgba(79, 70, 229, 0.1);
+  box-shadow: 0 8px 16px rgba(79, 70, 229, 0.1);
 }
 
 .auth-next-button:disabled:hover {
   transform: none;
 
-  box-shadow:
-    0 8px 16px rgba(79, 70, 229, 0.1);
+  box-shadow: 0 8px 16px rgba(79, 70, 229, 0.1);
 }
 
 /* Mobile */
@@ -443,4 +437,29 @@
   .auth-code__box {
     @apply h-[54px] w-[46px] rounded-[12px] text-[22px];
   }
+}
+
+.auth-profile-field {
+  @apply mb-4;
+}
+
+.auth-profile-field input {
+  @apply h-[56px] w-full border-0 bg-transparent px-4 text-[17px] text-[#111827] outline-none;
+}
+
+.auth-profile-field input::placeholder {
+  @apply text-gray-400;
+}
+
+.auth-profile-field--about {
+  @apply mb-6;
+  min-height: 100px;
+}
+
+.auth-profile-field--about textarea {
+  @apply w-full resize-none border-0 bg-transparent px-4 py-4 text-[17px] leading-[1.5] text-[#111827] outline-none;
+}
+
+.auth-profile-field--about textarea::placeholder {
+  @apply text-gray-400;
 }

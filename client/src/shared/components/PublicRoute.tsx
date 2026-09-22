@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuthStore } from '@/controllers/authController';
 
-const ProtectedRoute = () => {
+const PublicRoute = () => {
   const isAuthenticated = useAuthStore(
     (state) => state.isAuthenticated,
   );
@@ -14,11 +14,11 @@ const ProtectedRoute = () => {
     return <div>Загрузка...</div>;
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/auth" replace />;
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;
 };
 
-export default ProtectedRoute;
+export default PublicRoute;

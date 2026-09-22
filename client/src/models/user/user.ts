@@ -1,10 +1,14 @@
-export type UserStatus = 'online' | 'offline'
 export interface User {
-  uuid: string
-  name: string // имя
-  phone: string // номер телефона
-  lastSeen: Date //последний онлайн
-  status: UserStatus // статус
-  description?: string // описание
-  avatarUrl?: string // аватар
+  id: string
+  phone: string
+
+  firstName: string
+  lastName: string | null
+
+  username: string | null
+  about: string | null
+  avatarUrl: string | null
+
+  createdAt: string
+  updatedAt: string
 }

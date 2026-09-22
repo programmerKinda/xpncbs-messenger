@@ -12,6 +12,9 @@ import Auth from './views/auth/auth'
 import SettingLayout from './views/layouts/SettingLayout'
 import SettingPageUser from './routes/settingPages/SettingPageUser'
 import SettingPageSecure from './routes/settingPages/SettingPageSecure'
+import { useAuthStore } from './controllers/authController'
+import ProtectedRoute from './shared/components/ProtectedRoute'
+import PublicRoute from './shared/components/PublicRoute'
 import {
   SettingPageAbout,
   SettingPageAppearance,
@@ -60,12 +63,32 @@ function App() {
     }
   }, [targetRef, onClose])
 
+  const restoreSession = useAuthStore((state) => state.restoreSession)
+
+  const isLoading = useAuthStore((state) => state.isLoading)
+
+  useEffect(() => {
+    restoreSession()
+    
+  }, [restoreSession])
+
+  const user = useAuthStore((state) => state.user);
+
+console.log('CURRENT USER:', user);
+
+  if (isLoading) {
+    return <div>Загрузка...</div>
+  }
+
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/auth" element={<Auth />} />
-          <Route element={<MainLayout />}>
+          <Route element={<PublicRoute/>}>
+            <Route path="/auth" element={<Auth />} />
+          </Route>
+          <Route element={<ProtectedRoute/>}>
+            <Route element={<MainLayout />}>
             <Route path="/" element={<MainPage />} />
 
             <Route path="/contacts" element={<ContactsPage />} />
@@ -84,6 +107,7 @@ function App() {
             <Route path="/settings/accessibility" element={<SettingPageAccessibility />} />
             <Route path="/settings/devices" element={<SettingPageDevices />} />
             <Route path="/settings/advanced" element={<SettingPageAdvanced />} />
+          </Route>
           </Route>
         </Routes>
       </BrowserRouter>
