@@ -11,38 +11,40 @@ import {
   MoreHorizontal,
 } from 'lucide-react'
 import '@/styles/components/calls.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useCallStore } from '@/controllers/callController'
+import type { CallLogEntry } from '@/models/call'
 
 type CallFilter = 'all' | 'missed' | 'incoming' | 'outgoing'
 
-const callHistory = [
-  {
-    name: 'Анна К.',
-    phone: '+7 999 123-45-67',
-    time: 'Сегодня, 14:20',
-    direction: 'incoming' as const,
-    status: 'accepted' as const,
-    type: 'phone' as const,
-  },
-  {
-    name: 'Максим',
-    phone: '+7 900 555-12-34',
-    time: 'Вчера, 21:05',
-    direction: 'outgoing' as const,
-    status: 'missed' as const,
-    type: 'video' as const,
-  },
-  {
-    name: 'Ольга',
-    phone: '+7 915 000-11-22',
-    time: 'Вчера, 09:40',
-    direction: 'incoming' as const,
-    status: 'accepted' as const,
-    type: 'video' as const,
-  },
-]
+const formatCallTime = (dateIso: string) => {
+  const date = new Date(dateIso)
+  if (Number.isNaN(date.getTime())) {
+    return 'Нет данных'
+  }
+
+  const now = new Date()
+  const sameDay = date.toDateString() === now.toDateString()
+
+  if (sameDay) {
+    return `Сегодня, ${date.toLocaleTimeString('ru-RU', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    })}`
+  }
+
+  return date.toLocaleString('ru-RU', {
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
+}
 
 export default function Calls() {
+  const callHistory = useCallStore((state) => state.callHistory)
   const [filter, setFilter] = useState<CallFilter>('all')
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 560)
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false)
@@ -57,12 +59,29 @@ export default function Calls() {
     return () => mediaQuery.removeEventListener('change', updateMobileState)
   }, [])
 
+  const totals = useMemo(() => {
+    const total = callHistory.length
+    const missed = callHistory.filter((call) => call.status === 'missed').length
+    const incoming = callHistory.filter((call) => call.direction === 'incoming').length
+    const outgoing = callHistory.filter((call) => call.direction === 'outgoing').length
+    const durationMinutes = callHistory.reduce((sum, call) => sum + Math.max(0, call.durationSeconds), 0)
+
+    return {
+      total,
+      missed,
+      incoming,
+      outgoing,
+      durationMinutes: Math.floor(durationMinutes / 60),
+    }
+  }, [callHistory])
+
   const filteredCalls = callHistory.filter(
     (call) =>
       filter === 'all' ||
       call.direction === filter ||
       (filter === 'missed' && call.status === 'missed')
   )
+
   const filterTitle =
     filter === 'all'
       ? 'Недавние звонки'
@@ -82,15 +101,16 @@ export default function Calls() {
     }
   }
 
-  const renderCall = (call: (typeof callHistory)[number]) => (
+  const renderCall = (call: CallLogEntry) => (
     <CallItem
-      key={`${call.name}-${call.time}`}
-      name={call.name}
+      id={call.peerId}
+      key={`${call.callId}-${call.startedAt}`}
+      name={call.peerName}
       phone={call.phone}
-      time={call.time}
+      time={formatCallTime(call.startedAt)}
       direction={call.direction}
       status={call.status}
-      callType={call.type === 'phone' ? <Phone size={18} /> : <Video size={18} />}
+      callType={call.type === 'audio' ? <Phone size={18} /> : <Video size={18} />}
     />
   )
 
@@ -111,7 +131,7 @@ export default function Calls() {
               >
                 <Phone size={18} />
                 <span>Все звонки</span>
-                <b>24</b>
+                <b>{totals.total}</b>
               </button>
               <button
                 type="button"
@@ -120,7 +140,7 @@ export default function Calls() {
               >
                 <PhoneMissed size={18} />
                 <span>Пропущенные</span>
-                <b className="calls-sidebar__count--warning">3</b>
+                <b className="calls-sidebar__count--warning">{totals.missed}</b>
               </button>
               <button
                 type="button"
@@ -129,7 +149,7 @@ export default function Calls() {
               >
                 <PhoneIncoming size={18} />
                 <span>Входящие</span>
-                <b>12</b>
+                <b>{totals.incoming}</b>
               </button>
               <button
                 type="button"
@@ -138,12 +158,12 @@ export default function Calls() {
               >
                 <PhoneOutgoing size={18} />
                 <span>Исходящие</span>
-                <b>9</b>
+                <b>{totals.outgoing}</b>
               </button>
               <div className="calls-sidebar__summary">
                 <span>Время разговоров</span>
-                <strong>4ч 18м</strong>
-                <small>за последние 7 дней</small>
+                <strong>{totals.durationMinutes} мин</strong>
+                <small>по истории звонков</small>
               </div>
             </nav>
           }
@@ -190,21 +210,23 @@ export default function Calls() {
           <section className="calls-route__stats">
             <div>
               <span>Всего звонков</span>
-              <strong>24</strong>
+              <strong>{totals.total}</strong>
             </div>
             <div>
               <span>Пропущено</span>
-              <strong className="calls-route__stat--warning">3</strong>
+              <strong className="calls-route__stat--warning">{totals.missed}</strong>
             </div>
             <div>
               <span>Время в звонках</span>
-              <strong>4ч 18м</strong>
+              <strong>{totals.durationMinutes} мин</strong>
             </div>
           </section>
           <section className="calls-route__history">
             <div className="calls-route__section-title">
               <h2>{filterTitle}</h2>
-              <span>{filteredCalls.length} из 24 звонков</span>
+              <span>
+                {filteredCalls.length} из {totals.total} звонков
+              </span>
             </div>
             {filteredCalls.length > 0 ? (
               filteredCalls.map(renderCall)

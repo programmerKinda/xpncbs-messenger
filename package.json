@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"npm --prefix client run dev\" \"npm --prefix server run start:dev\"",
+    "dev:usb": "adb reverse tcp:5173 tcp:5173 && adb reverse tcp:3000 tcp:3000 && concurrently \"npm --prefix client run dev -- --host 0.0.0.0\" \"npm --prefix server run start:dev\"",
     "postinstall": "npm install --prefix client && npm install --prefix server"
   },
   "devDependencies": {

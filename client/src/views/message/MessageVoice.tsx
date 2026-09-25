@@ -1,13 +1,18 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react'
-import { getDataUrl } from '@/utils/getDataUrl'
 import { type MessageVoiceContent } from '@/models/message'
 import { useMediaStore } from '@/controllers/mediaPlayController'
 import { Pause, Play } from 'lucide-react'
 
-export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ content }) => {
+export const MessageVoice: React.FC<{
+  content: MessageVoiceContent
+  autoPlay?: boolean
+  onEnded?: () => void
+}> = ({ content, autoPlay = false, onEnded }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
+  const [audioDuration, setAudioDuration] = useState(content.duration)
+  const [waveform, setWaveform] = useState(content.waveform)
 
   const audioRef = useRef<HTMLAudioElement>(null)
   const progressContainerRef = useRef<HTMLDivElement>(null)
@@ -16,6 +21,55 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
   const activeId = useMediaStore((state) => state.activeId)
   const playAudio = useMediaStore((state) => state.playAudio)
   const stopAudio = useMediaStore((state) => state.stopAudio)
+  const audioSource = content.content.startsWith('/uploads/')
+    ? `/api${content.content}`
+    : content.content
+
+  useEffect(() => {
+    let cancelled = false
+
+    const loadAudioMetadata = async () => {
+      try {
+        const response = await fetch(audioSource)
+        const context = new AudioContext()
+        const audioBuffer = await context.decodeAudioData(await response.arrayBuffer())
+        const barsCount = 50
+        const samplesPerBar = Math.max(1, Math.floor(audioBuffer.length / barsCount))
+        const rawWaveform = Array.from({ length: barsCount }, (_, barIndex) => {
+          const start = barIndex * samplesPerBar
+          const end = Math.min(audioBuffer.length, start + samplesPerBar)
+          let sum = 0
+          let sampleCount = 0
+
+          for (let sampleIndex = start; sampleIndex < end; sampleIndex += 1) {
+            let amplitude = 0
+            for (let channelIndex = 0; channelIndex < audioBuffer.numberOfChannels; channelIndex += 1) {
+              amplitude += Math.abs(audioBuffer.getChannelData(channelIndex)[sampleIndex])
+            }
+            sum += amplitude / audioBuffer.numberOfChannels
+            sampleCount += 1
+          }
+
+          return sampleCount > 0 ? sum / sampleCount : 0
+        })
+        const maxAmplitude = Math.max(...rawWaveform, 0.001)
+
+        if (!cancelled) {
+          setAudioDuration(audioBuffer.duration)
+          setWaveform(rawWaveform.map((amplitude) => amplitude / maxAmplitude))
+        }
+
+        await context.close()
+      } catch {
+        // Use metadata saved with the message when decoding is unavailable.
+      }
+    }
+
+    void loadAudioMetadata()
+    return () => {
+      cancelled = true
+    }
+  }, [audioSource])
 
   // Контроллер: следим за тем, кто должен играть
   useEffect(() => {
@@ -24,7 +78,8 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
     if (!isCurrentActive && isPlaying) {
       // Если в сторе другой ID, а мы играем — ПРИНУДИТЕЛЬНАЯ ПАУЗА
       audioRef.current?.pause()
-      setIsPlaying(false)
+      const resetStateId = window.setTimeout(() => setIsPlaying(false), 0)
+      return () => window.clearTimeout(resetStateId)
     }
   }, [activeId, content.id, isPlaying])
 
@@ -50,10 +105,19 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
     }
   }
 
+  useEffect(() => {
+    if (!autoPlay || !audioRef.current) return
+
+    playAudio(content.id)
+    void audioRef.current.play().then(() => setIsPlaying(true)).catch(() => undefined)
+  }, [autoPlay, content.id, playAudio])
+
   const handleTimeUpdate = () => {
     if (audioRef.current) {
       const current = audioRef.current.currentTime
-      const duration = audioRef.current.duration || content.duration
+      const duration = Number.isFinite(audioRef.current.duration)
+        ? audioRef.current.duration
+        : audioDuration
       setCurrentTime(current)
       setProgress((current / duration) * 100)
     }
@@ -64,7 +128,9 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
       const rect = progressContainerRef.current.getBoundingClientRect()
       const clickX = e.clientX - rect.left
       const width = rect.width
-      const duration = audioRef.current.duration || content.duration
+      const duration = Number.isFinite(audioRef.current.duration)
+        ? audioRef.current.duration
+        : audioDuration
       const newTime = (clickX / width) * duration
 
       audioRef.current.currentTime = newTime
@@ -78,13 +144,14 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
     setProgress(0)
     setCurrentTime(0)
     stopAudio(content.id)
+    onEnded?.()
   }
 
   const bars = useMemo(() => {
-    const rawData = content.waveform || []
+    const rawData = waveform || []
     const max = Math.max(...rawData, 1)
     return rawData.map((val) => (val / max) * 20 + 2)
-  }, [content.waveform])
+  }, [waveform])
 
   return (
     <div
@@ -93,7 +160,12 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
     >
       <audio
         ref={audioRef}
-        src={getDataUrl(content.content, 'audio/webm')}
+        src={audioSource}
+        onLoadedMetadata={(event) => {
+          if (Number.isFinite(event.currentTarget.duration)) {
+            setAudioDuration(event.currentTarget.duration)
+          }
+        }}
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleEnded}
         // Убрали onPlay/onPause, так как управляем ими вручную через togglePlay и useEffect
@@ -135,7 +207,7 @@ export const MessageVoice: React.FC<{ content: MessageVoiceContent }> = ({ conte
         </div>
 
         <div style={{ fontSize: '12px', marginTop: '4px', color: '#666' }}>
-          {formatTime(currentTime)} / {formatTime(content.duration)}
+          {formatTime(currentTime)} / {formatTime(audioDuration)}
         </div>
       </div>
     </div>

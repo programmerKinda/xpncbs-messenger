@@ -13,14 +13,16 @@ interface ChatInputProps {
   value: string
   setValue: Dispatch<SetStateAction<string>>
   placeholder?: string
+  onEnter?: () => void
 }
 
 export interface ChatInputHandle {
   insertEmojiAtCaret: (emoji: string) => void
+  clear: () => void
 }
 
 const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
-  ({ value, setValue: _setValue, placeholder }, ref) => {
+  ({ value, setValue: _setValue, placeholder, onEnter }, ref) => {
     const [isEmpty, setIsEmpty] = useState(true)
     const [hasBr, setHasBr] = useState(false)
 
@@ -363,11 +365,18 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
 
     useImperativeHandle(ref, () => ({
       insertEmojiAtCaret,
+      clear: () => {
+        if (!inputRef.current) return
+        inputRef.current.replaceChildren()
+        _setValue('')
+        setIsEmpty(true)
+      },
     }))
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault()
+        onEnter?.()
       }
     }
     return (

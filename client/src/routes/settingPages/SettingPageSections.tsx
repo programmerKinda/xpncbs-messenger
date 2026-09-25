@@ -38,6 +38,23 @@ function SettingPageShell({ eyebrow, title, description, icon, children }: Setti
   )
 }
 
+export function SettingPageHome() {
+  return (
+    <SettingPageShell
+      eyebrow="Центр управления"
+      title="Настройки"
+      description="Выберите раздел, который хотите настроить."
+      icon={<SlidersHorizontal size={27} />}
+    >
+      <SettingGroup title="Разделы настроек">
+        <p className="setting-catalog__note">
+          Профиль, уведомления, чаты и остальные параметры доступны в меню слева.
+        </p>
+      </SettingGroup>
+    </SettingPageShell>
+  )
+}
+
 function SettingGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="setting-catalog__group">

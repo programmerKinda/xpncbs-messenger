@@ -1,22 +1,61 @@
-import { type MessageProps, messageTypes } from '@/models/message'
+import {
+  type MessageCallContent,
+  type MessageCircleContent,
+  type MessageProps,
+  type MessageVoiceContent,
+} from '@/models/message'
 import { formatTime } from '@/utils/formatTime'
 import MessageContent from './MessageContent'
 import { Check, CheckCheck } from 'lucide-react'
 
-const Message: React.FC<MessageProps> = ({ message, className }) => {
+const Message: React.FC<MessageProps> = ({ message, className, onMention, onMediaEnded, autoPlay }) => {
   const timeString = formatTime(message.createdAt)
+  const isOutgoing = className?.includes('message--outgoing') ?? false
+  const content = (() => {
+    switch (message.type) {
+      case 'text':
+        return MessageContent.text({ content: message.content as string, onMention })
+      case 'voice':
+        return MessageContent.voice({
+          content: message.content as MessageVoiceContent,
+          autoPlay,
+          onEnded: () => onMediaEnded?.(message.uuid),
+        })
+      case 'circle':
+        return MessageContent.circle({
+          content: message.content as MessageCircleContent,
+          autoPlay,
+          onEnded: () => onMediaEnded?.(message.uuid),
+        })
+      case 'file':
+        return MessageContent.file({ content: message.content as string })
+      case 'call':
+        return MessageContent.call({ content: message.content as MessageCallContent })
+      default:
+        return MessageContent.text({ content: typeof message.content === 'string' ? message.content : 'Сообщение' })
+    }
+  })()
+  const messageClassName = [
+    'message',
+    className,
+    message.type === 'circle' ? 'circle' : '',
+    message.type === 'voice' ? 'message--voice' : '',
+    message.type === 'call' ? 'message--call' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   return (
-    <div className={`message ${className || ''} ${message.type === 'circle' ? ' circle' : ''}`}>
+    <div className={messageClassName}>
       {/* <header className='message__header'></header> */}
       <div className="message-content">
-        {messageTypes.includes(message.type) &&
-          MessageContent[message.type]({ content: message.content as any })}
+        {content}
       </div>
       <footer className="message__footer">
         {message.updated && <span>Изменено</span>}
         <div className="message__meta">
           <span className="message__time">{timeString}</span>
-          {message.type !== 'circle' && (
+          {isOutgoing && message.type !== 'circle' && (
             <span className="message__status-icon">
               {message.watched ? (
                 <>

@@ -24,16 +24,18 @@ export const useMediaStore = create<MediaStore>((set, get) => ({
     const { messages } = get()
 
     // Находим индекс текущего сообщения
-    const currentIndex = messages.findIndex(
-      (m) => m.uuid === currentId || (typeof m.content !== 'string' && m.content.id === currentId)
-    )
+    const currentIndex = messages.findIndex((m) => {
+      if (m.uuid === currentId) return true
+      if (typeof m.content === 'string' || !('id' in m.content)) return false
+      return m.content.id === currentId
+    })
 
     if (currentIndex === -1) return
 
     // Ищем следующее голосовое сообщение после текущего
     const nextVoiceMessage = messages.slice(currentIndex + 1).find((m) => m.type === 'voice')
 
-    if (nextVoiceMessage && typeof nextVoiceMessage.content !== 'string') {
+    if (nextVoiceMessage && typeof nextVoiceMessage.content !== 'string' && 'id' in nextVoiceMessage.content) {
       set({ activeId: nextVoiceMessage.content.id })
     } else {
       set({ activeId: null }) // Больше голосовых нет

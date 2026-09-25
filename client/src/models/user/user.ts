@@ -12,3 +12,10 @@ export interface User {
   createdAt: string
   updatedAt: string
 }
+
+export interface UpdateProfileData {
+  firstName: string
+  lastName: string
+  username: string
+  about: string
+}

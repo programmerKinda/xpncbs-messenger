@@ -1,8 +1,8 @@
-import { cloneElement } from 'react'
+import { cloneElement, type ReactElement } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 interface SettingItemProps {
-  icon: React.ReactElement<any, any>
+  icon: ReactElement<{ size?: number }>
   title: string
   subtitle?: string
   large?: boolean
@@ -18,7 +18,7 @@ export default function SettingItem({
   className = '',
   path,
 }: SettingItemProps) {
-  const iconElement = cloneElement(icon as any, { size: large ? 56 : 28 })
+  const iconElement = cloneElement(icon, { size: large ? 56 : 28 })
   const navigate = useNavigate()
   const location = useLocation()
   const targetPath = path === '/' ? '/settings' : path === 'login' ? '/auth' : `/settings/${path}`

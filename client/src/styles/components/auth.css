@@ -79,6 +79,26 @@
   box-shadow: none;
 }
 
+.auth-field:has(.auth-input--error),
+.auth-field:has(input[aria-invalid='true']),
+.auth-input--error {
+  border-color: #dc2626 !important;
+}
+
+.auth-field input[aria-invalid='true'],
+.auth-field textarea[aria-invalid='true'],
+.auth-input--error {
+  border: 1px solid #dc2626 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12) !important;
+}
+
+.auth-form-error {
+  margin-top: -16px;
+  color: #dc2626;
+  font-size: 12px;
+}
+
 .auth-field input:focus-visible,
 .auth-field button:focus-visible,
 .auth-country-field .dropdown > button:focus-visible {

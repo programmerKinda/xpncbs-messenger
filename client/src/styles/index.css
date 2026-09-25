@@ -18,6 +18,8 @@
 @import './components/settings.css';
 @import './components/auth.css';
 @import './shared/commonWindowHeader.css';
+@import './components/avatarCropper.css';
+@import './components/callOverlay.css';
 @import './shared/selectList.css';
 @tailwind base;
 @tailwind components;

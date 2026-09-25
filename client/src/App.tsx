@@ -26,9 +26,11 @@ import {
   SettingPageHotKeys,
   SettingPageLanguage,
   SettingPageNotifications,
+  SettingPageHome,
 } from './routes/settingPages/SettingPageSections'
 import { getBackendHealth, getBackendMessage } from './api/file'
 import { useDropdownStore } from './controllers/dropdownController'
+import CallOverlay from './views/calls/CallOverlay'
 
 function App() {
   const popupRef = useRef<HTMLDivElement | null>(null)
@@ -90,12 +92,14 @@ console.log('CURRENT USER:', user);
           <Route element={<ProtectedRoute/>}>
             <Route element={<MainLayout />}>
             <Route path="/" element={<MainPage />} />
+            <Route path="/chat/:chatKey" element={<MainPage />} />
 
             <Route path="/contacts" element={<ContactsPage />} />
             <Route path="/calls" element={<CallsPage />} />
           </Route>
           <Route element={<SettingLayout />}>
-            <Route path="/settings" element={<SettingPageUser />} />
+            <Route path="/settings" element={<SettingPageHome />} />
+            <Route path="/settings/profile" element={<SettingPageUser />} />
             <Route path="/settings/secure" element={<SettingPageSecure />} />
             <Route path="/settings/chats" element={<SettingPageChats />} />
             <Route path="/settings/notification" element={<SettingPageNotifications />} />
@@ -126,6 +130,7 @@ console.log('CURRENT USER:', user);
         </Popup>
       )}
       {modalChildren && <Modal>{modalChildren}</Modal>}
+      <CallOverlay />
     </>
   )
 }

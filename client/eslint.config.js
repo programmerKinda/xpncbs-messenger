@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'src/views/inputs/phoneInput/utils/(2)-mask/**']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

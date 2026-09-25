@@ -35,6 +35,23 @@
   @apply text-sm;
   color: var(--color-accent);
 }
+.chat-menu__call-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+.chat-menu__call-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  cursor: pointer;
+}
 .chat-menu__content {
   @apply flex-1 overflow-y-auto;
   scrollbar-gutter: stable;

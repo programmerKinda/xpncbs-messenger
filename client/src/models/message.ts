@@ -1,4 +1,4 @@
-export const messageTypes = ['text', 'voice', 'circle', 'file'] as const
+export const messageTypes = ['text', 'voice', 'circle', 'file', 'call'] as const
 
 export type MessageType = (typeof messageTypes)[number]
 export type MessageVoiceContent = {
@@ -13,7 +13,14 @@ export type MessageCircleContent = {
   content: string
   watched: boolean
 }
-export type MessageContentType = string | MessageVoiceContent | MessageCircleContent
+export type MessageCallContent = {
+  callId: string
+  direction: 'incoming' | 'outgoing'
+  type: 'audio' | 'video'
+  status: 'accepted' | 'missed'
+  durationSeconds: number
+}
+export type MessageContentType = string | MessageVoiceContent | MessageCircleContent | MessageCallContent
 
 export type Message = {
   uuid: string
@@ -26,4 +33,7 @@ export type Message = {
 export interface MessageProps {
   message: Message
   className?: string
+  onMention?: (username: string) => void
+  onMediaEnded?: (messageId: string) => void
+  autoPlay?: boolean
 }

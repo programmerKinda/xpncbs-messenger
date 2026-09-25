@@ -1,3 +1,18 @@
+.chat-empty-state {
+  @apply flex flex-auto flex-col items-center justify-center gap-3 text-center;
+  min-width: 0;
+  color: var(--color-text-muted);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.24) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.18) 1px, transparent 1px), var(--color-canvas);
+  background-size: 24px 24px;
+}
+
+.chat-empty-state p {
+  margin: 0;
+  font-size: 14px;
+}
+
 .chat-window {
   @apply flex-auto flex flex-col transition-all duration-300 ease-in-out relative;
   background:
@@ -14,6 +29,31 @@
 
 .chat-window__header > div:first-child {
   min-width: 0;
+}
+
+.chat-window__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.chat-window__header-actions > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.chat-window__header-actions > button:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
 }
 
 .chat-window__contact {
@@ -35,14 +75,47 @@
   font-size: 12px;
 }
 
+.chat-window__contact-actions {
+  display: flex;
+  gap: 10px;
+  padding: 12px 18px 0;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.chat-window__contact-action {
+  flex: 1;
+  min-height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chat-window__contact-action--primary {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: white;
+}
+
+.chat-window__contact-action--secondary {
+  background: white;
+  color: #d94d4d;
+}
+
 .chat-window__body {
   padding: 20px clamp(20px, 5vw, 64px);
   flex: 1 1 auto;
   min-height: 0;
+  overflow-y: scroll;
+  overscroll-behavior: contain;
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 .chat-window__footer {
   @apply items-center px-5 py-3 w-full;

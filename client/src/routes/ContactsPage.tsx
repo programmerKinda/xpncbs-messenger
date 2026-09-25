@@ -11,19 +11,29 @@ import {
   UsersRound,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useModalStore } from '@/controllers/modalController'
+import ContactFormModal from '@/views/user/ContactFormModal'
+import { useContactsController, getContactDisplayName } from '@/hooks/useContactsController'
+import type { ContactEntry } from '@/models/contact'
 
 type ContactGroup = 'all' | 'favorites' | 'recent' | 'groups'
 
-const contacts = [
-  { name: 'Анна Кузнецова', status: 'Была недавно', group: 'favorites' },
-  { name: 'Максим Орлов', status: 'В сети', group: 'recent' },
-  { name: 'Ольга Смирнова', status: 'Была вчера', group: 'recent' },
-]
-
 export default function Contacts() {
+  const { contacts, removeContact } = useContactsController()
+  const { setModalChildren, setModalHeaderContent } = useModalStore()
   const [group, setGroup] = useState<ContactGroup>('all')
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 560)
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false)
+
+  const handleRenameContact = (contact: ContactEntry) => {
+    setModalHeaderContent(<span>Изменить контакт</span>)
+    setModalChildren(<ContactFormModal initialContact={contact} />)
+  }
+
+  const openAddContactModal = () => {
+    setModalHeaderContent(<span>Новый контакт</span>)
+    setModalChildren(<ContactFormModal />)
+  }
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 560px)')
@@ -35,7 +45,7 @@ export default function Contacts() {
     return () => mediaQuery.removeEventListener('change', updateMobileState)
   }, [])
 
-  const visibleContacts = contacts.filter((contact) => group === 'all' || contact.group === group)
+  const visibleContacts = contacts
   const groupTitle =
     group === 'all'
       ? 'Все контакты'
@@ -128,7 +138,7 @@ export default function Contacts() {
                 Ваши собеседники и новые знакомства в одном месте.
               </p>
             </div>
-            <button type="button" className="compact-page__primary-button">
+            <button type="button" className="compact-page__primary-button" onClick={openAddContactModal}>
               <UserRoundPlus size={17} /> Добавить контакт
             </button>
           </header>
@@ -141,6 +151,7 @@ export default function Contacts() {
               type="button"
               className="contacts-page__icon-button"
               aria-label="Добавить контакт"
+              onClick={openAddContactModal}
             >
               <Plus size={19} />
             </button>
@@ -152,13 +163,25 @@ export default function Contacts() {
             </div>
             {visibleContacts.length > 0 ? (
               visibleContacts.map((contact) => (
-                <article className="contacts-page__contact" key={contact.name}>
-                  <UserAvatar name={contact.name} avatarURL="" size={48} />
+                <article className="contacts-page__contact" key={contact.id}>
+                  <UserAvatar
+                    id={contact.id}
+                    name={getContactDisplayName(contact)}
+                    avatarURL={contact.avatarUrl ?? ''}
+                    size={48}
+                  />
                   <div>
-                    <h2>{contact.name}</h2>
-                    <p>{contact.status}</p>
+                    <h2>{getContactDisplayName(contact)}</h2>
+                    <p>{contact.phone || contact.about || 'Без статуса'}</p>
                   </div>
-                  <button type="button">Открыть чат</button>
+                  <div className="contacts-page__actions">
+                    <button type="button" onClick={() => handleRenameContact(contact)}>
+                      Подписать
+                    </button>
+                    <button type="button" onClick={() => removeContact(contact.id)}>
+                      Удалить
+                    </button>
+                  </div>
                 </article>
               ))
             ) : (

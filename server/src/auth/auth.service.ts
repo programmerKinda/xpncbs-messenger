@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
+import { ChatService } from '../chat/chat.service';
 import { User } from './entities/user.entity';
 import { CreateProfileDto } from './dto/create-profile.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +17,10 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
 
     private readonly jwtService: JwtService,
+
+    private readonly dataSource: DataSource,
+
+    private readonly chatService: ChatService,
   ) {}
 
   private normalizePhone(phone: string): string {
@@ -30,9 +36,7 @@ export class AuthService {
   sendCode(phone: string) {
     const normalizedPhone = this.normalizePhone(phone);
 
-    const code = Math.floor(
-      100000 + Math.random() * 900000,
-    ).toString();
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
 
     this.codes.set(normalizedPhone, code);
 
@@ -93,12 +97,18 @@ export class AuthService {
   async createProfile(data: CreateProfileDto) {
     const normalizedPhone = this.normalizePhone(data.phone);
 
-    const user = this.userRepository.create({
-      ...data,
-      phone: normalizedPhone,
-    });
+    const savedUser = await this.dataSource.transaction(async (manager) => {
+      const userRepository = manager.getRepository(User);
+      const user = userRepository.create({
+        ...data,
+        phone: normalizedPhone,
+      });
+      const createdUser = await userRepository.save(user);
 
-    const savedUser = await this.userRepository.save(user);
+      await this.chatService.createSavedMessagesChat(createdUser, manager);
+
+      return createdUser;
+    });
 
     const accessToken = this.generateToken(savedUser);
 
@@ -107,5 +117,35 @@ export class AuthService {
       user: savedUser,
       accessToken,
     };
+  }
+
+  async updateProfile(userId: string, data: UpdateProfileDto) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error('Пользователь не найден');
+    }
+
+    user.firstName = data.firstName?.trim() || user.firstName;
+    user.lastName = data.lastName?.trim() || null;
+    user.username = data.username?.trim() || null;
+    user.about = data.about?.trim() || null;
+
+    return this.userRepository.save(user);
+  }
+
+  async updateAvatar(userId: string, avatarUrl: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error('Пользователь не найден');
+    }
+
+    user.avatarUrl = avatarUrl;
+    return this.userRepository.save(user);
   }
 }

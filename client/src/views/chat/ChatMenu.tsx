@@ -15,7 +15,10 @@ import UserName from '../user/UserName'
 import { useChatMenuStore } from '@/controllers/chatMenuController'
 
 export default function ChatMenu() {
-  const { toggleMenu } = useChatMenuStore()
+  const { toggleMenu, selectedChat } = useChatMenuStore()
+  const participant = selectedChat?.participant
+  const title = selectedChat?.title ?? 'Чат'
+  const isSavedMessages = selectedChat?.type === 'saved_messages'
 
   return (
     <div className={`chat-menu`}>
@@ -27,7 +30,9 @@ export default function ChatMenu() {
         >
           <X size={25} />
         </button>
-        <h2 className="chat-menu__title">Данные контакта</h2>
+        <h2 className="chat-menu__title">
+          {isSavedMessages ? 'Информация о чате' : 'Данные контакта'}
+        </h2>
         <button className="chat-menu__edit" aria-label="Редактировать контакт">
           <PenIcon size={25} />
         </button>
@@ -35,12 +40,19 @@ export default function ChatMenu() {
       <div className="chat-menu__content">
         <div className="user-info">
           <UserAvatar
-            name="Иван Иванов"
-            avatarURL="https://tse1.explicit.bing.net/th/id/OIP.pZVGv4PxQeGKMYHXYdXKAgHaE6?rs=1&pid=ImgDetMain&o=7&rm=3"
+            id={selectedChat?.id ?? 'empty-chat'}
+            name={title}
+            avatarURL={selectedChat?.avatarUrl ?? ''}
             size={100}
           />
-          <UserName name="Иван Иванов" phone="+7 (999) 123-45-67" contactName="" />
-          <span className="chat-menu__status">в сети</span>
+          <UserName name={title} phone={participant?.phone ?? ''} contactName="" />
+          <span className="chat-menu__status">
+            {isSavedMessages
+              ? 'Личные заметки'
+              : participant?.username
+                ? `@${participant.username}`
+                : 'Личный чат'}
+          </span>
         </div>
         <div className="chat-menu__media">
           <button className="chat-menu__media-button">
@@ -48,44 +60,31 @@ export default function ChatMenu() {
               <Images size={22} />
               <span>
                 <strong>Медиа, ссылки и документы</strong>
-                <small>4 файла</small>
+                <small>Медиа пока нет</small>
               </span>
             </span>
             <ChevronRight size={20} />
           </button>
-          <ul className="chat-menu__media-list">
-            <li className="chat-menu__media-item">
-              <img src="https://i.ytimg.com/vi/K4t_1dtr8-U/maxresdefault.jpg" alt="" />
-            </li>
-            <li className="chat-menu__media-item">
-              <img src="https://i.ytimg.com/vi/K4t_1dtr8-U/maxresdefault.jpg" alt="" />
-            </li>
-            <li className="chat-menu__media-item">
-              <img src="https://i.ytimg.com/vi/K4t_1dtr8-U/maxresdefault.jpg" alt="" />
-            </li>
-            <li className="chat-menu__media-item">
-              <img src="https://i.ytimg.com/vi/K4t_1dtr8-U/maxresdefault.jpg" alt="" />
-            </li>
-          </ul>
         </div>
         <ul className="chat-menu__info">
           <li className="chat-menu__info-item">
             <span>
               <Phone size={25} />
             </span>
-            +7 (999) 123-45-67
+            {participant?.phone ?? 'Личные заметки'}
           </li>
           <li className="chat-menu__info-item">
             <span>
               <Info size={25} />
             </span>
-            ем шашлык евери дэй
+            {participant?.about ??
+              (isSavedMessages ? 'Сообщения, сохраненные для себя' : 'Описание не указано')}
           </li>
           <li className="chat-menu__info-item">
             <span>
               <Gift size={25} />
             </span>{' '}
-            1 января 1990 года
+            {participant?.username ? `@${participant.username}` : 'Системный чат'}
           </li>
         </ul>
         <ul className="chat-menu__actions">

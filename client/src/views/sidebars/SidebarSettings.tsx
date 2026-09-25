@@ -1,6 +1,7 @@
 import CommonSidebar from '@/shared/components/CommonSidebar'
 import SettingItem from '@/views/settings/settingItem'
 import UserAvatar from '@/views/user/UserAvatar'
+import { useAuthStore } from '@/controllers/authController'
 import {
   Bell,
   HardDrive,
@@ -17,6 +18,10 @@ import {
 } from 'lucide-react'
 
 export default function SidebarSettings() {
+  const user = useAuthStore((state) => state.user)
+
+  if (!user) return null
+
   return (
     <>
       <CommonSidebar
@@ -35,12 +40,18 @@ export default function SidebarSettings() {
           <>
             {/* Профиль */}
             <SettingItem
-              icon={<UserAvatar name="Иван Иванов" avatarURL="" />}
-              title="Иван Иванов"
-              subtitle="ivan@example.com"
+              icon={
+                <UserAvatar
+                  id={user.id}
+                  name={`${user?.firstName} ${user?.lastName}`}
+                  avatarURL={user.avatarUrl ?? ''}
+                />
+              }
+              title={`${user?.firstName} ${user?.lastName}`}
+              subtitle={user?.phone}
               large
               className="setting-item--highlight"
-              path="/"
+              path="profile"
             />
 
             {/* Конфиденциальность */}

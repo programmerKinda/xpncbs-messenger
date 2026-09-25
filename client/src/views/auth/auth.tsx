@@ -4,28 +4,52 @@ import { getCountry } from '../inputs/phoneInput/utils/phoneMaskSet'
 import FlagModule from 'react-world-flags'
 import { MessageSquareText } from 'lucide-react'
 import { type ChangeEvent, useEffect, useMemo, useState, useRef } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useDropdownStore } from '@/controllers/dropdownController'
 import DropdownWithArrow from '@/shared/components/dropdown/DropdownWithArrow'
 import { useAuthStore } from '@/controllers/authController'
-import axios from 'axios'
+import { createAuthProfile, sendAuthCode, verifyAuthCode } from '@/services/authApi'
 import { useNavigate } from 'react-router-dom'
 
 const Flag = FlagModule.default
 
+const phoneSchema = z.object({ phone: z.string().trim().min(1, 'Введите номер телефона') })
+const codeSchema = z.object({ code: z.string().regex(/^\d{6}$/, 'Введите 6-значный код') })
+const profileSchema = z.object({
+  firstName: z.string().trim().min(1, 'Введите имя'),
+  lastName: z.string().trim(),
+  about: z.string().trim(),
+})
+
+type PhoneFormValues = z.infer<typeof phoneSchema>
+type CodeFormValues = z.infer<typeof codeSchema>
+type ProfileFormValues = z.infer<typeof profileSchema>
+
 export default function Auth() {
   const navigate = useNavigate()
 
-  const { setValue } = useDropdownStore()
+  const { setValue: setDropdownValue } = useDropdownStore()
+  const setSession = useAuthStore((state) => state.setSession)
 
   const [inputValue, setInputValue] = useState('')
-  const [code, setCode] = useState('')
-
   const [isPhoneFormSubmited, setIsPhoneFormSubmited] = useState(false)
   const [isProfileFormSubmited, setIsProfileFormSubmited] = useState(false)
-
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [about, setAbout] = useState('')
+  const phoneForm = useForm<PhoneFormValues>({
+    resolver: zodResolver(phoneSchema),
+    defaultValues: { phone: '' },
+  })
+  const codeForm = useForm<CodeFormValues>({
+    resolver: zodResolver(codeSchema),
+    defaultValues: { code: '' },
+  })
+  const profileForm = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: { firstName: '', lastName: '', about: '' },
+  })
+  const code = codeForm.watch('code')
+  const profileValues = profileForm.watch()
 
   const divRef = useRef<HTMLDivElement | null>(null)
   const [width, setWidth] = useState('')
@@ -65,10 +89,11 @@ export default function Auth() {
 
     const country = getCountry(value)
 
-    setValue(
+    setDropdownValue(
       'countries',
       country?.name ?? 'Не выбрано',
     )
+    phoneForm.setValue('phone', value, { shouldValidate: true })
   }
 
   useEffect(() => {
@@ -83,22 +108,11 @@ export default function Auth() {
   // Отправка номера телефона
   // ---------------------------------
 
-  const handlePhoneSubmit = async (
-    event: React.FormEvent<HTMLFormElement>,
-  ) => {
-    event.preventDefault()
-
+  const handlePhoneSubmit = async ({ phone }: PhoneFormValues) => {
     try {
-      const response = await axios.post(
-        'http://localhost:3000/api/auth/send-code',
-        {
-          phone: inputValue,
-        },
-      )
+      const response = await sendAuthCode(phone)
 
-      console.log(response.data)
-
-      if (response.data.success) {
+      if (response.success) {
         setIsPhoneFormSubmited(true)
       }
     } catch (error) {
@@ -113,23 +127,11 @@ export default function Auth() {
   // Проверка SMS-кода
   // ---------------------------------
 
-  const handleCodeSubmit = async (
-    event: React.FormEvent<HTMLFormElement>,
-  ) => {
-    event.preventDefault()
-
+  const handleCodeSubmit = async ({ code: submittedCode }: CodeFormValues) => {
     try {
-      const response = await axios.post(
-        'http://localhost:3000/api/auth/verify-code',
-        {
-          phone: inputValue,
-          code,
-        },
-      )
+      const response = await verifyAuthCode(inputValue, submittedCode)
 
-      console.log(response.data)
-
-      if (!response.data.success) {
+      if (!response.success) {
         return
       }
 
@@ -137,17 +139,8 @@ export default function Auth() {
       // Существующий пользователь
       // ---------------------------------
 
-      if (response.data.exists) {
-        const token = response.data.accessToken
-
-        localStorage.setItem(
-          'accessToken',
-          token,
-        )
-
-        await useAuthStore
-          .getState()
-          .restoreSession()
+      if (response.exists && response.accessToken) {
+        await setSession(response.accessToken)
 
         navigate('/')
 
@@ -171,38 +164,15 @@ export default function Auth() {
   // Создание профиля
   // ---------------------------------
 
-  const handleProfileSubmit = async (
-    event: React.FormEvent<HTMLFormElement>,
-  ) => {
-    event.preventDefault()
-
+  const handleProfileSubmit = async ({ firstName, lastName, about }: ProfileFormValues) => {
     try {
-      const response = await axios.post(
-        'http://localhost:3000/api/auth/profile',
-        {
-          phone: inputValue,
-          firstName,
-          lastName,
-          about,
-        },
-      )
+      const response = await createAuthProfile({ phone: inputValue, firstName, lastName, about })
 
-      console.log(response.data)
-
-      if (!response.data.success) {
+      if (!response.success || !response.accessToken) {
         return
       }
 
-      const token = response.data.accessToken
-
-      localStorage.setItem(
-        'accessToken',
-        token,
-      )
-
-      await useAuthStore
-        .getState()
-        .restoreSession()
+      await setSession(response.accessToken)
 
       navigate('/')
     } catch (error) {
@@ -223,7 +193,7 @@ export default function Auth() {
       {!isPhoneFormSubmited && (
         <form
           className="auth-card"
-          onSubmit={handlePhoneSubmit}
+          onSubmit={phoneForm.handleSubmit(handlePhoneSubmit)}
         >
           <div
             className="auth-brand"
@@ -275,8 +245,13 @@ export default function Auth() {
               value={inputValue}
               onChange={handleInput}
               placeholder=""
+              className={phoneForm.formState.errors.phone ? 'auth-input--error' : undefined}
+              aria-invalid={Boolean(phoneForm.formState.errors.phone)}
             />
           </label>
+          {phoneForm.formState.errors.phone && (
+            <p className="auth-form-error">{phoneForm.formState.errors.phone.message}</p>
+          )}
 
           <button
             className="auth-next-button"
@@ -295,7 +270,7 @@ export default function Auth() {
         !isProfileFormSubmited && (
           <form
             className="auth-card"
-            onSubmit={handleCodeSubmit}
+            onSubmit={codeForm.handleSubmit(handleCodeSubmit)}
           >
             <div
               className="auth-brand"
@@ -324,18 +299,17 @@ export default function Auth() {
 
             <div className="auth-code">
               <input
-                className="auth-code__input"
                 type="text"
                 inputMode="numeric"
                 autoComplete="one-time-code"
                 maxLength={6}
                 value={code}
+                className={`auth-code__input${codeForm.formState.errors.code ? ' auth-input--error' : ''}`}
+                aria-invalid={Boolean(codeForm.formState.errors.code)}
                 onChange={(event) => {
-                  setCode(
-                    event.target.value
-                      .replace(/\D/g, '')
-                      .slice(0, 6),
-                  )
+                  codeForm.setValue('code', event.target.value.replace(/\D/g, '').slice(0, 6), {
+                    shouldValidate: true,
+                  })
                 }}
                 autoFocus
                 aria-label="Код подтверждения"
@@ -377,6 +351,9 @@ export default function Auth() {
             <p className="auth-verification__hint">
               Введите 6-значный код из SMS
             </p>
+            {codeForm.formState.errors.code && (
+              <p className="auth-form-error">{codeForm.formState.errors.code.message}</p>
+            )}
 
             <button
               className="auth-next-button"
@@ -391,7 +368,7 @@ export default function Auth() {
               type="button"
               onClick={() => {
                 setIsPhoneFormSubmited(false)
-                setCode('')
+                codeForm.reset()
               }}
             >
               Изменить номер
@@ -406,7 +383,7 @@ export default function Auth() {
       {isProfileFormSubmited && (
         <form
           className="auth-card"
-          onSubmit={handleProfileSubmit}
+          onSubmit={profileForm.handleSubmit(handleProfileSubmit)}
         >
           <div
             className="auth-brand"
@@ -439,15 +416,15 @@ export default function Auth() {
 
             <input
               type="text"
-              value={firstName}
-              onChange={(event) =>
-                setFirstName(event.target.value)
-              }
+              {...profileForm.register('firstName')}
               placeholder="Введите имя"
               autoComplete="given-name"
               autoFocus
-              required
+              aria-invalid={Boolean(profileForm.formState.errors.firstName)}
             />
+            {profileForm.formState.errors.firstName && (
+              <p className="auth-form-error">{profileForm.formState.errors.firstName.message}</p>
+            )}
           </label>
 
           <label className="auth-field auth-profile-field">
@@ -457,10 +434,7 @@ export default function Auth() {
 
             <input
               type="text"
-              value={lastName}
-              onChange={(event) =>
-                setLastName(event.target.value)
-              }
+              {...profileForm.register('lastName')}
               placeholder="Введите фамилию"
               autoComplete="family-name"
             />
@@ -472,10 +446,7 @@ export default function Auth() {
             </span>
 
             <textarea
-              value={about}
-              onChange={(event) =>
-                setAbout(event.target.value)
-              }
+              {...profileForm.register('about')}
               placeholder="Расскажите немного о себе"
               maxLength={120}
               rows={3}
@@ -485,7 +456,7 @@ export default function Auth() {
           <button
             className="auth-next-button"
             type="submit"
-            disabled={!firstName.trim()}
+            disabled={!profileValues.firstName.trim()}
           >
             Продолжить
           </button>

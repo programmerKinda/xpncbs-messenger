@@ -3,6 +3,7 @@
 /* ===================== */
 .message {
   @apply relative w-fit max-w-[85%] sm:max-w-[480px] mb-2 px-3 py-2 min-h-[34px] text-[15px] leading-[1.4];
+  flex: 0 0 auto;
   border-radius: 14px;
   box-shadow: 0 4px 12px rgba(48, 61, 94, 0.07);
 }
@@ -40,7 +41,12 @@
   clip-path: polygon(100% 0, 100% 100%, 0 100%, 85% 45%);
 }
 .message.circle {
-  @apply bg-transparent shadow-none;
+  @apply min-h-0 rounded-none border-0 bg-transparent p-0 shadow-none;
+}
+
+.message.circle::before,
+.message.circle::after {
+  display: none;
 }
 /* --------------------- */
 /* КОНТЕНТ СООБЩЕНИЯ     */
@@ -64,6 +70,13 @@
 
 .message-text:empty::after {
   display: none;
+}
+
+.message-mention {
+  color: var(--color-accent);
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 /* --------------------- */
@@ -97,6 +110,39 @@
 /* Если текста нет (voice) — футер не ломает поток */
 .message-text:empty ~ .message__footer {
   @apply mt-1 static float-none;
+}
+
+.message--voice {
+  width: min(360px, calc(100vw - 48px));
+  min-width: 280px;
+  min-height: 76px;
+  padding-bottom: 26px;
+}
+
+.message--voice .message-content {
+  min-width: 0;
+}
+
+.message--voice .voice-message-container {
+  width: 100%;
+  min-width: 0;
+  padding-top: 2px;
+  padding-bottom: 0;
+}
+
+.message--voice .voice-content {
+  min-width: 0;
+  padding-bottom: 2px;
+}
+
+.message--voice .message__footer {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  z-index: 2;
+  height: 14px;
+  margin: 0;
+  float: none;
 }
 
 /* ===================== */
@@ -166,16 +212,49 @@
 
 /* Адаптация футера для голосовых сообщений */
 .voice-message-container ~ .message__footer {
-  @apply mt-0 static float-right;
+  @apply mt-0;
 }
+
+.message--call {
+  @apply min-w-[220px] max-w-[300px] px-3 py-2;
+}
+
+.message-call {
+  @apply flex items-center gap-2 min-w-0;
+}
+
+.message-call__icon {
+  @apply flex h-8 w-8 items-center justify-center rounded-full text-white shrink-0;
+  background: #3fa2a1;
+}
+
+.message-call__icon--missed {
+  background: #d96a6a;
+}
+
+.message-call__body {
+  @apply flex min-w-0 flex-col text-left;
+}
+
+.message-call__title {
+  @apply text-[14px] font-semibold leading-snug;
+}
+
+.message-call__meta {
+  @apply text-[11px] opacity-75 leading-snug;
+}
+
 .video-circle {
   position: relative;
-  width: 160px;
-  height: 160px;
+  width: 220px;
+  height: 220px;
   border-radius: 50%;
   overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  background: #182334;
   cursor: pointer;
   transition: transform 0.1s ease;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.16);
 }
 
 .video-circle:active {
@@ -226,4 +305,11 @@
 
 .video-circle__progress circle {
   transition: stroke-dashoffset 0.1s linear;
+}
+
+@media (max-width: 560px) {
+  .video-circle {
+    width: min(68vw, 220px);
+    height: min(68vw, 220px);
+  }
 }

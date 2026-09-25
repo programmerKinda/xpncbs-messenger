@@ -1,5 +1,7 @@
-import { type User } from '../models/user/user'
+import { type UpdateProfileData, type User } from '../models/user/user'
 import { create } from 'zustand'
+
+export type { UpdateProfileData } from '../models/user/user'
 
 interface AuthState {
   user: User | null
@@ -7,6 +9,9 @@ interface AuthState {
   isAuthenticated: boolean
 
   restoreSession: () => Promise<void>
+  setSession: (accessToken: string) => Promise<void>
+  updateProfile: (data: UpdateProfileData) => Promise<User>
+  uploadAvatar: (file: File) => Promise<User>
   logout: () => void
 }
 
@@ -65,6 +70,51 @@ export const useAuthStore = create<AuthState>((set) => ({
         isLoading: false,
       })
     }
+  },
+
+  setSession: async (accessToken) => {
+    localStorage.setItem('accessToken', accessToken)
+    await useAuthStore.getState().restoreSession()
+  },
+
+  updateProfile: async (data) => {
+    const token = localStorage.getItem('accessToken')
+    const response = await fetch('/api/auth/profile', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify(data),
+    })
+
+    if (!response.ok) {
+      throw new Error(`Profile update failed with status ${response.status}`)
+    }
+
+    const user: User = await response.json()
+    set({ user })
+    return user
+  },
+
+  uploadAvatar: async (file) => {
+    const token = localStorage.getItem('accessToken')
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await fetch('/api/auth/profile/avatar', {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      body: formData,
+    })
+
+    if (!response.ok) {
+      throw new Error(`Avatar upload failed with status ${response.status}`)
+    }
+
+    const user: User = await response.json()
+    set({ user })
+    return user
   },
 
   logout: () => {

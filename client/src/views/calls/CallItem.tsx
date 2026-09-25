@@ -2,6 +2,7 @@ import UserAvatar from '../user/UserAvatar'
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react'
 
 interface CallItemProps {
+  id:string
   name: string
   phone: string
   time: string // Передавай сюда уже готовую строку: время или дату
@@ -10,11 +11,11 @@ interface CallItemProps {
   status: 'accepted' | 'missed'
 }
 
-export default function CallItem({ name, direction, time, callType }: CallItemProps) {
+export default function CallItem({id, name, direction, time, callType }: CallItemProps) {
   return (
     <div className="call-item">
       <div className="call-item__avatar">
-        <UserAvatar name={name} avatarURL="" />
+        <UserAvatar id={id} name={name} avatarURL="" />
       </div>
 
       <div className="call-item__content">

@@ -17,17 +17,17 @@ export class User {
   @Column()
   firstName!: string;
 
-  @Column({ nullable: true })
-  lastName!: string;
+  @Column({ type: 'varchar', nullable: true })
+  lastName!: string | null;
 
-  @Column({ unique: true, nullable: true })
-  username!: string;
+  @Column({ type: 'varchar', unique: true, nullable: true })
+  username!: string | null;
 
-  @Column({ nullable: true })
-  about!: string;
+  @Column({ type: 'text', nullable: true })
+  about!: string | null;
 
-  @Column({ nullable: true })
-  avatarUrl!: string;
+  @Column({ type: 'varchar', nullable: true })
+  avatarUrl!: string | null;
 
   @CreateDateColumn()
   createdAt!: Date;

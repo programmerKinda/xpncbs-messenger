@@ -1,0 +1,93 @@
+.call-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.42);
+  backdrop-filter: blur(8px);
+}
+.call-overlay__card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: min(620px, 100%);
+  min-width: 0;
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  padding: clamp(18px, 5vw, 32px);
+  border-radius: 24px;
+  background: var(--color-surface);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.25);
+  text-align: center;
+}
+.call-overlay__card h2 { margin: 0; color: var(--color-text); }
+.call-overlay__eyebrow { margin: 0; color: var(--color-text-muted); font-size: 13px; }
+.call-overlay__duration { color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
+.call-overlay__actions { display: flex; gap: 24px; margin-top: 14px; }
+.call-overlay__actions button,
+.call-overlay__card > .call-overlay__decline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border: 0;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+}
+.call-overlay__accept { background: #43a795; }
+.call-overlay__decline { background: #d95f6b; }
+.call-overlay__video-grid {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #101827;
+}
+.call-overlay__video-grid video {
+  display: block;
+  object-fit: contain;
+}
+
+.call-overlay__remote-video {
+  width: 100%;
+  height: 100%;
+  background: #101827;
+}
+
+.call-overlay__local-video {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28%;
+  max-width: 180px;
+  aspect-ratio: 3 / 4;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  background: #273449;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.35);
+}
+
+.call-overlay__error {
+  max-width: 280px;
+  color: #c24141;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+  .call-overlay {
+    padding: 16px;
+  }
+
+  .call-overlay__card {
+    border-radius: 18px;
+  }
+}

@@ -40,7 +40,7 @@ export const startResizing = (
 
   const stopResizing = (event?: MouseEvent) => {
     document.removeEventListener('mousemove', onMouseMove)
-    document.removeEventListener('mouseup', stopResizing as any)
+    document.removeEventListener('mouseup', stopResizing)
     document.body.style.cursor = ''
     document.body.style.userSelect = ''
 
@@ -67,5 +67,5 @@ export const startResizing = (
   document.body.style.userSelect = 'none'
   onResizeStart?.(startWidth)
   document.addEventListener('mousemove', onMouseMove)
-  document.addEventListener('mouseup', stopResizing as any)
+  document.addEventListener('mouseup', stopResizing)
 }

@@ -68,6 +68,11 @@
   @apply text-xs;
   color: var(--color-text-muted);
 }
+.item-chat__unread-count {
+  @apply inline-flex items-center justify-center min-w-[20px] h-5 px-1 rounded-full text-[11px] font-semibold;
+  color: white;
+  background: var(--color-accent);
+}
 .last-message__text {
   overflow: hidden;
   white-space: nowrap;
@@ -133,6 +138,16 @@
   }
   .item-chat__info {
     @apply hidden;
+  }
+  .item-chat {
+    justify-content: center;
+    gap: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .item-chat .user-avatar {
+    margin-left: auto;
+    margin-right: auto;
   }
   .user-name {
     @apply hidden;

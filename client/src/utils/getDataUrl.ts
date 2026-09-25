@@ -1,5 +1,6 @@
-export const getDataUrl = (content: string, mimeType: string): string => {
+export const getDataUrl = (content: string): string => {
   if (content.startsWith('data:')) return content
   if (content.startsWith('http')) return content
-  return `data:${mimeType};base64,${content}`
+  if (content.startsWith('/')) return `${window.location.origin}${content}`
+  return content
 }
