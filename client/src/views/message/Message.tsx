@@ -8,7 +8,13 @@ import { formatTime } from '@/utils/formatTime'
 import MessageContent from './MessageContent'
 import { Check, CheckCheck } from 'lucide-react'
 
-const Message: React.FC<MessageProps> = ({ message, className, onMention, onMediaEnded, autoPlay }) => {
+const Message: React.FC<MessageProps> = ({
+  message,
+  className,
+  onMention,
+  onMediaEnded,
+  autoPlay,
+}) => {
   const timeString = formatTime(message.createdAt)
   const isOutgoing = className?.includes('message--outgoing') ?? false
   const content = (() => {
@@ -29,10 +35,21 @@ const Message: React.FC<MessageProps> = ({ message, className, onMention, onMedi
         })
       case 'file':
         return MessageContent.file({ content: message.content as string })
-      case 'call':
-        return MessageContent.call({ content: message.content as MessageCallContent })
+      case 'call': {
+        const callContent = message.content as MessageCallContent
+        const normalizedContent: MessageCallContent = {
+          ...callContent,
+          direction:
+            !isOutgoing && callContent.direction === 'outgoing'
+              ? 'incoming'
+              : callContent.direction,
+        }
+        return MessageContent.call({ content: normalizedContent })
+      }
       default:
-        return MessageContent.text({ content: typeof message.content === 'string' ? message.content : 'Сообщение' })
+        return MessageContent.text({
+          content: typeof message.content === 'string' ? message.content : 'Сообщение',
+        })
     }
   })()
   const messageClassName = [
@@ -48,9 +65,7 @@ const Message: React.FC<MessageProps> = ({ message, className, onMention, onMedi
   return (
     <div className={messageClassName}>
       {/* <header className='message__header'></header> */}
-      <div className="message-content">
-        {content}
-      </div>
+      <div className="message-content">{content}</div>
       <footer className="message__footer">
         {message.updated && <span>Изменено</span>}
         <div className="message__meta">

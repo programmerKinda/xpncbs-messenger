@@ -282,46 +282,45 @@ export class ChatService {
     });
   }
 
-  async createCallMessageForUsers(
+  async upsertCallMessage(
     initiatorUserId: string,
     targetUserId: string,
     callId: string,
     type: 'audio' | 'video',
-    direction: 'incoming' | 'outgoing',
     status: 'accepted' | 'missed',
     durationSeconds = 0,
-  ): Promise<Message[]> {
+  ): Promise<Message> {
     const chat = await this.findOrCreateDirectChatForUsers(
       initiatorUserId,
       targetUserId,
     );
 
-    const baseContent = {
+    const callMessages = await this.messageRepository.find({
+      where: { chatId: chat.id, type: MessageType.CALL },
+    });
+    const existingMessage = callMessages.find((message) => {
+      if (typeof message.content === 'string') return false;
+      return message.content.callId === callId;
+    });
+
+    if (existingMessage && typeof existingMessage.content !== 'string') {
+      const nextContent = {
+        ...existingMessage.content,
+        status,
+        durationSeconds,
+      };
+
+      existingMessage.content = nextContent;
+      return this.messageRepository.save(existingMessage);
+    }
+
+    return this.createMessageForUser(chat.id, initiatorUserId, MessageType.CALL, {
       callId,
-      direction,
+      direction: 'outgoing',
       type,
       status,
       durationSeconds,
-    };
-
-    const initiatorMessage = await this.createMessageForUser(
-      chat.id,
-      initiatorUserId,
-      MessageType.CALL,
-      baseContent,
-    );
-
-    const targetMessage = await this.createMessageForUser(
-      chat.id,
-      targetUserId,
-      MessageType.CALL,
-      {
-        ...baseContent,
-        direction: direction === 'outgoing' ? 'incoming' : 'outgoing',
-      },
-    );
-
-    return [initiatorMessage, targetMessage];
+    });
   }
 
   async updateCallMessageStatus(
@@ -329,26 +328,38 @@ export class ChatService {
     callId: string,
     status: 'accepted' | 'missed',
     durationSeconds = 0,
-  ): Promise<void> {
+  ): Promise<Message[]> {
     const messages = await this.messageRepository.find({
       where: { chatId, type: MessageType.CALL },
     });
 
     const matchingMessages = messages.filter((message) => {
       if (typeof message.content === 'string') return false;
-      return (message.content as Record<string, unknown>).callId === callId;
+      return message.content.callId === callId;
     });
 
-    for (const message of matchingMessages) {
-      const nextContent = {
-        ...(typeof message.content === 'object' && message.content ? message.content : {}),
-        status,
-        durationSeconds,
-      } as Record<string, unknown>;
+    const updatedMessages: Message[] = [];
 
-      message.content = nextContent as Message['content'];
-      await this.messageRepository.save(message);
+    for (const message of matchingMessages) {
+      if (typeof message.content === 'string') continue;
+
+      const currentStatus =
+        typeof message.content.status === 'string'
+          ? message.content.status
+          : null;
+      const nextStatus = currentStatus === 'accepted' ? 'accepted' : status;
+
+      const nextContent = {
+        ...message.content,
+        status: nextStatus,
+        durationSeconds,
+      };
+
+      message.content = nextContent;
+      updatedMessages.push(await this.messageRepository.save(message));
     }
+
+    return updatedMessages;
   }
 
   async createMessageForUser(

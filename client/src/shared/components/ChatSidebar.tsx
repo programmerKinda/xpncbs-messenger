@@ -23,7 +23,10 @@ export default function ChatSidebar() {
     setChats((currentChats) =>
       replace
         ? page.items
-        : [...currentChats, ...page.items.filter((item) => !currentChats.some((chat) => chat.id === item.id))],
+        : [
+            ...currentChats,
+            ...page.items.filter((item) => !currentChats.some((chat) => chat.id === item.id)),
+          ]
     )
     setHasMore(page.hasMore)
     setNextCursor(page.nextCursor)
@@ -60,7 +63,7 @@ export default function ChatSidebar() {
         .then((page) => joinLoadedChats(page.items))
         .catch(() => undefined)
     })
-    socket.on('message:new', (message: ChatMessage) => {
+    const syncChatPreview = (message: ChatMessage) => {
       if (!isMounted) return
 
       setChats((currentChats) =>
@@ -69,8 +72,7 @@ export default function ChatSidebar() {
             ? {
                 ...chat,
                 lastMessageAt: message.createdAt,
-                unreadCount:
-                  message.senderId === userId ? chat.unreadCount : chat.unreadCount + 1,
+                unreadCount: message.senderId === userId ? chat.unreadCount : chat.unreadCount + 1,
                 lastMessage: {
                   id: message.id,
                   senderId: message.senderId,
@@ -79,10 +81,13 @@ export default function ChatSidebar() {
                   createdAt: message.createdAt,
                 },
               }
-            : chat,
-        ),
+            : chat
+        )
       )
-    })
+    }
+
+    socket.on('message:new', syncChatPreview)
+    socket.on('message:update', syncChatPreview)
 
     const handleMessageSent = () => {
       void getChatsPage(20)
@@ -148,7 +153,14 @@ export default function ChatSidebar() {
             ))}
             {hasMore && (
               <div style={{ padding: '12px 0', textAlign: 'center' }}>
-                <button type="button" onClick={() => void getChatsPage(20, nextCursor ?? undefined).then((page) => applyPage(page, false))}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    void getChatsPage(20, nextCursor ?? undefined).then((page) =>
+                      applyPage(page, false)
+                    )
+                  }
+                >
                   Загрузить ещё
                 </button>
               </div>

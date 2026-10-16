@@ -19,21 +19,14 @@ import { useModalStore } from '@/controllers/modalController'
 import { useChatMenuStore } from '@/controllers/chatMenuController'
 import ChatForm from './ChatForm'
 import CommonWindowHeader from '@/shared/components/CommonWindowHeader'
-import {
-  getChats,
-  markChatRead,
-  findOrCreateDirectChat,
-} from '@/api/file'
+import { getChats, markChatRead, findOrCreateDirectChat } from '@/api/file'
 import type { ChatListItem, ChatMessage } from '@/models/api'
 import { useAuthStore } from '@/controllers/authController'
 import { useCallStore } from '@/controllers/callController'
 import { useContactStore } from '@/controllers/contactController'
 import { useNavigate, useParams } from 'react-router-dom'
 
-const resolveChatFromRoute = async (
-  chatKey: string,
-  openChat: (chat: ChatListItem) => void,
-) => {
+const resolveChatFromRoute = async (chatKey: string, openChat: (chat: ChatListItem) => void) => {
   const chats = await getChats()
   const chat = chatKey.startsWith('@')
     ? chats.find((item) => item.participant?.username === chatKey.slice(1))
@@ -51,10 +44,14 @@ export default function ChatWindow() {
   const requestCall = useCallStore((state) => state.requestCall)
   const toggleBlock = useContactStore((state) => state.toggleBlock)
   const isContact = useContactStore((state) =>
-    selectedChat?.participant ? state.contacts.some((contact) => contact.id === selectedChat.participant?.id) : false,
+    selectedChat?.participant
+      ? state.contacts.some((contact) => contact.id === selectedChat.participant?.id)
+      : false
   )
   const contactEntry = useContactStore((state) =>
-    selectedChat?.participant ? state.contacts.find((contact) => contact.id === selectedChat.participant?.id) : undefined,
+    selectedChat?.participant
+      ? state.contacts.find((contact) => contact.id === selectedChat.participant?.id)
+      : undefined
   )
   const navigate = useNavigate()
   const { chatKey: rawChatKey } = useParams<{ chatKey: string }>()
@@ -125,7 +122,6 @@ export default function ChatWindow() {
     void markChatRead(selectedChat.id)
       .then(() => window.dispatchEvent(new Event('chat-read')))
       .catch(() => undefined)
-
   }, [selectedChat])
 
   useLayoutEffect(() => {
@@ -155,12 +151,20 @@ export default function ChatWindow() {
       appendMessage(message)
       window.dispatchEvent(new Event('chat-message-sent'))
     })
+    socket.on('message:update', (message: ChatMessage) => {
+      if (message.chatId !== selectedChatId) return
+      appendMessage(message)
+      window.dispatchEvent(new Event('chat-message-sent'))
+    })
     socket.on('presence:list', (onlineUserIds: string[]) => {
       setIsParticipantOnline(Boolean(participantId && onlineUserIds.includes(participantId)))
     })
-    socket.on('presence:update', ({ userId, status }: { userId: string; status: 'online' | 'offline' }) => {
-      if (userId === participantId) setIsParticipantOnline(status === 'online')
-    })
+    socket.on(
+      'presence:update',
+      ({ userId, status }: { userId: string; status: 'online' | 'offline' }) => {
+        if (userId === participantId) setIsParticipantOnline(status === 'online')
+      }
+    )
     socket.on('typing:update', (data: { chatId: string; userId: string; isTyping: boolean }) => {
       if (data.chatId === selectedChatId && data.userId === participantId) {
         setIsParticipantTyping(data.isTyping)
@@ -252,7 +256,7 @@ export default function ChatWindow() {
 
   const handleMediaEnded = (messageId: string) => {
     const mediaMessages = messages.filter(
-      (message) => message.type === 'voice' || message.type === 'circle',
+      (message) => message.type === 'voice' || message.type === 'circle'
     )
     const currentIndex = mediaMessages.findIndex((message) => message.id === messageId)
     const nextMessage = currentIndex >= 0 ? mediaMessages[currentIndex + 1] : undefined
@@ -302,11 +306,7 @@ export default function ChatWindow() {
           />
 
           <div className="chat-window__contact" onClick={toggleMenu}>
-            <UserName
-              name={selectedChat?.title ?? 'Выберите чат'}
-              phone=""
-              contactName=""
-            />
+            <UserName name={selectedChat?.title ?? 'Выберите чат'} phone="" contactName="" />
             <span>
               {selectedChat?.type === 'saved_messages'
                 ? 'Личные заметки'
@@ -405,7 +405,7 @@ export default function ChatWindow() {
                       avatarUrl: selectedChat.participant!.avatarUrl,
                       about: selectedChat.participant!.about,
                     }}
-                  />,
+                  />
                 )
               }}
             >
@@ -431,26 +431,26 @@ export default function ChatWindow() {
         {messages
           .filter((message) => message.chatId === selectedChat?.id)
           .map((message) => (
-          <Message
-            key={message.id}
-            className={
-              selectedChat?.type !== 'saved_messages' && message.senderId === user?.id
-                ? 'message--outgoing'
-                : 'message--incoming'
-            }
-            message={{
-              uuid: message.id,
-              type: message.type,
-              content: message.content as ChatMessageView['content'],
-              createdAt: new Date(message.createdAt),
-              updated: message.edited,
-              watched: true,
-            }}
-            onMention={message.type === 'text' ? handleMention : undefined}
-            onMediaEnded={handleMediaEnded}
-            autoPlay={autoPlayMessageId === message.id}
-          />
-        ))}
+            <Message
+              key={message.id}
+              className={
+                selectedChat?.type !== 'saved_messages' && message.senderId === user?.id
+                  ? 'message--outgoing'
+                  : 'message--incoming'
+              }
+              message={{
+                uuid: message.id,
+                type: message.type,
+                content: message.content as ChatMessageView['content'],
+                createdAt: new Date(message.createdAt),
+                updated: message.edited,
+                watched: true,
+              }}
+              onMention={message.type === 'text' ? handleMention : undefined}
+              onMediaEnded={handleMediaEnded}
+              autoPlay={autoPlayMessageId === message.id}
+            />
+          ))}
       </div>
       <footer className="chat-window__footer">
         <ChatForm

@@ -19,12 +19,23 @@ interface AuthenticatedSocket extends Socket {
   };
 }
 
+interface CallSession {
+  callId: string;
+  initiatorId: string;
+  participantIds: [string, string];
+  type: 'audio' | 'video';
+  status: 'ringing' | 'accepted';
+  startedAt: Date;
+  answeredAt?: Date;
+}
+
 @WebSocketGateway({ cors: { origin: true } })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
   private readonly connectedUsers = new Map<string, number>();
   private readonly userSockets = new Map<string, Set<Socket>>();
+  private readonly callSessions = new Map<string, CallSession>();
 
   constructor(
     private readonly jwtService: JwtService,
@@ -137,6 +148,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     },
   ) {
     if (!socket.data.userId || data.targetUserId === socket.data.userId) return;
+
+    this.callSessions.set(data.callId, {
+      callId: data.callId,
+      initiatorId: socket.data.userId,
+      participantIds: [socket.data.userId, data.targetUserId],
+      type: data.type,
+      status: 'ringing',
+      startedAt: new Date(),
+    });
+
     this.emitToUser(data.targetUserId, 'call:incoming', {
       ...data,
       callerId: socket.data.userId,
@@ -154,6 +175,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     },
   ) {
     if (!socket.data.userId || data.targetUserId === socket.data.userId) return;
+
+    const call = this.callSessions.get(data.callId);
+    if (
+      call &&
+      call.initiatorId !== socket.data.userId &&
+      call.participantIds.includes(socket.data.userId)
+    ) {
+      call.status = 'accepted';
+      call.answeredAt ??= new Date();
+    }
+
     this.emitToUser(data.targetUserId, 'call:answered', {
       ...data,
       userId: socket.data.userId,
@@ -178,15 +210,92 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('call:end')
-  relayCallEnd(
+  async relayCallEnd(
     @ConnectedSocket() socket: AuthenticatedSocket,
     @MessageBody() data: { targetUserId: string; callId: string },
   ) {
-    if (!socket.data.userId || data.targetUserId === socket.data.userId) return;
-    this.emitToUser(data.targetUserId, 'call:ended', {
-      ...data,
-      userId: socket.data.userId,
+    const endedByUserId = socket.data.userId;
+    if (!endedByUserId) return;
+
+    const call = this.callSessions.get(data.callId);
+    if (!call) {
+      console.error('[CALL END] Call session not found', {
+        callId: data.callId,
+        socketUserId: endedByUserId,
+      });
+      return;
+    }
+
+    console.log('[CALL END]', {
+      callId: call.callId,
+      socketUserId: endedByUserId,
+      initiatorId: call.initiatorId,
+      participantIds: call.participantIds,
     });
+
+    if (!call.participantIds.includes(endedByUserId)) return;
+
+    const otherUserId = call.participantIds.find(
+      (participantId) => participantId !== call.initiatorId,
+    );
+    if (!otherUserId) {
+      throw new Error(
+        `Call ${call.callId} does not have a second participant`,
+      );
+    }
+    const remoteUserId = call.participantIds.find(
+      (participantId) => participantId !== endedByUserId,
+    );
+    if (!remoteUserId) return;
+
+    console.log('[CALL MESSAGE PARTICIPANTS]', {
+      initiatorId: call.initiatorId,
+      otherUserId,
+      endedByUserId,
+    });
+
+    // Remove synchronously before awaiting persistence so duplicate end events cannot create another message.
+    this.callSessions.delete(call.callId);
+
+    const endedAt = new Date();
+    const finalStatus = call.status === 'accepted' ? 'accepted' : 'missed';
+    const durationSeconds = call.answeredAt
+      ? Math.floor((endedAt.getTime() - call.answeredAt.getTime()) / 1000)
+      : 0;
+
+    this.emitToUser(remoteUserId, 'call:ended', {
+      callId: call.callId,
+      userId: endedByUserId,
+      endedByUserId,
+    });
+
+    console.log('[CALL MESSAGE CREATE]', {
+      callId: call.callId,
+      authorId: call.initiatorId,
+      otherUserId,
+      status: finalStatus,
+      durationSeconds,
+    });
+
+    try {
+      await this.chatService.findOrCreateDirectChatForUsers(
+        call.initiatorId,
+        otherUserId,
+      );
+      const message = await this.chatService.upsertCallMessage(
+        call.initiatorId,
+        otherUserId,
+        call.callId,
+        call.type,
+        finalStatus,
+        durationSeconds,
+      );
+
+      this.emitToUser(call.initiatorId, 'message:new', message);
+      this.emitToUser(otherUserId, 'message:new', message);
+    } catch (error) {
+      console.error('[CALL MESSAGE ERROR]', error);
+    }
   }
 
   private emitToUser(userId: string, event: string, payload: unknown) {

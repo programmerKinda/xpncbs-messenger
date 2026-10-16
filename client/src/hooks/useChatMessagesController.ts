@@ -47,7 +47,9 @@ export function useChatMessagesController(chatId?: string) {
   const appendMessage = (message: ChatMessage) => {
     setMessages((currentMessages) =>
       currentMessages.some((currentMessage) => currentMessage.id === message.id)
-        ? currentMessages
+        ? currentMessages.map((currentMessage) =>
+            currentMessage.id === message.id ? message : currentMessage,
+          )
         : [...currentMessages, message],
     )
   }

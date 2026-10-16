@@ -10,14 +10,19 @@ export type { CallLogEntry, CallStatus, OutgoingCallRequest } from '@/models/cal
 const CALL_HISTORY_KEY = 'xpncbs-call-history-v1'
 
 let callRingtone: HTMLAudioElement | null = null
+let phoneRinging: HTMLAudioElement | null = null
 
 const stopCallRingtone = () => {
-  if (!callRingtone) return
+  const audios = [callRingtone, phoneRinging]
+  for (const audio of audios) {
+    if (!audio) continue
 
-  callRingtone.pause()
-  callRingtone.currentTime = 0
-  callRingtone.src = ''
+    audio.pause()
+    audio.currentTime = 0
+    audio.src = ''
+  }
   callRingtone = null
+  phoneRinging = null
 }
 
 const playCallRingtone = () => {
@@ -29,14 +34,30 @@ const playCallRingtone = () => {
     return
   }
 
-  const audio = new Audio('/sounds/call-ringtone.mp3')
+  const audio = new Audio('/api/uploads/sounds/call-ringtone.mp3')
   audio.loop = true
   audio.volume = 0.8
   void audio.play().catch(() => undefined)
   callRingtone = audio
 }
 
-export { playCallRingtone, stopCallRingtone }
+const playPhoneRinging = () => {
+  if (typeof window === 'undefined') return
+
+  if (phoneRinging) {
+    phoneRinging.currentTime = 0
+    void phoneRinging.play().catch(() => undefined)
+    return
+  }
+
+  const audio = new Audio('/api/uploads/sounds/phone-ringing.mp3')
+  audio.loop = true
+  audio.volume = 0.8
+  void audio.play().catch(() => undefined)
+  phoneRinging = audio
+}
+
+export { playCallRingtone, playPhoneRinging, stopCallRingtone }
 
 const readCallHistory = (): CallLogEntry[] => {
   if (typeof window === 'undefined') return []
@@ -67,11 +88,10 @@ export const useCallStore = create<CallState>((set) => ({
   outgoingRequest: null,
   callHistory: readCallHistory(),
   requestCall: (request) => {
-    playCallRingtone()
+    playPhoneRinging()
     set({ outgoingRequest: request })
   },
   clearRequest: () => {
-    stopCallRingtone()
     set({ outgoingRequest: null })
   },
   recordCallStarted: (entry) =>

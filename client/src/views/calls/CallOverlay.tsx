@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Phone, PhoneOff, Video } from 'lucide-react'
 import { io, type Socket } from 'socket.io-client'
 
-import { stopCallRingtone, useCallStore } from '@/controllers/callController'
+import { playCallRingtone, stopCallRingtone, useCallStore } from '@/controllers/callController'
 import type { CallType, OutgoingCallRequest } from '@/models/call'
 import UserAvatar from '@/views/user/UserAvatar'
 import { useAuthStore } from '@/controllers/authController'
@@ -22,6 +22,15 @@ interface ActiveCall {
   peerName: string
   peerAvatarUrl?: string
   type: CallType
+}
+
+const playRemoteAudio = (audioElement: HTMLAudioElement | null, stream: MediaStream | null) => {
+  if (!audioElement || !stream) return
+
+  audioElement.srcObject = stream
+  audioElement.muted = false
+  audioElement.volume = 0.8
+  void audioElement.play().catch(() => undefined)
 }
 
 export default function CallOverlay() {
@@ -102,6 +111,12 @@ export default function CallOverlay() {
   }, [activeCall, incomingCall])
 
   useEffect(() => {
+    if (activeCall?.type === 'audio') {
+      playRemoteAudio(remoteAudioRef.current, remoteStreamRef.current)
+    }
+  }, [activeCall])
+
+  useEffect(() => {
     if (!activeCallId || isConnecting) {
       const resetId = window.setTimeout(() => setCallDuration(0), 0)
       return () => window.clearTimeout(resetId)
@@ -137,10 +152,12 @@ export default function CallOverlay() {
         startedAt: new Date().toISOString(),
         durationSeconds: 0,
       })
+      playCallRingtone()
       setIncomingCall(call)
     })
     socket.on('call:answered', async (data: { callId: string; answer: RTCSessionDescriptionInit }) => {
       if (data.callId === activeCallRef.current?.callId) {
+        stopCallRingtone()
         await peerRef.current?.setRemoteDescription(data.answer)
         if (peerRef.current) await flushPendingIceCandidates(data.callId, peerRef.current)
         setIsConnecting(false)
@@ -207,10 +224,8 @@ export default function CallOverlay() {
       if (type === 'video' && remoteVideoRef.current) {
         remoteVideoRef.current.srcObject = remoteStream
       }
-      if (type === 'audio' && event.track.kind === 'audio' && remoteAudioRef.current) {
-        remoteAudioRef.current.srcObject = remoteStream
-        remoteAudioRef.current.muted = false
-        remoteAudioRef.current.volume = 0.8
+      if (type === 'audio' && event.track.kind === 'audio') {
+        playRemoteAudio(remoteAudioRef.current, remoteStream)
       }
     }
     localStreamRef.current?.getTracks().forEach((track) => peer.addTrack(track, localStreamRef.current!))
@@ -280,6 +295,7 @@ export default function CallOverlay() {
 
   const acceptIncomingCall = async () => {
     if (!incomingCall) return
+    stopCallRingtone()
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
