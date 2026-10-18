@@ -2,6 +2,15 @@ export interface BackendHealth {
   status: string
 }
 
+export interface VideoPreviewMetadata {
+  title: string
+  description: string
+  thumbnailUrl?: string
+  durationSeconds: number
+  fileSizeBytes?: number
+  qualityLabel?: string
+}
+
 export interface PaginatedResponse<T> {
   items: T[]
   nextCursor: string | null

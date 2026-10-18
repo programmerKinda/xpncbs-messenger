@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { VKVideoService } from './vkvideo.service';
+import { YouTubePreviewService } from './youtube-preview.service';
 
 @Module({
   imports: [
@@ -24,6 +26,6 @@ import { AuthModule } from './auth/auth.module';
 
   controllers: [AppController],
 
-  providers: [AppService],
+  providers: [AppService, YouTubePreviewService, VKVideoService],
 })
 export class AppModule {}

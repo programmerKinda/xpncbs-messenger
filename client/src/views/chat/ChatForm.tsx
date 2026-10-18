@@ -5,10 +5,9 @@ import ChatInput from './ChatInput'
 import type { ChatInputHandle } from './ChatInput'
 import VoiceRecorder from './VoiceRecorder'
 import CircleRecorder from './CircleRecorder'
+import ChatEmojiPicker from './ChatEmojiPicker'
 
 import { Plus, Sticker, Mic, Send, Trash, FileText, Image, Headphones, User, Video } from 'lucide-react'
-
-import EmojiPicker from 'emoji-picker-react'
 
 interface ChatFormProps {
   isRecording: boolean
@@ -118,22 +117,8 @@ export default function ChatForm({
             <PopupProvider
               placement="top"
               align="center"
-              popup={
-                <>
-                  <style>{`.epr_-3yva2a{display:none !important;}`}</style>
-
-                  <EmojiPicker
-                    searchDisabled
-                    style={{
-                      border: 'none',
-                      background: 'none',
-                      width: 500,
-                      height: 350,
-                    }}
-                    onEmojiClick={(e) => handleEmojiSelect(e.emoji)}
-                  />
-                </>
-              }
+              popup={<ChatEmojiPicker onSelect={handleEmojiSelect} />}
+              popupClassName="chat-emoji-popup"
             >
               <button type="button">
                 <Sticker size={25} color={'#6B7280'} />

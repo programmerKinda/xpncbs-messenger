@@ -44,13 +44,27 @@ describe('ChatGateway call message lifecycle', () => {
         answer: {},
       });
     };
+    const renegotiateCall = () => {
+      gateway.relayCallRenegotiation(socket('A'), {
+        targetUserId: 'B',
+        callId: 'call-1',
+        offer: { type: 'offer' },
+      });
+    };
     const endCall = (userId: string) =>
       gateway.relayCallEnd(socket(userId), {
         targetUserId: userId === 'A' ? 'B' : 'A',
         callId: 'call-1',
       });
 
-    return { chatService, events, startCall, acceptCall, endCall };
+    return {
+      chatService,
+      events,
+      startCall,
+      acceptCall,
+      renegotiateCall,
+      endCall,
+    };
   };
 
   afterEach(() => {
@@ -122,6 +136,28 @@ describe('ChatGateway call message lifecycle', () => {
     expect(
       harness.events.filter(({ event }) => event === 'call:ended'),
     ).toHaveLength(1);
+  });
+
+  it('relays video renegotiation only for an accepted call', () => {
+    const harness = createHarness();
+    harness.startCall();
+    harness.renegotiateCall();
+    expect(harness.events).not.toContainEqual(
+      expect.objectContaining({ event: 'call:renegotiate' }),
+    );
+
+    harness.acceptCall();
+    harness.renegotiateCall();
+
+    expect(harness.events).toContainEqual({
+      userId: 'B',
+      event: 'call:renegotiate',
+      payload: {
+        callId: 'call-1',
+        offer: { type: 'offer' },
+        userId: 'A',
+      },
+    });
   });
 
   it('notifies the peer even when call message persistence fails', async () => {

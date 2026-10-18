@@ -132,6 +132,7 @@ export default function ChatSidebar() {
                 watched={chat.lastMessage?.senderId === userId}
                 name={chat.title ?? 'Без названия'}
                 avatarURL={chat.avatarUrl ?? ''}
+                isSavedMessages={chat.type === 'saved_messages'}
                 unreadCount={chat.unreadCount}
                 message={
                   typeof chat.lastMessage?.content === 'string'

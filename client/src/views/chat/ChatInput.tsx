@@ -7,7 +7,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from 'react'
-import { usePopupStore } from '@/controllers/popupController'
+import { splitEmojiText } from '@/utils/emoji'
 
 interface ChatInputProps {
   value: string
@@ -26,15 +26,7 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
     const [isEmpty, setIsEmpty] = useState(true)
     const [hasBr, setHasBr] = useState(false)
 
-    function emojiToUnified(emoji: string): string {
-      return [...emoji]
-        .map((char) => char.codePointAt(0)?.toString(16))
-        .filter(Boolean)
-        .join('-')
-    }
-
     const inputRef = useRef<HTMLDivElement>(null)
-    const popupOpen = usePopupStore((s) => Boolean(s.children))
     const lastCaretOffset = useRef<number | null>(null)
 
     const parseValue = () => {
@@ -226,22 +218,6 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
       selection.addRange(range)
     }
 
-    const restoreFocus = () => {
-      const el = inputRef.current
-      if (!el) return
-
-      const caretOffset = getCaretOffset(el)
-      lastCaretOffset.current = caretOffset
-
-      setTimeout(() => {
-        if (!inputRef.current) return
-        inputRef.current.focus()
-        if (lastCaretOffset.current !== null) {
-          setCaretOffset(inputRef.current, lastCaretOffset.current)
-        }
-      }, 0)
-    }
-
     const handleInput = () => {
       const el = inputRef.current
       if (!el) return
@@ -267,11 +243,7 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
 
       textNodes.forEach((node) => {
         const currentContent = node.textContent as string
-        const segmenter = new Intl.Segmenter(undefined, {
-          granularity: 'grapheme',
-        })
-
-        const parts = [...segmenter.segment(currentContent)].map((s) => s.segment)
+        const parts = splitEmojiText(currentContent)
 
         const fragment = document.createDocumentFragment()
         let textBuffer = ''
@@ -284,22 +256,16 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
           textBuffer = ''
         }
 
-        parts.forEach((item) => {
-          const isEmojiRaw =
-            /\p{Extended_Pictographic}/u.test(item) || /\p{Regional_Indicator}/u.test(item)
-          const isSimpleDigit = /^[0-9]$/.test(item)
-          const isEmoji = isEmojiRaw && !isSimpleDigit
-          if (isEmoji) {
+        parts.forEach((part) => {
+          if (part.type === 'emoji') {
             flushText()
             const img = document.createElement('img')
-            img.src = `https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/${emojiToUnified(
-              item
-            )}.png`
-            img.alt = item
+            img.src = `/images/emoji/apple/64/${part.unified}.png`
+            img.alt = part.value
             img.className = 'emoji'
             fragment.appendChild(img)
           } else {
-            textBuffer += item
+            textBuffer += part.value
           }
         })
 
@@ -392,9 +358,9 @@ const ChatInput = forwardRef<ChatInputHandle, ChatInputProps>(
           }}
           onDragStart={handleDragStart}
           onBlur={() => {
-            if (popupOpen) {
-              restoreFocus()
-            }
+            lastCaretOffset.current = inputRef.current
+              ? getCaretOffset(inputRef.current)
+              : null
           }}
           onInput={handleInput}
         ></div>

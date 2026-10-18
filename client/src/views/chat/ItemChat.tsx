@@ -12,6 +12,7 @@ interface ItemChatProps {
   message?: string
   messageType?: 'text' | 'voice' | 'circle' | 'file' | 'call'
   avatarURL?: string
+  isSavedMessages?: boolean
   unreadCount?: number
   onClick?: () => void
 }
@@ -23,13 +24,19 @@ export default function ItemChat({
   message = 'Привет! Как проходит день?',
   messageType = 'text',
   avatarURL = '',
+  isSavedMessages = false,
   unreadCount = 0,
   onClick,
 }: ItemChatProps) {
   const timeString = formatTime(createdAt)
   return (
     <button type="button" className="item-chat" onClick={onClick}>
-      <UserAvatar id={id} name={name} avatarURL={avatarURL} />
+      <UserAvatar
+        id={id}
+        name={name}
+        avatarURL={avatarURL}
+        isSavedMessages={isSavedMessages}
+      />
 
       <div className="item-chat__info">
         <div className="item-chat__header">

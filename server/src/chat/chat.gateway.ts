@@ -192,6 +192,67 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
+  @SubscribeMessage('call:renegotiate')
+  relayCallRenegotiation(
+    @ConnectedSocket() socket: AuthenticatedSocket,
+    @MessageBody()
+    data: {
+      targetUserId: string;
+      callId: string;
+      offer: Record<string, unknown>;
+    },
+  ) {
+    const userId = socket.data.userId;
+    const call = this.callSessions.get(data.callId);
+    if (
+      !userId ||
+      !call ||
+      call.status !== 'accepted' ||
+      userId === data.targetUserId ||
+      !call.participantIds.includes(userId) ||
+      !call.participantIds.includes(data.targetUserId)
+    ) {
+      return;
+    }
+
+    call.type = 'video';
+    this.emitToUser(data.targetUserId, 'call:renegotiate', {
+      callId: data.callId,
+      offer: data.offer,
+      userId,
+    });
+  }
+
+  @SubscribeMessage('call:renegotiate:answer')
+  relayCallRenegotiationAnswer(
+    @ConnectedSocket() socket: AuthenticatedSocket,
+    @MessageBody()
+    data: {
+      targetUserId: string;
+      callId: string;
+      answer: Record<string, unknown>;
+    },
+  ) {
+    const userId = socket.data.userId;
+    const call = this.callSessions.get(data.callId);
+    if (
+      !userId ||
+      !call ||
+      call.status !== 'accepted' ||
+      userId === data.targetUserId ||
+      !call.participantIds.includes(userId) ||
+      !call.participantIds.includes(data.targetUserId)
+    ) {
+      return;
+    }
+
+    this.emitToUser(data.targetUserId, 'call:renegotiated', {
+      callId: data.callId,
+      answer: data.answer,
+      userId,
+    });
+  }
+
   @SubscribeMessage('call:ice')
   relayIceCandidate(
     @ConnectedSocket() socket: AuthenticatedSocket,

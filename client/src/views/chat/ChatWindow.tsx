@@ -26,13 +26,11 @@ import { useCallStore } from '@/controllers/callController'
 import { useContactStore } from '@/controllers/contactController'
 import { useNavigate, useParams } from 'react-router-dom'
 
-const resolveChatFromRoute = async (chatKey: string, openChat: (chat: ChatListItem) => void) => {
+const resolveChatFromRoute = async (chatKey: string): Promise<ChatListItem | undefined> => {
   const chats = await getChats()
-  const chat = chatKey.startsWith('@')
+  return chatKey.startsWith('@')
     ? chats.find((item) => item.participant?.username === chatKey.slice(1))
     : chats.find((item) => item.id === chatKey)
-
-  if (chat) openChat(chat)
 }
 
 export default function ChatWindow() {
@@ -88,14 +86,25 @@ export default function ChatWindow() {
   useEffect(() => {
     if (!chatKey) return
 
+    let isCurrent = true
     const matchesRoute = selectedChat
       ? chatKey.startsWith('@')
         ? selectedChat.participant?.username === chatKey.slice(1)
         : selectedChat.id === chatKey
       : false
-    if (matchesRoute) return
+    if (matchesRoute) {
+      return () => {
+        isCurrent = false
+      }
+    }
 
-    void resolveChatFromRoute(chatKey, openChat)
+    void resolveChatFromRoute(chatKey).then((chat) => {
+      if (isCurrent && chat) openChat(chat)
+    })
+
+    return () => {
+      isCurrent = false
+    }
   }, [chatKey, selectedChat, openChat])
 
   useEffect(() => {
@@ -303,6 +312,7 @@ export default function ChatWindow() {
             id={selectedChat?.id ?? 'empty-chat'}
             name={selectedChat?.title ?? 'Чат'}
             avatarURL={selectedChat?.avatarUrl ?? ''}
+            isSavedMessages={selectedChat?.type === 'saved_messages'}
           />
 
           <div className="chat-window__contact" onClick={toggleMenu}>

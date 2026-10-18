@@ -44,6 +44,7 @@ export default function ChatMenu() {
             name={title}
             avatarURL={selectedChat?.avatarUrl ?? ''}
             size={100}
+            isSavedMessages={isSavedMessages}
           />
           <UserName name={title} phone={participant?.phone ?? ''} contactName="" />
           <span className="chat-menu__status">

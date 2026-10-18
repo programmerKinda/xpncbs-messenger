@@ -7,9 +7,12 @@ interface SidebarItemProps {
 export const SideBarItem: React.FC<SidebarItemProps> = ({ icon, text, path }) => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
+  const isActive = path === '/'
+    ? pathname === '/' || pathname.startsWith('/chat/')
+    : pathname === path
   return (
     <li
-      className={`sidebar__item-container ${pathname === path ? 'active' : ''}`}
+      className={`sidebar__item-container ${isActive ? 'active' : ''}`}
       onClick={() => {
         navigate(path)
       }}

@@ -32,22 +32,17 @@ import { getBackendHealth, getBackendMessage } from './api/file'
 import { useDropdownStore } from './controllers/dropdownController'
 import CallOverlay from './views/calls/CallOverlay'
 
-function App() {
+function PopupHost() {
   const popupRef = useRef<HTMLDivElement | null>(null)
-  const { targetRef, children, onClose, placement, align, flip, width, popupClassName } =
-    usePopupStore()
-  const { closeAll } = useDropdownStore()
-  const { modalChildren } = useModalStore()
-
-  useEffect(() => {
-    void getBackendHealth().catch((error: unknown) => {
-      console.error('Backend is unavailable', error)
-    })
-
-    void getBackendMessage().then((message) => {
-      console.log('Backend test response:', message)
-    })
-  }, [])
+  const targetRef = usePopupStore((state) => state.targetRef)
+  const children = usePopupStore((state) => state.children)
+  const onClose = usePopupStore((state) => state.onClose)
+  const placement = usePopupStore((state) => state.placement)
+  const align = usePopupStore((state) => state.align)
+  const flip = usePopupStore((state) => state.flip)
+  const width = usePopupStore((state) => state.width)
+  const popupClassName = usePopupStore((state) => state.popupClassName)
+  const closeAll = useDropdownStore((state) => state.closeAll)
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -63,7 +58,37 @@ function App() {
     return () => {
       document.removeEventListener('click', handleClickOutside)
     }
-  }, [targetRef, onClose])
+  }, [targetRef, onClose, closeAll])
+
+  if (!targetRef || !children) return null
+
+  return (
+    <Popup
+      ref={popupRef}
+      targetRef={targetRef}
+      placement={placement}
+      align={align}
+      flip={flip}
+      width={width}
+      popupClassName={popupClassName}
+    >
+      {children}
+    </Popup>
+  )
+}
+
+function App() {
+  const { modalChildren } = useModalStore()
+
+  useEffect(() => {
+    void getBackendHealth().catch((error: unknown) => {
+      console.error('Backend is unavailable', error)
+    })
+
+    void getBackendMessage().then((message) => {
+      console.log('Backend test response:', message)
+    })
+  }, [])
 
   const restoreSession = useAuthStore((state) => state.restoreSession)
 
@@ -116,19 +141,7 @@ console.log('CURRENT USER:', user);
         </Routes>
       </BrowserRouter>
 
-      {targetRef && children && (
-        <Popup
-          ref={popupRef}
-          targetRef={targetRef}
-          placement={placement}
-          align={align}
-          flip={flip}
-          width={width}
-          popupClassName={popupClassName}
-        >
-          {children}
-        </Popup>
-      )}
+      <PopupHost />
       {modalChildren && <Modal>{modalChildren}</Modal>}
       <CallOverlay />
     </>

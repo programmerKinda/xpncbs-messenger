@@ -9,9 +9,56 @@ import type {
   ChatListItem,
   ChatMessage,
   PaginatedResponse,
+  VideoPreviewMetadata,
 } from '@/models/api'
+import type { VideoProvider } from '@/utils/video'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? '/api'
+
+export async function getVideoPreviewMetadata(
+  provider: VideoProvider,
+  videoId: string,
+  signal?: AbortSignal,
+): Promise<VideoPreviewMetadata> {
+  const token = localStorage.getItem('accessToken')
+  const response = await fetch(`${API_BASE_URL}/${provider}/${encodeURIComponent(videoId)}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    signal,
+  })
+
+  if (!response.ok) {
+    throw new Error(`Video preview request failed with status ${response.status}`)
+  }
+
+  return response.json() as Promise<VideoPreviewMetadata>
+}
+
+export async function downloadVideo(
+  provider: VideoProvider,
+  videoId: string,
+): Promise<{ downloadUrl: string }> {
+  const token = localStorage.getItem('accessToken')
+  const response = await fetch(
+    `${API_BASE_URL}/${provider}/${encodeURIComponent(videoId)}/download-ticket`,
+    {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    },
+  )
+
+  if (!response.ok) {
+    const error = (await response.json().catch(() => null)) as
+      | { reason?: string; message?: string }
+      | null
+    throw new Error(error?.reason ?? error?.message ?? 'Не удалось скачать видео')
+  }
+
+  const { ticket } = (await response.json()) as { ticket: string }
+
+  return {
+    downloadUrl: `${API_BASE_URL}/${provider}/${encodeURIComponent(videoId)}/download?ticket=${encodeURIComponent(ticket)}`,
+  }
+}
 
 export async function getBackendHealth(): Promise<BackendHealth> {
   const response = await fetch(`${API_BASE_URL}/health`)

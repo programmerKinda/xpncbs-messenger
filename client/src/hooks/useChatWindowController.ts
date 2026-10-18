@@ -2,20 +2,6 @@ import { useEffect, useRef, useState, type DragEvent } from 'react'
 import { useChatMenuStore } from '@/controllers/chatMenuController'
 import type { ChatInputHandle } from '@/views/chat/ChatInput'
 
-const emojiLabels = {
-  'Frequently Used': 'Часто используемые',
-  'Custom Emojis': 'Пользовательские эмодзи',
-  People: 'Люди',
-  'Animals & Nature': 'Животные & природа',
-  'Smileys & People': 'Смайлы & люди',
-  'Food & Drink': 'Еда & напитки',
-  'Travel & Places': 'Путешествия & места',
-  Activities: 'Активности',
-  Objects: 'Объекты',
-  Symbols: 'Символы',
-  Flags: 'Флаги',
-} as const
-
 const allowedExtensions = [
   'png',
   'jpg',
@@ -124,39 +110,6 @@ export function useChatWindowController() {
     resizeObserver.observe(formElement)
 
     return () => resizeObserver.disconnect()
-  }, [])
-
-  useEffect(() => {
-    const updateEmojiLabels = () => {
-      const labels = document.querySelectorAll<HTMLDivElement>('.epr-emoji-category-label')
-      labels.forEach((el) => {
-        if (!el.dataset.key) {
-          el.dataset.key = el.textContent ?? ''
-        }
-
-        const key = el.dataset.key as keyof typeof emojiLabels
-        const translated = emojiLabels[key]
-
-        if (translated !== undefined && el.textContent !== translated) {
-          el.textContent = translated
-        }
-      })
-    }
-
-    const observer = new MutationObserver(() => {
-      const picker = document.querySelector('.EmojiPickerReact')
-
-      if (picker) {
-        updateEmojiLabels()
-      }
-    })
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    })
-
-    return () => observer.disconnect()
   }, [])
 
   const handleDragEnter = (event: DragEvent) => {

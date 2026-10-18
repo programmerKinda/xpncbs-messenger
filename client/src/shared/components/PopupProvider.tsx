@@ -24,8 +24,6 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({
 }) => {
   const targetRef = useRef<HTMLElement | null>(null)
 
-  const { targetRef: activeRef, setPopup, onClose } = usePopupStore()
-
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
     if (children.props.onClick) {
@@ -33,6 +31,7 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({
     }
     if (!targetRef.current) return
 
+    const { targetRef: activeRef, setPopup, onClose } = usePopupStore.getState()
     if (activeRef?.current === targetRef.current) {
       onClose()
       return

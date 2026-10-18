@@ -1,5 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
-import { Phone, PhoneOff, Video } from 'lucide-react'
+import {
+  Camera,
+  CameraOff,
+  Maximize2,
+  Mic,
+  MicOff,
+  Minimize2,
+  Phone,
+  PhoneOff,
+  Video,
+} from 'lucide-react'
 import { io, type Socket } from 'socket.io-client'
 
 import { playCallRingtone, stopCallRingtone, useCallStore } from '@/controllers/callController'
@@ -43,6 +53,11 @@ export default function CallOverlay() {
   const [isConnecting, setIsConnecting] = useState(false)
   const [callDuration, setCallDuration] = useState(0)
   const [callError, setCallError] = useState<string | null>(null)
+  const [callNotice, setCallNotice] = useState<string | null>(null)
+  const [isMicrophoneEnabled, setIsMicrophoneEnabled] = useState(true)
+  const [isCameraEnabled, setIsCameraEnabled] = useState(false)
+  const [hasRemoteVideo, setHasRemoteVideo] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
   const activeCallId = activeCall?.callId
   const socketRef = useRef<Socket | null>(null)
   const peerRef = useRef<RTCPeerConnection | null>(null)
@@ -54,6 +69,7 @@ export default function CallOverlay() {
   const localVideoRef = useRef<HTMLVideoElement>(null)
   const remoteVideoRef = useRef<HTMLVideoElement>(null)
   const remoteAudioRef = useRef<HTMLAudioElement>(null)
+  const callWindowRef = useRef<HTMLElement>(null)
 
   async function flushPendingIceCandidates(callId: string, peer: RTCPeerConnection) {
     const candidates = pendingIceCandidatesRef.current.get(callId) ?? []
@@ -103,6 +119,10 @@ export default function CallOverlay() {
     setIncomingCall(null)
     setIsConnecting(false)
     setCallError(null)
+    setCallNotice(null)
+    setIsMicrophoneEnabled(true)
+    setIsCameraEnabled(false)
+    setHasRemoteVideo(false)
   }
 
   useEffect(() => {
@@ -129,6 +149,13 @@ export default function CallOverlay() {
 
     return () => window.clearInterval(intervalId)
   }, [activeCallId, isConnecting])
+
+  const markCallAsVideo = (callId: string) => {
+    const entry = useCallStore.getState().callHistory.find((call) => call.callId === callId)
+    if (entry) {
+      useCallStore.getState().recordCallStarted({ ...entry, type: 'video' })
+    }
+  }
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken')
@@ -163,6 +190,46 @@ export default function CallOverlay() {
         setIsConnecting(false)
       }
     })
+    socket.on(
+      'call:renegotiate',
+      async (data: { callId: string; offer: RTCSessionDescriptionInit }) => {
+        const call = activeCallRef.current
+        const peer = peerRef.current
+        if (!call || call.callId !== data.callId || !peer) return
+
+        try {
+          await peer.setRemoteDescription(data.offer)
+          await flushPendingIceCandidates(data.callId, peer)
+          const answer = await peer.createAnswer()
+          await peer.setLocalDescription(answer)
+          socket.emit('call:renegotiate:answer', {
+            targetUserId: call.peerId,
+            callId: data.callId,
+            answer,
+          })
+          setActiveCall((current) =>
+            current?.callId === data.callId ? { ...current, type: 'video' } : current,
+          )
+          markCallAsVideo(data.callId)
+          setCallNotice(null)
+        } catch {
+          setCallNotice('Не удалось подключить видео')
+        }
+      },
+    )
+    socket.on(
+      'call:renegotiated',
+      async (data: { callId: string; answer: RTCSessionDescriptionInit }) => {
+        if (data.callId !== activeCallRef.current?.callId || !peerRef.current) return
+        try {
+          await peerRef.current.setRemoteDescription(data.answer)
+          await flushPendingIceCandidates(data.callId, peerRef.current)
+          setCallNotice(null)
+        } catch {
+          setCallNotice('Не удалось подключить видео')
+        }
+      },
+    )
     socket.on('call:ice', async (data: { callId: string; candidate: RTCIceCandidateInit }) => {
       if (
         data.callId === activeCallRef.current?.callId ||
@@ -170,7 +237,16 @@ export default function CallOverlay() {
         pendingIceCandidatesRef.current.has(data.callId)
       ) {
         const peer = peerRef.current
-        if (!peer || !peer.remoteDescription) {
+        const remoteDescription = peer?.remoteDescription
+        const remoteMediaSections = remoteDescription?.sdp?.match(/^m=/gm)?.length ?? 0
+        const candidateMatchesRemoteDescription = data.candidate.sdpMid
+          ? remoteDescription?.sdp
+              ?.split(/\r?\n/)
+              .includes(`a=mid:${data.candidate.sdpMid}`) ?? false
+          : data.candidate.sdpMLineIndex == null ||
+            data.candidate.sdpMLineIndex < remoteMediaSections
+
+        if (!peer || !remoteDescription || !candidateMatchesRemoteDescription) {
           const candidates = pendingIceCandidatesRef.current.get(data.callId) ?? []
           candidates.push(data.candidate)
           pendingIceCandidatesRef.current.set(data.callId, candidates)
@@ -198,6 +274,19 @@ export default function CallOverlay() {
     localVideoRef.current.srcObject = localStreamRef.current
   }, [activeCall, isConnecting])
 
+  useEffect(() => {
+    if (!remoteVideoRef.current || !remoteStreamRef.current) return
+    remoteVideoRef.current.srcObject = remoteStreamRef.current
+  }, [activeCall, hasRemoteVideo])
+
+  useEffect(() => {
+    const updateFullscreenState = () => {
+      setIsFullscreen(document.fullscreenElement === callWindowRef.current)
+    }
+    document.addEventListener('fullscreenchange', updateFullscreenState)
+    return () => document.removeEventListener('fullscreenchange', updateFullscreenState)
+  }, [])
+
   const createPeer = (callId: string, peerId: string, type: CallType) => {
     if (!pendingIceCandidatesRef.current.has(callId)) {
       pendingIceCandidatesRef.current.set(callId, [])
@@ -221,8 +310,11 @@ export default function CallOverlay() {
       }
       remoteStreamRef.current = remoteStream
 
-      if (type === 'video' && remoteVideoRef.current) {
+      if (remoteVideoRef.current) {
         remoteVideoRef.current.srcObject = remoteStream
+      }
+      if (event.track.kind === 'video') {
+        setHasRemoteVideo(true)
       }
       if (type === 'audio' && event.track.kind === 'audio') {
         playRemoteAudio(remoteAudioRef.current, remoteStream)
@@ -244,6 +336,7 @@ export default function CallOverlay() {
       video: request.type === 'video',
     })
     localStreamRef.current = stream
+    setIsCameraEnabled(request.type === 'video')
     const peer = createPeer(callId, request.targetUserId, request.type)
     useCallStore.getState().recordCallStarted({
       callId,
@@ -306,6 +399,7 @@ export default function CallOverlay() {
         video: incomingCall.type === 'video',
       })
       localStreamRef.current = stream
+      setIsCameraEnabled(incomingCall.type === 'video')
       const peer = createPeer(incomingCall.callId, incomingCall.callerId, incomingCall.type)
       useCallStore.getState().updateCallStatus(incomingCall.callId, 'accepted', 0)
       await peer.setRemoteDescription(incomingCall.offer)
@@ -333,55 +427,152 @@ export default function CallOverlay() {
 
   if (!incomingCall && !activeCall && !callError) return null
 
+  const isIncoming = Boolean(incomingCall && !activeCall)
+  const callType = activeCall?.type ?? incomingCall?.type
+  const peerId = activeCall?.peerId ?? incomingCall?.callerId ?? 'call'
+  const peerName = activeCall?.peerName ?? incomingCall?.callerName ?? 'Звонок'
+  const peerAvatarUrl = activeCall?.peerAvatarUrl ?? incomingCall?.callerAvatarUrl ?? ''
+
+  const toggleMicrophone = () => {
+    const enabled = !isMicrophoneEnabled
+    localStreamRef.current?.getAudioTracks().forEach((track) => {
+      track.enabled = enabled
+    })
+    setIsMicrophoneEnabled(enabled)
+  }
+
+  const toggleCamera = () => {
+    if (isConnecting) return
+
+    if (isCameraEnabled) {
+      localStreamRef.current?.getVideoTracks().forEach((track) => {
+        track.enabled = false
+      })
+      setIsCameraEnabled(false)
+      return
+    }
+
+    void (async () => {
+      const call = activeCallRef.current
+      const peer = peerRef.current
+      const stream = localStreamRef.current
+      if (!call || !peer || !stream) return
+
+      try {
+        let videoTrack = stream.getVideoTracks().find((track) => track.readyState === 'live')
+        if (!videoTrack) {
+          const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true })
+          videoTrack = cameraStream.getVideoTracks()[0]
+          if (!videoTrack) throw new Error('Camera track unavailable')
+
+          stream.addTrack(videoTrack)
+          peer.addTrack(videoTrack, stream)
+          const offer = await peer.createOffer()
+          await peer.setLocalDescription(offer)
+          setActiveCall((current) =>
+            current?.callId === call.callId ? { ...current, type: 'video' } : current,
+          )
+          markCallAsVideo(call.callId)
+          socketRef.current?.emit('call:renegotiate', {
+            targetUserId: call.peerId,
+            callId: call.callId,
+            offer,
+          })
+        }
+
+        videoTrack.enabled = true
+        setIsCameraEnabled(true)
+        setCallNotice(null)
+      } catch {
+        setCallNotice('Не удалось включить камеру. Проверьте разрешение браузера.')
+      }
+    })()
+  }
+
+  const toggleFullscreen = async () => {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen()
+    } else {
+      await callWindowRef.current?.requestFullscreen()
+    }
+  }
+
+  const durationLabel = `${Math.floor(callDuration / 60).toString().padStart(2, '0')}:${
+    (callDuration % 60).toString().padStart(2, '0')
+  }`
+
   return (
     <div className="call-overlay">
-      <div className="call-overlay__card">
-        {callError ? (
-          <>
-            <p className="call-overlay__eyebrow">Звонок недоступен</p>
-            <p className="call-overlay__error">{callError}</p>
-            <button type="button" className="call-overlay__decline" onClick={() => setCallError(null)}>
-              Закрыть
-            </button>
-          </>
-        ) : incomingCall && !activeCall ? (
-          <>
-            <p className="call-overlay__eyebrow">Входящий звонок</p>
-            <UserAvatar
-              id={incomingCall.callerId}
-              name={incomingCall.callerName}
-              avatarURL={incomingCall.callerAvatarUrl ?? ''}
-              size={88}
-            />
-            <h2>{incomingCall.callerName}</h2>
-            <div className="call-overlay__actions">
-              <button type="button" className="call-overlay__accept" onClick={() => void acceptIncomingCall()}>
-                {incomingCall.type === 'video' ? <Video /> : <Phone />}
-              </button>
-              <button type="button" className="call-overlay__decline" onClick={() => closeCall(true)}>
-                <PhoneOff />
-              </button>
+      <section ref={callWindowRef} className="call-overlay__window" aria-label="Окно звонка">
+        <header className="call-overlay__header">
+          <div className="call-overlay__heading">
+            <span className="call-overlay__type-icon" aria-hidden="true">
+              {callType === 'video' ? <Video size={19} /> : <Phone size={19} />}
+            </span>
+            <div className="call-overlay__heading-copy">
+              <p className="call-overlay__eyebrow">
+                {callError
+                  ? 'Ошибка соединения'
+                  : isIncoming
+                    ? 'Входящий звонок'
+                    : callType === 'video'
+                      ? 'Видеозвонок'
+                      : 'Аудиозвонок'}
+              </p>
+              <h2>{callError ? 'Звонок не состоялся' : peerName}</h2>
             </div>
-          </>
-        ) : activeCall ? (
-          <>
-            <p className="call-overlay__eyebrow">{isConnecting ? 'Соединение...' : 'Звонок'}</p>
-            <UserAvatar
-              id={activeCall.peerId}
-              name={activeCall.peerName}
-              avatarURL={activeCall.peerAvatarUrl ?? ''}
-              size={88}
-            />
-            <h2>{activeCall.peerName}</h2>
-            {!isConnecting && (
-              <span className="call-overlay__duration">
-                {Math.floor(callDuration / 60).toString().padStart(2, '0')}:
-                {(callDuration % 60).toString().padStart(2, '0')}
-              </span>
+          </div>
+          <div className="call-overlay__header-actions">
+            <span
+              className={`call-overlay__status ${callError ? 'call-overlay__status--error' : ''}`}
+              role="status"
+            >
+              <span className="call-overlay__status-dot" />
+              {callError ? 'Недоступен' : isIncoming ? 'Входящий' : isConnecting ? 'Ожидание' : 'На связи'}
+            </span>
+            {activeCall && !callError && (
+              <button
+                type="button"
+                className="call-overlay__fullscreen"
+                onClick={() => void toggleFullscreen()}
+                aria-label={isFullscreen ? 'Выйти из полноэкранного режима' : 'На весь экран'}
+                title={isFullscreen ? 'Выйти из полноэкранного режима' : 'На весь экран'}
+              >
+                {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+              </button>
             )}
-            {activeCall.type === 'video' && (
-              <div className="call-overlay__video-grid">
-                <video className="call-overlay__remote-video" ref={remoteVideoRef} autoPlay playsInline />
+          </div>
+        </header>
+
+        <main className={`call-overlay__stage ${callType === 'audio' ? 'call-overlay__stage--audio' : ''}`}>
+          {activeCall?.type === 'video' && (
+            <video
+              className="call-overlay__remote-video"
+              ref={remoteVideoRef}
+              autoPlay
+              playsInline
+              aria-label={`Видео собеседника: ${peerName}`}
+            />
+          )}
+          {(!hasRemoteVideo || callType !== 'video' || isIncoming || callError) && (
+            <div className="call-overlay__waiting">
+              <UserAvatar id={peerId} name={peerName} avatarURL={peerAvatarUrl} size={128} />
+              <span>
+                {callError
+                  ? callError
+                  : isIncoming
+                    ? 'Звонит вам'
+                    : isConnecting
+                      ? 'Ожидание ответа'
+                      : callType === 'audio'
+                        ? 'Аудиозвонок'
+                        : 'Подключаем видео'}
+              </span>
+            </div>
+          )}
+          {activeCall?.type === 'video' && (
+            <div className="call-overlay__local-preview">
+              {isCameraEnabled ? (
                 <video
                   className="call-overlay__local-video"
                   ref={localVideoRef}
@@ -390,15 +581,93 @@ export default function CallOverlay() {
                   playsInline
                   aria-label="Ваше видео"
                 />
-              </div>
-            )}
-            {activeCall.type === 'audio' && <audio ref={remoteAudioRef} autoPlay />}
-            <button type="button" className="call-overlay__decline" onClick={() => closeCall(true)}>
-              <PhoneOff />
+              ) : (
+                <div className="call-overlay__camera-off">
+                  <CameraOff size={22} />
+                  <span>Камера выключена</span>
+                </div>
+              )}
+              <span className="call-overlay__local-name">Вы</span>
+            </div>
+          )}
+          <div className="call-overlay__stage-caption">
+            <strong>{peerName}</strong>
+            <span>{isConnecting ? 'Вызов...' : isIncoming ? 'Ожидает ответа' : callError ? '' : durationLabel}</span>
+          </div>
+          {callNotice && (
+            <div className="call-overlay__notice" role="status">
+              {callNotice}
+            </div>
+          )}
+          {activeCall?.type === 'audio' && <audio ref={remoteAudioRef} autoPlay />}
+        </main>
+
+        <footer className="call-overlay__footer">
+          {callError ? (
+            <button type="button" className="call-overlay__close-error" onClick={() => setCallError(null)}>
+              Закрыть
             </button>
-          </>
-        ) : null}
-      </div>
+          ) : isIncoming ? (
+            <div className="call-overlay__incoming-actions">
+              <button
+                type="button"
+                className="call-overlay__accept"
+                onClick={() => void acceptIncomingCall()}
+              >
+                {callType === 'video' ? <Video size={20} /> : <Phone size={20} />}
+                Ответить
+              </button>
+              <button
+                type="button"
+                className="call-overlay__decline"
+                onClick={() => closeCall(true)}
+                aria-label="Отклонить звонок"
+              >
+                <PhoneOff size={20} />
+                Отклонить
+              </button>
+            </div>
+          ) : activeCall ? (
+            <>
+              <div className="call-overlay__footer-info">
+                <span>{isConnecting ? 'Соединяем вас' : 'Звонок идёт'}</span>
+                {!isConnecting && <strong>{durationLabel}</strong>}
+              </div>
+              <div className="call-overlay__controls">
+                <button
+                  type="button"
+                  className={`call-overlay__control ${!isMicrophoneEnabled ? 'call-overlay__control--off' : ''}`}
+                  onClick={toggleMicrophone}
+                  aria-label={isMicrophoneEnabled ? 'Выключить микрофон' : 'Включить микрофон'}
+                  title={isMicrophoneEnabled ? 'Выключить микрофон' : 'Включить микрофон'}
+                >
+                  {isMicrophoneEnabled ? <Mic size={20} /> : <MicOff size={20} />}
+                </button>
+                <button
+                  type="button"
+                  className={`call-overlay__control ${!isCameraEnabled ? 'call-overlay__control--off' : ''}`}
+                  onClick={toggleCamera}
+                  disabled={isConnecting}
+                  aria-label={isCameraEnabled ? 'Выключить камеру' : 'Включить камеру'}
+                  title={isCameraEnabled ? 'Выключить камеру' : 'Включить камеру'}
+                >
+                  {isCameraEnabled ? <Camera size={20} /> : <CameraOff size={20} />}
+                </button>
+                <button
+                  type="button"
+                  className="call-overlay__decline call-overlay__end-call"
+                  onClick={() => closeCall(true)}
+                  aria-label="Завершить звонок"
+                  title="Завершить звонок"
+                >
+                  <PhoneOff size={21} />
+                </button>
+              </div>
+              <span className="call-overlay__footer-spacer" aria-hidden="true" />
+            </>
+          ) : null}
+        </footer>
+      </section>
     </div>
   )
 }

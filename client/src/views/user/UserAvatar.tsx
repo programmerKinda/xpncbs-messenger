@@ -1,16 +1,19 @@
 import ColorHash from 'color-hash'
 import chroma from 'chroma-js'
+import { Bookmark } from 'lucide-react'
 
 export default function UserAvatar({
   id,
   name,
   avatarURL,
   size,
+  isSavedMessages = false,
 }: {
   id: string
   name: string
   avatarURL: string
   size?: number
+  isSavedMessages?: boolean
 }) {
   const colorHash = new ColorHash()
 
@@ -22,9 +25,15 @@ export default function UserAvatar({
   const darkerColor = chroma(colorMain).brighten(0.8).hex()
   const lighterColor = chroma(colorMain).brighten(2).hex()
 
-  const styles: React.CSSProperties = avatarURL
-    ? {}
-    : {
+  const styles: React.CSSProperties = isSavedMessages
+    ? {
+        background: '#0786f9',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }
+    : avatarURL
+      ? {}
+      : {
         background: `linear-gradient(135deg, ${darkerColor} 0%, ${lighterColor} 100%)`,
       }
 
@@ -49,7 +58,15 @@ export default function UserAvatar({
       className={`user-avatar ${size ? '' : 'w-14 h-14'}`}
       style={styles}
     >
-      {avatarURL ? (
+      {isSavedMessages ? (
+        <Bookmark
+          size={size ? Math.round(size * 0.42) : 26}
+          fill="white"
+          color="white"
+          strokeWidth={1.5}
+          aria-hidden="true"
+        />
+      ) : avatarURL ? (
         <img
           src={avatarURL}
           alt=""
