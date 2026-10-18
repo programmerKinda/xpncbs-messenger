@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { StickerPack } from '../../stickers/entities/sticker-pack.entity';
 
 @Entity('users')
 export class User {
@@ -28,6 +31,14 @@ export class User {
 
   @Column({ type: 'varchar', nullable: true })
   avatarUrl!: string | null;
+
+  @ManyToMany(() => StickerPack, (stickerPack) => stickerPack.users)
+  @JoinTable({
+    name: 'user_sticker_packs',
+    joinColumn: { name: 'userId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'stickerPackId', referencedColumnName: 'id' },
+  })
+  stickerPacks!: StickerPack[];
 
   @CreateDateColumn()
   createdAt!: Date;

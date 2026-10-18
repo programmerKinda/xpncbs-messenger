@@ -1,4 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
 import {
   ConnectedSocket,
   MessageBody,
@@ -9,13 +10,18 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { createHash } from 'node:crypto';
+import { Repository } from 'typeorm';
 
 import { ChatService } from './chat.service';
+import { AuthSession } from '../auth/entities/auth-session.entity';
 import { Message } from './entities/message.entity';
 
 interface AuthenticatedSocket extends Socket {
   data: {
     userId?: string;
+    sessionId?: string;
+    tokenHash?: string;
   };
 }
 
@@ -40,14 +46,32 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly jwtService: JwtService,
     private readonly chatService: ChatService,
+    @InjectRepository(AuthSession)
+    private readonly sessionRepository: Repository<AuthSession>,
   ) {}
 
-  handleConnection(socket: AuthenticatedSocket) {
+  async handleConnection(socket: AuthenticatedSocket) {
     const token = socket.handshake.auth?.token;
 
     try {
-      const payload = this.jwtService.verify<{ sub: string }>(token);
+      const payload = this.jwtService.verify<{ sub: string; sid?: string }>(token);
+      const tokenHash = createHash('sha256').update(token).digest('hex');
+      const session = await this.sessionRepository.findOne({
+        where: payload.sid
+          ? { id: payload.sid, userId: payload.sub }
+          : { tokenHash, userId: payload.sub },
+      });
+      if (
+        (payload.sid && !session) ||
+        (session && (session.revokedAt || session.expiresAt <= new Date()))
+      ) {
+        socket.disconnect(true);
+        return;
+      }
+
       socket.data.userId = payload.sub;
+      socket.data.sessionId = session?.id;
+      socket.data.tokenHash = tokenHash;
       const connections = this.connectedUsers.get(payload.sub) ?? 0;
       this.connectedUsers.set(payload.sub, connections + 1);
       const sockets = this.userSockets.get(payload.sub) ?? new Set<Socket>();
@@ -61,6 +85,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
     } catch {
       socket.disconnect(true);
+    }
+  }
+
+  async disconnectAuthSession(sessionId: string) {
+    const session = await this.sessionRepository.findOne({ where: { id: sessionId } });
+    if (!session) return;
+
+    for (const socket of this.server.sockets.sockets.values()) {
+      const authenticatedSocket = socket as AuthenticatedSocket;
+      if (
+        authenticatedSocket.data.sessionId === sessionId ||
+        authenticatedSocket.data.tokenHash === session.tokenHash
+      ) {
+        socket.emit('auth:session-revoked')
+        socket.disconnect(true);
+      }
     }
   }
 

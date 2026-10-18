@@ -5,14 +5,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { AuthSession } from './entities/auth-session.entity';
 import { User } from './entities/user.entity';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ChatModule } from '../chat/chat.module';
+import { StickersModule } from '../stickers/stickers.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, AuthSession]),
     ChatModule,
+    StickersModule,
 
     PassportModule,
 

@@ -34,6 +34,86 @@ export class ChatService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  async findByRouteKey(
+    userId: string,
+    chatKey: string,
+  ): Promise<(Chat & { unreadCount: number; lastMessage: any }) | null> {
+    const query = this.memberRepository
+      .createQueryBuilder('member')
+      .innerJoinAndSelect('member.chat', 'chat')
+      .where('member.userId = :userId', { userId });
+
+    if (chatKey.startsWith('@')) {
+      query
+        .innerJoin(
+          ChatMember,
+          'directMember',
+          'directMember.chatId = chat.id AND directMember.userId != :userId',
+          { userId },
+        )
+        .innerJoin('directMember.user', 'participant')
+        .andWhere('chat.type = :chatType', { chatType: ChatType.DIRECT })
+        .andWhere('participant.username = :username', {
+          username: chatKey.slice(1),
+        });
+    } else {
+      query.andWhere('chat.id = :chatId', { chatId: chatKey });
+    }
+
+    const member = await query.getOne();
+    if (!member) return null;
+
+    const [otherMember, lastMessage, unreadCount] = await Promise.all([
+      member.chat.type === ChatType.DIRECT
+        ? this.memberRepository.findOne({
+            where: { chatId: member.chat.id, userId: Not(userId) },
+            relations: { user: true },
+          })
+        : Promise.resolve(null),
+      this.messageRepository.findOne({
+        where: { chatId: member.chat.id },
+        order: { createdAt: 'DESC', id: 'DESC' },
+      }),
+      this.messageRepository.count({
+        where: {
+          chatId: member.chat.id,
+          senderId: Not(userId),
+          ...(member.lastReadAt ? { createdAt: MoreThan(member.lastReadAt) } : {}),
+        },
+      }),
+    ]);
+
+    return {
+      ...member.chat,
+      unreadCount,
+      ...(otherMember?.user
+        ? {
+            participantId: otherMember.userId,
+            participant: {
+              id: otherMember.user.id,
+              phone: otherMember.user.phone,
+              firstName: otherMember.user.firstName,
+              lastName: otherMember.user.lastName,
+              username: otherMember.user.username,
+              about: otherMember.user.about,
+              avatarUrl: otherMember.user.avatarUrl,
+            },
+            title: `${otherMember.user.firstName} ${otherMember.user.lastName ?? ''}`.trim(),
+            avatarUrl: otherMember.user.avatarUrl,
+          }
+        : {}),
+      lastMessage: lastMessage
+        ? {
+            id: lastMessage.id,
+            senderId: lastMessage.senderId,
+            type: lastMessage.type,
+            content: lastMessage.content,
+            createdAt: lastMessage.createdAt,
+          }
+        : null,
+    };
+  }
+
   async findForUser(
     userId: string,
     limit = 20,
@@ -47,14 +127,21 @@ export class ChatService {
       .where('member.userId = :userId', { userId })
       .orderBy('chat.lastMessageAt', 'DESC', 'NULLS LAST')
       .addOrderBy('chat.createdAt', 'DESC')
+      .addOrderBy('chat.id', 'DESC')
       .limit(normalizedLimit + 1)
 
     if (cursor) {
-      const cursorDate = new Date(cursor)
-      if (!Number.isNaN(cursorDate.getTime())) {
+      const parsedCursor = this.parseChatCursor(cursor)
+      if (parsedCursor) {
         query.andWhere(
-          '(chat.lastMessageAt IS NOT NULL AND chat.lastMessageAt < :cursorDate) OR (chat.lastMessageAt IS NULL AND chat.createdAt < :cursorDate)',
-          { cursorDate },
+          parsedCursor.lastMessageAt
+            ? '(chat.lastMessageAt IS NULL OR chat.lastMessageAt < :cursorLastMessageAt OR (chat.lastMessageAt = :cursorLastMessageAt AND (chat.createdAt < :cursorCreatedAt OR (chat.createdAt = :cursorCreatedAt AND chat.id < :cursorId))))'
+            : 'chat.lastMessageAt IS NULL AND (chat.createdAt < :cursorCreatedAt OR (chat.createdAt = :cursorCreatedAt AND chat.id < :cursorId))',
+          {
+            cursorLastMessageAt: parsedCursor.lastMessageAt,
+            cursorCreatedAt: parsedCursor.createdAt,
+            cursorId: parsedCursor.id,
+          },
         )
       }
     }
@@ -63,66 +150,95 @@ export class ChatService {
     const hasMore = members.length > normalizedLimit
     const pageMembers = hasMore ? members.slice(0, normalizedLimit) : members
 
-    const items = await Promise.all(
-      pageMembers.map(async (member) => {
-        const lastMessage = await this.messageRepository.findOne({
-          where: { chatId: member.chat.id },
-          order: { createdAt: 'DESC' },
-        })
-        const unreadCount = await this.messageRepository.count({
-          where: {
-            chatId: member.chat.id,
-            senderId: Not(userId),
-            ...(member.lastReadAt
-              ? { createdAt: MoreThan(member.lastReadAt) }
-              : {}),
-          },
-        })
-        const otherMember =
-          member.chat.type === ChatType.DIRECT
-            ? (
-                await this.memberRepository.find({
-                  where: { chatId: member.chat.id },
-                  relations: { user: true },
-                })
-              ).find((chatMember) => chatMember.userId !== userId)
-            : undefined
+    const chatIds = pageMembers.map((member) => member.chat.id)
+    const lastMessages = chatIds.length
+      ? await this.messageRepository
+          .createQueryBuilder('message')
+          .distinctOn(['message.chatId'])
+          .where('message.chatId IN (:...chatIds)', { chatIds })
+          .orderBy('message.chatId', 'ASC')
+          .addOrderBy('message.createdAt', 'DESC')
+          .addOrderBy('message.id', 'DESC')
+          .getMany()
+      : []
+    const unreadRows = chatIds.length
+      ? await this.messageRepository
+          .createQueryBuilder('message')
+          .innerJoin(
+            ChatMember,
+            'member',
+            'member.chatId = message.chatId AND member.userId = :userId',
+            { userId },
+          )
+          .select('message.chatId', 'chatId')
+          .addSelect('COUNT(message.id)', 'unreadCount')
+          .where('message.chatId IN (:...chatIds)', { chatIds })
+          .andWhere('message.senderId != :userId', { userId })
+          .andWhere('(member.lastReadAt IS NULL OR message.createdAt > member.lastReadAt)')
+          .groupBy('message.chatId')
+          .getRawMany<{ chatId: string; unreadCount: string }>()
+      : []
+    const directChatIds = pageMembers
+      .filter((member) => member.chat.type === ChatType.DIRECT)
+      .map((member) => member.chat.id)
+    const otherMembers = directChatIds.length
+      ? await this.memberRepository
+          .createQueryBuilder('member')
+          .innerJoinAndSelect('member.user', 'user')
+          .where('member.chatId IN (:...directChatIds)', { directChatIds })
+          .andWhere('member.userId != :userId', { userId })
+          .getMany()
+      : []
 
-        return {
-          ...member.chat,
-          unreadCount,
-          ...(otherMember?.user
-            ? {
-                participantId: otherMember.userId,
-                participant: {
-                  id: otherMember.user.id,
-                  phone: otherMember.user.phone,
-                  firstName: otherMember.user.firstName,
-                  lastName: otherMember.user.lastName,
-                  username: otherMember.user.username,
-                  about: otherMember.user.about,
-                  avatarUrl: otherMember.user.avatarUrl,
-                },
-                title: `${otherMember.user.firstName} ${otherMember.user.lastName ?? ''}`.trim(),
-                avatarUrl: otherMember.user.avatarUrl,
-              }
-            : {}),
-          lastMessage: lastMessage
-            ? {
-                id: lastMessage.id,
-                senderId: lastMessage.senderId,
-                type: lastMessage.type,
-                content: lastMessage.content,
-                createdAt: lastMessage.createdAt,
-              }
-            : null,
-        }
-      }),
+    const lastMessageByChat = new Map(lastMessages.map((message) => [message.chatId, message]))
+    const unreadCountByChat = new Map(
+      unreadRows.map((row) => [row.chatId, Number(row.unreadCount)]),
     )
+    const participantByChat = new Map(otherMembers.map((member) => [member.chatId, member]))
+
+    const items = pageMembers.map((member) => {
+      const chat = member.chat
+      const lastMessage = lastMessageByChat.get(chat.id)
+      const otherMember = participantByChat.get(chat.id)
+
+      return {
+        ...chat,
+        unreadCount: unreadCountByChat.get(chat.id) ?? 0,
+        ...(otherMember?.user
+          ? {
+              participantId: otherMember.userId,
+              participant: {
+                id: otherMember.user.id,
+                phone: otherMember.user.phone,
+                firstName: otherMember.user.firstName,
+                lastName: otherMember.user.lastName,
+                username: otherMember.user.username,
+                about: otherMember.user.about,
+                avatarUrl: otherMember.user.avatarUrl,
+              },
+              title: `${otherMember.user.firstName} ${otherMember.user.lastName ?? ''}`.trim(),
+              avatarUrl: otherMember.user.avatarUrl,
+            }
+          : {}),
+        lastMessage: lastMessage
+          ? {
+              id: lastMessage.id,
+              senderId: lastMessage.senderId,
+              type: lastMessage.type,
+              content: lastMessage.content,
+              createdAt: lastMessage.createdAt,
+            }
+          : null,
+      }
+    })
 
     const nextCursor =
       hasMore && pageMembers.length > 0
-        ? (pageMembers[pageMembers.length - 1].chat.lastMessageAt ?? pageMembers[pageMembers.length - 1].chat.createdAt).toISOString()
+        ? JSON.stringify({
+            lastMessageAt: pageMembers[pageMembers.length - 1].chat.lastMessageAt,
+            createdAt: pageMembers[pageMembers.length - 1].chat.createdAt,
+            id: pageMembers[pageMembers.length - 1].chat.id,
+          })
         : null
 
     return {
@@ -155,9 +271,12 @@ export class ChatService {
       .limit(normalizedLimit + 1)
 
     if (before) {
-      const beforeDate = new Date(before)
-      if (!Number.isNaN(beforeDate.getTime())) {
-        query.andWhere('message.createdAt < :beforeDate', { beforeDate })
+      const parsedCursor = this.parseMessageCursor(before)
+      if (parsedCursor) {
+        query.andWhere(
+          '(message.createdAt < :beforeDate OR (message.createdAt = :beforeDate AND message.id < :beforeId))',
+          { beforeDate: parsedCursor.createdAt, beforeId: parsedCursor.id },
+        )
       }
     }
 
@@ -169,9 +288,42 @@ export class ChatService {
       items: [...pageRows].reverse(),
       nextCursor:
         hasMore && pageRows.length > 0
-          ? pageRows[pageRows.length - 1].createdAt.toISOString()
+          ? JSON.stringify({
+              createdAt: pageRows[pageRows.length - 1].createdAt,
+              id: pageRows[pageRows.length - 1].id,
+            })
           : null,
       hasMore,
+    }
+  }
+
+  private parseChatCursor(
+    cursor: string,
+  ): { lastMessageAt: Date | null; createdAt: Date; id: string } | null {
+    try {
+      const value = JSON.parse(cursor) as {
+        lastMessageAt?: string | null;
+        createdAt?: string;
+        id?: string;
+      }
+      const createdAt = new Date(value.createdAt ?? '')
+      const lastMessageAt = value.lastMessageAt ? new Date(value.lastMessageAt) : null
+      if (!value.id || Number.isNaN(createdAt.getTime())) return null
+      if (value.lastMessageAt && Number.isNaN(lastMessageAt?.getTime())) return null
+      return { lastMessageAt, createdAt, id: value.id }
+    } catch {
+      return null
+    }
+  }
+
+  private parseMessageCursor(cursor: string): { createdAt: Date; id: string } | null {
+    try {
+      const value = JSON.parse(cursor) as { createdAt?: string; id?: string }
+      const createdAt = new Date(value.createdAt ?? '')
+      if (!value.id || Number.isNaN(createdAt.getTime())) return null
+      return { createdAt, id: value.id }
+    } catch {
+      return null
     }
   }
 

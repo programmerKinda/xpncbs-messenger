@@ -22,6 +22,7 @@ import { ChatService } from './chat.service';
 import { ChatGateway } from './chat.gateway';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { MessageType } from './entities/message.entity';
+import { StickerService } from '../stickers/sticker.service';
 
 const voiceUploadDirectory = join(process.cwd(), 'uploads', 'voice');
 const circleUploadDirectory = join(process.cwd(), 'uploads', 'circle');
@@ -34,6 +35,7 @@ export class ChatController {
   constructor(
     private readonly chatService: ChatService,
     private readonly chatGateway: ChatGateway,
+    private readonly stickerService: StickerService,
   ) {}
 
   @Get()
@@ -43,6 +45,14 @@ export class ChatController {
     @Query('cursor') cursor?: string,
   ) {
     return this.chatService.findForUser(request.user.id, Number(limit) || 20, cursor);
+  }
+
+  @Get('lookup/:chatKey')
+  findByRouteKey(
+    @Param('chatKey') chatKey: string,
+    @Req() request: { user: { id: string } },
+  ) {
+    return this.chatService.findByRouteKey(request.user.id, chatKey);
   }
 
   @Post('direct/:username')
@@ -82,6 +92,23 @@ export class ChatController {
     @Body() data: CreateMessageDto,
     @Req() request: { user: { id: string } },
   ) {
+    if (data.type === MessageType.STICKER) {
+      const stickerId =
+        typeof data.content === 'object' && data.content !== null
+          ? data.content.stickerId
+          : undefined;
+      if (typeof stickerId !== 'string') {
+        throw new BadRequestException('Не указан стикер');
+      }
+
+      const sticker = await this.stickerService.findForUser(stickerId, request.user.id);
+      data.content = {
+        stickerId: sticker.id,
+        url: `/api/stickers/${encodeURIComponent(sticker.fileName)}`,
+        alt: sticker.title,
+      };
+    }
+
     const message = await this.chatService.createMessageForUser(
       chatId,
       request.user.id,

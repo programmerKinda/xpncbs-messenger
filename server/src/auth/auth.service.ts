@@ -1,20 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { DataSource, Repository } from 'typeorm';
+import { createHash, randomUUID } from 'node:crypto';
+import { DataSource, IsNull, Repository } from 'typeorm';
 
 import { ChatService } from '../chat/chat.service';
+import { AuthSession } from './entities/auth-session.entity';
 import { User } from './entities/user.entity';
+import { StickerPack } from '../stickers/entities/sticker-pack.entity';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class AuthService {
   private codes = new Map<string, string>();
+  private readonly sessionLifetimeMs = 30 * 24 * 60 * 60 * 1000;
 
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(AuthSession)
+    private readonly sessionRepository: Repository<AuthSession>,
 
     private readonly jwtService: JwtService,
 
@@ -27,10 +34,38 @@ export class AuthService {
     return `+${phone.replace(/\D/g, '')}`;
   }
 
-  private generateToken(user: User) {
-    return this.jwtService.sign({
-      sub: user.id,
+  private hashToken(token: string) {
+    return createHash('sha256').update(token).digest('hex');
+  }
+
+  private async createSession(
+    user: User,
+    token: string,
+    sessionId: string,
+    context: { userAgent?: string; ipAddress?: string },
+  ) {
+    const now = new Date();
+    const session = this.sessionRepository.create({
+      id: sessionId,
+      userId: user.id,
+      tokenHash: this.hashToken(token),
+      userAgent: context.userAgent?.slice(0, 500) ?? null,
+      ipAddress: context.ipAddress?.slice(0, 100) ?? null,
+      lastActiveAt: now,
+      expiresAt: new Date(now.getTime() + this.sessionLifetimeMs),
+      revokedAt: null,
     });
+    await this.sessionRepository.save(session);
+  }
+
+  private async generateToken(
+    user: User,
+    context: { userAgent?: string; ipAddress?: string },
+  ) {
+    const sessionId = randomUUID();
+    const accessToken = this.jwtService.sign({ sub: user.id, sid: sessionId });
+    await this.createSession(user, accessToken, sessionId, context);
+    return accessToken;
   }
 
   sendCode(phone: string) {
@@ -48,7 +83,11 @@ export class AuthService {
     };
   }
 
-  async verifyCode(phone: string, code: string) {
+  async verifyCode(
+    phone: string,
+    code: string,
+    context: { userAgent?: string; ipAddress?: string } = {},
+  ) {
     const normalizedPhone = this.normalizePhone(phone);
 
     const savedCode = this.codes.get(normalizedPhone);
@@ -77,7 +116,7 @@ export class AuthService {
 
     // Пользователь существует
     if (user) {
-      const accessToken = this.generateToken(user);
+      const accessToken = await this.generateToken(user, context);
 
       return {
         success: true,
@@ -94,7 +133,10 @@ export class AuthService {
     };
   }
 
-  async createProfile(data: CreateProfileDto) {
+  async createProfile(
+    data: CreateProfileDto,
+    context: { userAgent?: string; ipAddress?: string } = {},
+  ) {
     const normalizedPhone = this.normalizePhone(data.phone);
 
     const savedUser = await this.dataSource.transaction(async (manager) => {
@@ -105,18 +147,130 @@ export class AuthService {
       });
       const createdUser = await userRepository.save(user);
 
+      const defaultStickerPack = await manager.getRepository(StickerPack).findOne({
+        where: { isDefault: true },
+      });
+      if (defaultStickerPack) {
+        await manager
+          .createQueryBuilder()
+          .relation(User, 'stickerPacks')
+          .of(createdUser.id)
+          .add(defaultStickerPack.id);
+      }
+
       await this.chatService.createSavedMessagesChat(createdUser, manager);
 
       return createdUser;
     });
 
-    const accessToken = this.generateToken(savedUser);
+    const accessToken = await this.generateToken(savedUser, context);
 
     return {
       success: true,
       user: savedUser,
       accessToken,
     };
+  }
+
+  async listSessions(
+    userId: string,
+    accessToken: string,
+    context: { userAgent?: string; ipAddress?: string } = {},
+  ) {
+    const tokenHash = this.hashToken(accessToken);
+    let currentSession = await this.sessionRepository.findOne({
+      where: { userId, tokenHash },
+    });
+
+    if (!currentSession) {
+      const sessionId = randomUUID();
+      const now = new Date();
+      currentSession = await this.sessionRepository.save(
+        this.sessionRepository.create({
+          id: sessionId,
+          userId,
+          tokenHash,
+          userAgent: context.userAgent?.slice(0, 500) ?? null,
+          ipAddress: context.ipAddress?.slice(0, 100) ?? null,
+          lastActiveAt: now,
+          expiresAt: new Date(now.getTime() + this.sessionLifetimeMs),
+          revokedAt: null,
+        }),
+      );
+    } else {
+      currentSession.lastActiveAt = new Date();
+      currentSession.userAgent ??= context.userAgent?.slice(0, 500) ?? null;
+      currentSession.ipAddress ??= context.ipAddress?.slice(0, 100) ?? null;
+      await this.sessionRepository.save(currentSession);
+    }
+
+    const sessions = await this.sessionRepository.find({
+      where: { userId, revokedAt: IsNull() },
+      order: { lastActiveAt: 'DESC' },
+    });
+
+    return sessions
+      .filter((session) => session.expiresAt > new Date())
+      .map((session) => ({
+        id: session.id,
+        userAgent: session.userAgent,
+        ipAddress: session.ipAddress,
+        createdAt: session.createdAt,
+        lastActiveAt: session.lastActiveAt,
+        isCurrent: session.tokenHash === tokenHash,
+      }));
+  }
+
+  async revokeSession(userId: string, sessionId: string, currentToken: string) {
+    const session = await this.sessionRepository.findOne({
+      where: { id: sessionId, userId, revokedAt: IsNull() },
+    });
+
+    if (!session) throw new NotFoundException('Сеанс не найден');
+    if (session.tokenHash === this.hashToken(currentToken)) {
+      throw new BadRequestException('Нельзя завершить текущий сеанс отсюда');
+    }
+
+    session.revokedAt = new Date();
+    await this.sessionRepository.save(session);
+    return { success: true };
+  }
+
+  async validateSession(
+    userId: string,
+    sessionId: string | undefined,
+    token: string,
+    context: { userAgent?: string; ipAddress?: string } = {},
+  ) {
+    const where = sessionId
+      ? { id: sessionId, userId }
+      : { tokenHash: this.hashToken(token), userId };
+    let session = await this.sessionRepository.findOne({ where });
+
+    if (!session) {
+      if (sessionId) return false;
+      const now = new Date();
+      session = await this.sessionRepository.save(
+        this.sessionRepository.create({
+          id: randomUUID(),
+          userId,
+          tokenHash: this.hashToken(token),
+          userAgent: context.userAgent?.slice(0, 500) ?? null,
+          ipAddress: context.ipAddress?.slice(0, 100) ?? null,
+          lastActiveAt: now,
+          expiresAt: new Date(now.getTime() + this.sessionLifetimeMs),
+          revokedAt: null,
+        }),
+      );
+      return true;
+    }
+    if (session.revokedAt || session.expiresAt <= new Date()) return false;
+
+    session.lastActiveAt = new Date();
+    session.userAgent ??= context.userAgent?.slice(0, 500) ?? null;
+    session.ipAddress ??= context.ipAddress?.slice(0, 100) ?? null;
+    await this.sessionRepository.save(session);
+    return true;
   }
 
   async updateProfile(userId: string, data: UpdateProfileDto) {

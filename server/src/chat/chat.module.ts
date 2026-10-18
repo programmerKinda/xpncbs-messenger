@@ -9,16 +9,19 @@ import { Message } from './entities/message.entity';
 import { User } from '../auth/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ChatGateway } from './chat.gateway';
+import { AuthSession } from '../auth/entities/auth-session.entity';
+import { StickersModule } from '../stickers/stickers.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Chat, ChatMember, Message, User]),
+    TypeOrmModule.forFeature([Chat, ChatMember, Message, User, AuthSession]),
+    StickersModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'dev-secret',
     }),
   ],
   controllers: [ChatController],
   providers: [ChatService, ChatGateway],
-  exports: [ChatService],
+  exports: [ChatService, ChatGateway],
 })
 export class ChatModule {}

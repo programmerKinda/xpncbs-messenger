@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   Unique,
@@ -18,6 +19,7 @@ export enum ChatMemberRole {
 }
 
 @Entity('chat_members')
+@Index('IDX_chat_members_user_id', ['userId'])
 @Unique('UQ_chat_members_chat_user', ['chatId', 'userId'])
 export class ChatMember {
   @PrimaryGeneratedColumn('uuid')

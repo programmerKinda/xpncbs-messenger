@@ -18,10 +18,11 @@ export enum MessageType {
   CIRCLE = 'circle',
   FILE = 'file',
   CALL = 'call',
+  STICKER = 'sticker',
 }
 
 @Entity('messages')
-@Index('IDX_messages_chat_created_at', ['chatId', 'createdAt'])
+@Index('IDX_messages_chat_created_at', ['chatId', 'createdAt', 'id'])
 export class Message {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
