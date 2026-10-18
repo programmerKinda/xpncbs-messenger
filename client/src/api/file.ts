@@ -9,6 +9,7 @@ import type {
   ChatListItem,
   ChatMessage,
   PaginatedResponse,
+  StickerPack,
   VideoPreviewMetadata,
 } from '@/models/api'
 import type { VideoProvider } from '@/utils/video'
@@ -104,6 +105,21 @@ export async function getChats(): Promise<ChatListItem[]> {
   return result.items
 }
 
+export async function getChatByRouteKey(chatKey: string): Promise<ChatListItem | undefined> {
+  const token = localStorage.getItem('accessToken')
+  const response = await fetch(
+    `${API_BASE_URL}/chats/lookup/${encodeURIComponent(chatKey)}`,
+    { headers: token ? { Authorization: `Bearer ${token}` } : undefined },
+  )
+
+  if (response.status === 404) return undefined
+  if (!response.ok) {
+    throw new Error(`Chat lookup failed with status ${response.status}`)
+  }
+
+  return response.json() as Promise<ChatListItem>
+}
+
 export async function getChatMessagesPage(
   chatId: string,
   limit = 50,
@@ -168,6 +184,37 @@ export async function sendChatMessage(chatId: string, content: string): Promise<
 
   if (!response.ok) {
     throw new Error(`Message send failed with status ${response.status}`)
+  }
+
+  return response.json() as Promise<ChatMessage>
+}
+
+export async function getStickerPacks(): Promise<StickerPack[]> {
+  const token = localStorage.getItem('accessToken')
+  const response = await fetch(`${API_BASE_URL}/stickers/packs`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+  })
+
+  if (!response.ok) {
+    throw new Error(`Sticker packs request failed with status ${response.status}`)
+  }
+
+  return response.json() as Promise<StickerPack[]>
+}
+
+export async function sendStickerMessage(chatId: string, stickerId: string): Promise<ChatMessage> {
+  const token = localStorage.getItem('accessToken')
+  const response = await fetch(`${API_BASE_URL}/chats/${chatId}/messages`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ type: 'sticker', content: { stickerId } }),
+  })
+
+  if (!response.ok) {
+    throw new Error(`Sticker send failed with status ${response.status}`)
   }
 
   return response.json() as Promise<ChatMessage>

@@ -13,6 +13,32 @@
   background: var(--color-surface);
 }
 
+.common-sidebar__title-row {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.common-sidebar__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.common-sidebar__title-row .common-sidebar-menu-button {
+  display: inline-flex;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+}
+
 .logo__title {
   @apply text-2xl;
 }
@@ -85,11 +111,6 @@
   text-overflow: ellipsis;
 }
 
-.item-chat:first-child {
-  background: #f6f7ff;
-  border-left-color: transparent;
-}
-
 .item-chat .user-name {
   color: var(--color-text);
   font-weight: 650;
@@ -105,7 +126,7 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .common-sidebar {
     width: 100% !important;
     min-width: 0;
@@ -159,7 +180,9 @@
     @apply hidden;
   }
   .common-sidebar__body {
-    @apply p-0 items-center justify-center;
+    @apply p-0 items-center;
+    justify-content: flex-start;
+    overscroll-behavior-y: contain;
   }
   .message__status-icon {
     @apply hidden;

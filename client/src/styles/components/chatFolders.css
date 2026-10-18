@@ -10,7 +10,7 @@
 }
 .chat-folder.active {
   background: var(--color-accent-soft);
-  border-color: #cfd5ff;
+  border-color: var(--color-border-strong);
   color: var(--color-accent);
 }
 .chat-folder:hover {
@@ -18,10 +18,11 @@
   color: var(--color-accent);
 }
 .chat-folders__sticky-item {
-  @apply sticky right-0 z-10 bg-[#f5f7fb] py-2;
+  @apply sticky right-0 z-10 py-2;
 
   min-width: 3rem;
   margin-left: auto;
+  background: var(--color-surface);
 }
 .chat-folders__add-button {
   @apply border-none bg-transparent cursor-pointer w-full flex items-center justify-center;

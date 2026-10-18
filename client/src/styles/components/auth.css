@@ -10,17 +10,6 @@
     var(--color-canvas);
 }
 
-.auth-page::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.22) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
-  background-size: 24px 24px;
-  opacity: 0.4;
-}
-
 .auth-card {
   @apply flex w-full max-w-[448px] flex-col items-center rounded-[30px] bg-white px-7 py-7;
   position: relative;
@@ -125,6 +114,14 @@
 
 .auth-field__chevron {
   color: var(--color-text-muted);
+}
+
+.dropdown-arrow {
+  transition: transform 0.3s ease;
+}
+
+.dropdown-arrow.open {
+  transform: scaleY(-1);
 }
 
 .auth-phone-field {
@@ -321,7 +318,7 @@
 
 /* Responsive Design */
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .auth-page {
     @apply p-4;
   }
@@ -449,7 +446,7 @@
 
 /* Mobile */
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .auth-code__boxes {
     @apply gap-1.5;
   }

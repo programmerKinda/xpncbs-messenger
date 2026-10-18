@@ -23,6 +23,7 @@ interface ChatFormProps {
 
   handleToggleRecording: () => void
   handleEmojiSelect: (emoji: string) => void
+  handleStickerSelect?: (stickerId: string) => void
   addFileButton: boolean
   voiceButton: boolean
   onSend?: () => void | Promise<void>
@@ -40,6 +41,7 @@ export default function ChatForm({
   chatInputRef,
   handleToggleRecording,
   handleEmojiSelect,
+  handleStickerSelect,
   addFileButton,
   voiceButton,
   onSend,
@@ -117,7 +119,12 @@ export default function ChatForm({
             <PopupProvider
               placement="top"
               align="center"
-              popup={<ChatEmojiPicker onSelect={handleEmojiSelect} />}
+              popup={
+                <ChatEmojiPicker
+                  onSelect={handleEmojiSelect}
+                  onStickerSelect={handleStickerSelect}
+                />
+              }
               popupClassName="chat-emoji-popup"
             >
               <button type="button">

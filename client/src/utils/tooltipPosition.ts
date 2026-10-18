@@ -11,10 +11,16 @@ export const tooltipPosition = (
   align: Align = 'start',
   flip = true
 ) => {
-  const [position, setPosition] = useState({ top: 0, left: 0, ready: false })
+  const [position, setPosition] = useState({
+    top: 0,
+    left: 0,
+    ready: false,
+    placement,
+  })
   const observerRef = useRef<ResizeObserver | null>(null)
+  const resolvedPlacementRef = useRef<Placement | null>(null)
 
-  const calculatePosition = () => {
+  const calculatePosition = (clampToViewport = false) => {
     if (!targetRef?.current || !tooltipRef?.current) return
 
     const targetRect = targetRef.current.getBoundingClientRect()
@@ -24,6 +30,7 @@ export const tooltipPosition = (
 
     const viewportWidth = window.innerWidth
     const viewportHeight = window.innerHeight
+    let effectivePlacement = resolvedPlacementRef.current ?? placement
 
     const getAlignedLeft = () => {
       switch (align) {
@@ -51,7 +58,7 @@ export const tooltipPosition = (
     let left = 0
 
     // базовая позиция
-    switch (placement) {
+    switch (effectivePlacement) {
       case 'top':
         top = targetRect.top - tooltipRect.height - OFFSET
         left = getAlignedLeft()
@@ -74,27 +81,43 @@ export const tooltipPosition = (
     }
 
     // 🔥 FLIP
-    if (flip && placement === 'top' && top < 0) {
+    if (flip && !resolvedPlacementRef.current && effectivePlacement === 'top' && top < 0) {
       top = targetRect.bottom + OFFSET
+      effectivePlacement = 'bottom'
     }
 
-    if (flip && placement === 'bottom' && top + tooltipRect.height > viewportHeight) {
+    if (
+      flip &&
+      !resolvedPlacementRef.current &&
+      effectivePlacement === 'bottom' &&
+      top + tooltipRect.height > viewportHeight
+    ) {
       top = targetRect.top - tooltipRect.height - OFFSET
+      effectivePlacement = 'top'
     }
 
-    if (placement === 'left' && left < 0) {
+    if (!resolvedPlacementRef.current && effectivePlacement === 'left' && left < 0) {
       left = targetRect.right + OFFSET
+      effectivePlacement = 'right'
     }
 
-    if (placement === 'right' && left + tooltipRect.width > viewportWidth) {
+    if (
+      !resolvedPlacementRef.current &&
+      effectivePlacement === 'right' &&
+      left + tooltipRect.width > viewportWidth
+    ) {
       left = targetRect.left - tooltipRect.width - OFFSET
+      effectivePlacement = 'left'
     }
 
-    // 🔥 CLAMP (чтобы не вылезал за экран)
-    left = Math.max(8, Math.min(left, viewportWidth - tooltipRect.width - 8))
-    top = flip
-      ? Math.max(8, Math.min(top, viewportHeight - tooltipRect.height - 8))
-      : Math.max(8, top)
+    resolvedPlacementRef.current ??= effectivePlacement
+
+    if (clampToViewport) {
+      left = Math.max(8, Math.min(left, viewportWidth - tooltipRect.width - 8))
+      top = flip
+        ? Math.max(8, Math.min(top, viewportHeight - tooltipRect.height - 8))
+        : Math.max(8, top)
+    }
 
     // если есть parent (portal внутри контейнера)
     if (parent) {
@@ -106,18 +129,30 @@ export const tooltipPosition = (
       left += window.scrollX
     }
 
-    setPosition({ top, left, ready: true })
+    setPosition({ top, left, ready: true, placement: effectivePlacement })
   }
 
   useLayoutEffect(() => {
-    calculatePosition()
+    resolvedPlacementRef.current = null
+    calculatePosition(true)
+
+    const handleScroll = () => calculatePosition()
+    const handleResize = () => calculatePosition(true)
+    window.addEventListener('scroll', handleScroll, true)
+    window.addEventListener('resize', handleResize)
 
     if (tooltipRef?.current) {
-      observerRef.current = new ResizeObserver(calculatePosition)
+      observerRef.current = new ResizeObserver(() => calculatePosition(true))
       observerRef.current.observe(tooltipRef.current)
+    }
+    if (targetRef?.current) {
+      observerRef.current ??= new ResizeObserver(() => calculatePosition(true))
+      observerRef.current.observe(targetRef.current)
     }
 
     return () => {
+      window.removeEventListener('scroll', handleScroll, true)
+      window.removeEventListener('resize', handleResize)
       if (observerRef.current) {
         observerRef.current.disconnect()
         observerRef.current = null

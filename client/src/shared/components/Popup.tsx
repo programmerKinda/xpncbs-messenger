@@ -2,7 +2,20 @@ import { forwardRef } from 'react'
 import Tooltip from './Tooltip'
 
 const Popup = forwardRef<HTMLDivElement, any>(
-  ({ targetRef, children, placement, align, flip, width = 'max-content', popupClassName }, ref) => {
+  (
+    {
+      targetRef,
+      children,
+      placement,
+      align,
+      flip,
+      width = 'max-content',
+      popupClassName,
+      isClosing,
+      onAnimationEnd,
+    },
+    ref
+  ) => {
     return (
       <Tooltip
         ref={ref}
@@ -10,8 +23,10 @@ const Popup = forwardRef<HTMLDivElement, any>(
         placement={placement}
         align={align}
         flip={flip}
-        className={`bg-white dark:bg-[#2a2a2a] rounded-xl shadow-lg border border-gray-200 dark:border-[#3a3a3a] py-1 ${popupClassName}`}
+        className={`popup-motion bg-white dark:bg-[#2a2a2a] rounded-xl shadow-lg border border-gray-200 dark:border-[#3a3a3a] py-1 ${popupClassName}`}
         width={width}
+        isClosing={isClosing}
+        onAnimationEnd={onAnimationEnd}
       >
         {children}
       </Tooltip>

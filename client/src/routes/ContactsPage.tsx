@@ -22,7 +22,7 @@ export default function Contacts() {
   const { contacts, removeContact } = useContactsController()
   const { setModalChildren, setModalHeaderContent } = useModalStore()
   const [group, setGroup] = useState<ContactGroup>('all')
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 560)
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768)
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false)
 
   const handleRenameContact = (contact: ContactEntry) => {
@@ -36,7 +36,7 @@ export default function Contacts() {
   }
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 560px)')
+    const mediaQuery = window.matchMedia('(max-width: 768px)')
     const updateMobileState = () => setIsMobile(mediaQuery.matches)
 
     updateMobileState()
@@ -138,7 +138,11 @@ export default function Contacts() {
                 Ваши собеседники и новые знакомства в одном месте.
               </p>
             </div>
-            <button type="button" className="compact-page__primary-button" onClick={openAddContactModal}>
+            <button
+              type="button"
+              className="compact-page__primary-button"
+              onClick={openAddContactModal}
+            >
               <UserRoundPlus size={17} /> Добавить контакт
             </button>
           </header>

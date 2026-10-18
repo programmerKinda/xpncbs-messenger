@@ -1,4 +1,3 @@
-import Sidebar from '../sidebar/Sidebar'
 import { Outlet, useLocation } from 'react-router-dom'
 import SidebarSettings from '../sidebars/SidebarSettings'
 import { useEffect, useState } from 'react'
@@ -7,10 +6,10 @@ import { useNavigate } from 'react-router-dom'
 function SettingLayout() {
   const location = useLocation()
   const navigate = useNavigate()
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 560)
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768)
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 560px)')
+    const mediaQuery = window.matchMedia('(max-width: 768px)')
     const updateMobileState = () => setIsMobile(mediaQuery.matches)
 
     updateMobileState()
@@ -22,8 +21,7 @@ function SettingLayout() {
   const showSidebar = !isMobile || location.pathname === '/settings'
 
   return (
-    <section className={`main-layout ${showSidebar ? '' : 'main-layout--detail'}`}>
-      <Sidebar />
+    <section className={`main-layout setting-layout ${showSidebar ? '' : 'main-layout--detail'}`}>
       {showSidebar && <SidebarSettings />}
       {!showSidebar && (
         <button

@@ -28,7 +28,12 @@ export default function SettingSecuritySection({
 
       <ul className="setting-page-secure__list">
         {items.map((item) => (
-          <SettingSecurityItem key={item.title} title={item.title} list={item.list} />
+          <SettingSecurityItem
+            key={item.title}
+            id={`security-${item.title}`}
+            title={item.title}
+            list={item.list}
+          />
         ))}
       </ul>
     </div>

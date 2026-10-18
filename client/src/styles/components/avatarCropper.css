@@ -62,7 +62,7 @@
   color: var(--color-text-muted) !important;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .avatar-cropper {
     padding: 12px;
   }

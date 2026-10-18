@@ -1,4 +1,4 @@
-export const messageTypes = ['text', 'voice', 'circle', 'file', 'call'] as const
+export const messageTypes = ['text', 'voice', 'circle', 'file', 'call', 'sticker'] as const
 
 export type MessageType = (typeof messageTypes)[number]
 export type MessageVoiceContent = {
@@ -20,7 +20,13 @@ export type MessageCallContent = {
   status: 'accepted' | 'missed'
   durationSeconds: number
 }
-export type MessageContentType = string | MessageVoiceContent | MessageCircleContent | MessageCallContent
+export type MessageStickerContent = { stickerId: string; url: string; alt: string }
+export type MessageContentType =
+  | string
+  | MessageVoiceContent
+  | MessageCircleContent
+  | MessageCallContent
+  | MessageStickerContent
 
 export type Message = {
   uuid: string

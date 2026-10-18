@@ -46,11 +46,11 @@ const formatCallTime = (dateIso: string) => {
 export default function Calls() {
   const callHistory = useCallStore((state) => state.callHistory)
   const [filter, setFilter] = useState<CallFilter>('all')
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 560)
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768)
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false)
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 560px)')
+    const mediaQuery = window.matchMedia('(max-width: 768px)')
     const updateMobileState = () => setIsMobile(mediaQuery.matches)
 
     updateMobileState()
@@ -64,7 +64,10 @@ export default function Calls() {
     const missed = callHistory.filter((call) => call.status === 'missed').length
     const incoming = callHistory.filter((call) => call.direction === 'incoming').length
     const outgoing = callHistory.filter((call) => call.direction === 'outgoing').length
-    const durationMinutes = callHistory.reduce((sum, call) => sum + Math.max(0, call.durationSeconds), 0)
+    const durationMinutes = callHistory.reduce(
+      (sum, call) => sum + Math.max(0, call.durationSeconds),
+      0
+    )
 
     return {
       total,
@@ -228,11 +231,13 @@ export default function Calls() {
                 {filteredCalls.length} из {totals.total} звонков
               </span>
             </div>
-            {filteredCalls.length > 0 ? (
-              filteredCalls.map(renderCall)
-            ) : (
-              <div className="calls-route__empty">В этом разделе пока нет звонков</div>
-            )}
+            <div className="calls-route__list">
+              {filteredCalls.length > 0 ? (
+                filteredCalls.map(renderCall)
+              ) : (
+                <div className="calls-route__empty">В этом разделе пока нет звонков</div>
+              )}
+            </div>
           </section>
         </main>
       )}

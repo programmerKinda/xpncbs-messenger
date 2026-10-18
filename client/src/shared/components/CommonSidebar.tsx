@@ -14,6 +14,7 @@ interface CommonSidebarProps {
   popupButton?: commonSidebarMenuButtonProps
   showSearch?: boolean
   footerContent?: React.ReactNode
+  bodyOnScroll?: React.UIEventHandler<HTMLDivElement>
 }
 export default function CommonSidebar({
   className = '',
@@ -24,6 +25,7 @@ export default function CommonSidebar({
   popupButton,
   showSearch = true,
   footerContent,
+  bodyOnScroll,
 }: CommonSidebarProps) {
   const chatsWidth = useChatsWidthStore((state) => state.chatsWidth)
   const setChatsWidth = useChatsWidthStore((state) => state.setChatsWidth)
@@ -58,8 +60,8 @@ export default function CommonSidebar({
         style={{ width: `${chatsWidth}px` }}
       >
         <header className="common-sidebar__header">
-          <div className="flex items-center justify-between">
-            <h1 className="logo__title">{title}</h1>
+          <div className="common-sidebar__title-row">
+            <h1 className="logo__title common-sidebar__title">{title}</h1>
             {popupButton && <CommonSidebarMenuButton {...popupButton} />}
           </div>
           {showSearch && <SearchInput />}
@@ -67,7 +69,9 @@ export default function CommonSidebar({
           {headerExtraContent}
         </header>
 
-        <div className="common-sidebar__body">{bodyContent}</div>
+        <div className="common-sidebar__body" onScroll={bodyOnScroll}>
+          {bodyContent}
+        </div>
         <footer className="common-sidebar__footer">{footerContent}</footer>
         {resize && (
           <CommonSidebarResizer

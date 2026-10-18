@@ -1,6 +1,10 @@
 import { MessageText } from './MessageText'
 import { MessageVoice } from './MessageVoice'
-import { type MessageVoiceContent, type MessageCallContent } from '@/models/message'
+import {
+  type MessageVoiceContent,
+  type MessageCallContent,
+  type MessageStickerContent,
+} from '@/models/message'
 import { MessageCircle } from './MessageCircle'
 import { type MessageCircleContent } from '@/models/message'
 import { Phone, PhoneOff, Video } from 'lucide-react'
@@ -52,6 +56,9 @@ const MessageContent = {
     onEnded?: () => void
   }) => <MessageCircle content={content} autoPlay={autoPlay} onEnded={onEnded} />,
   call: ({ content }: { content: MessageCallContent }) => <MessageCall content={content} />,
+  sticker: ({ content }: { content: MessageStickerContent }) => (
+    <img className="message-sticker" src={content.url} alt={content.alt} loading="lazy" />
+  ),
 } as const
 
 export default MessageContent

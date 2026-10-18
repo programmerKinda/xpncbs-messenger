@@ -3,6 +3,7 @@ import {
   getChatMessagesPage,
   sendChatMessage,
   sendCircleMessage,
+  sendStickerMessage,
   sendVoiceMessage,
 } from '@/api/file'
 import type { ChatMessage } from '@/models/api'
@@ -81,6 +82,12 @@ export function useChatMessagesController(chatId?: string) {
     appendMessage(message)
   }
 
+  const sendSticker = async (stickerId: string) => {
+    if (!chatId) return
+    const message = await sendStickerMessage(chatId, stickerId)
+    appendMessage(message)
+  }
+
   return {
     messages,
     setMessages,
@@ -91,5 +98,6 @@ export function useChatMessagesController(chatId?: string) {
     sendText,
     sendVoice,
     sendCircle,
+    sendSticker,
   }
 }

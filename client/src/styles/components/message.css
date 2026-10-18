@@ -25,6 +25,11 @@
   clip-path: polygon(0 0, 0 100%, 100% 100%, 15% 45%);
 }
 
+.dark .message--outgoing {
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
 /* --------------------- */
 /* ВХОДЯЩЕЕ (БЕЛОЕ)     */
 /* --------------------- */
@@ -67,6 +72,29 @@
   vertical-align: -0.2em;
 }
 
+.message-sticker {
+  display: block;
+  width: min(180px, 48vw);
+  max-height: 180px;
+  object-fit: contain;
+}
+
+.message:has(.message-sticker) {
+  padding: 4px;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.message:has(.message-sticker)::before,
+.message:has(.message-sticker)::after {
+  display: none;
+}
+
+.message:has(.message-sticker) .message__footer {
+  color: var(--color-text-muted);
+}
+
 .message-text::after {
   content: '';
   @apply inline-block w-[95px] h-0;
@@ -95,6 +123,14 @@
 .message-link:hover {
   color: #1d4ed8;
   text-decoration: underline;
+}
+
+.dark .message-link {
+  color: #8ab4f8;
+}
+
+.dark .message-link:hover {
+  color: #b7d0ff;
 }
 
 .message-video-preview {
@@ -202,7 +238,9 @@
   color: white;
   filter: drop-shadow(0 2px 7px rgba(0, 0, 0, 0.3));
   backdrop-filter: blur(3px);
-  transition: transform 160ms ease, background-color 160ms ease;
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease;
 }
 
 .message-video-preview__play:hover > svg {
@@ -517,7 +555,7 @@
   transition: stroke-dashoffset 0.1s linear;
 }
 
-@media (max-width: 560px) {
+@media (max-width: 768px) {
   .video-circle {
     width: min(68vw, 220px);
     height: min(68vw, 220px);

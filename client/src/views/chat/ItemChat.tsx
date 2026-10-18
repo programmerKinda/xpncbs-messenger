@@ -13,6 +13,7 @@ interface ItemChatProps {
   messageType?: 'text' | 'voice' | 'circle' | 'file' | 'call'
   avatarURL?: string
   isSavedMessages?: boolean
+  isActive?: boolean
   unreadCount?: number
   onClick?: () => void
 }
@@ -25,12 +26,13 @@ export default function ItemChat({
   messageType = 'text',
   avatarURL = '',
   isSavedMessages = false,
+  isActive = false,
   unreadCount = 0,
   onClick,
 }: ItemChatProps) {
   const timeString = formatTime(createdAt)
   return (
-    <button type="button" className="item-chat" onClick={onClick}>
+    <button type="button" className={`item-chat ${isActive ? 'active' : ''}`} onClick={onClick}>
       <UserAvatar
         id={id}
         name={name}

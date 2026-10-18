@@ -11,10 +11,10 @@ function MainPage() {
   const location = useLocation()
   const isChatRoute = location.pathname.startsWith('/chat/')
   const chatIsOpen = isChatOpen || isChatRoute
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 560)
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768)
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 560px)')
+    const mediaQuery = window.matchMedia('(max-width: 768px)')
     const updateMobileState = () => setIsMobile(mediaQuery.matches)
 
     updateMobileState()

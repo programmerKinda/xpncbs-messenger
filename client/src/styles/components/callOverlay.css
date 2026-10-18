@@ -122,7 +122,10 @@
   color: var(--color-text);
   background: var(--color-surface);
   cursor: pointer;
-  transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    transform 140ms ease;
 }
 
 .call-overlay__fullscreen:hover,
@@ -323,7 +326,9 @@
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
-  transition: filter 140ms ease, transform 140ms ease;
+  transition:
+    filter 140ms ease,
+    transform 140ms ease;
 }
 
 .call-overlay__end-call:hover,
@@ -384,7 +389,7 @@
   border-radius: 0;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .call-overlay {
     padding: 0;
   }

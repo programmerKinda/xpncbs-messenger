@@ -447,7 +447,25 @@
 
 .calls-route__history {
   padding: 8px 18px 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
+
+.calls-route__list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.calls-route > .compact-page__content {
+  min-height: 0;
+  overflow: hidden;
+}
+
 .calls-route__section-title {
   display: flex;
   align-items: baseline;
@@ -479,7 +497,7 @@
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   .compact-page {
     min-width: 0;
   }
@@ -509,7 +527,7 @@
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 768px) {
   .contacts-page,
   .calls-route {
     display: flex;

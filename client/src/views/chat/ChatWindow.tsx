@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { io, type Socket } from 'socket.io-client'
 import Menu from '@/shared/components/menu'
 
@@ -19,18 +19,30 @@ import { useModalStore } from '@/controllers/modalController'
 import { useChatMenuStore } from '@/controllers/chatMenuController'
 import ChatForm from './ChatForm'
 import CommonWindowHeader from '@/shared/components/CommonWindowHeader'
-import { getChats, markChatRead, findOrCreateDirectChat } from '@/api/file'
+import { getChatByRouteKey, markChatRead, findOrCreateDirectChat } from '@/api/file'
 import type { ChatListItem, ChatMessage } from '@/models/api'
 import { useAuthStore } from '@/controllers/authController'
 import { useCallStore } from '@/controllers/callController'
 import { useContactStore } from '@/controllers/contactController'
 import { useNavigate, useParams } from 'react-router-dom'
 
-const resolveChatFromRoute = async (chatKey: string): Promise<ChatListItem | undefined> => {
-  const chats = await getChats()
-  return chatKey.startsWith('@')
-    ? chats.find((item) => item.participant?.username === chatKey.slice(1))
-    : chats.find((item) => item.id === chatKey)
+const getMessageDateKey = (date: Date) =>
+  `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+
+const formatMessageDate = (date: Date) => {
+  const today = new Date()
+  if (date.toDateString() === today.toDateString()) return 'Сегодня'
+
+  const yesterday = new Date(today)
+  yesterday.setDate(today.getDate() - 1)
+  if (date.toDateString() === yesterday.toDateString()) return 'Вчера'
+
+  const options: Intl.DateTimeFormatOptions =
+    date.getFullYear() === today.getFullYear()
+      ? { day: 'numeric', month: 'long' }
+      : { day: 'numeric', month: 'long', year: 'numeric' }
+
+  return date.toLocaleDateString('ru-RU', options)
 }
 
 export default function ChatWindow() {
@@ -59,9 +71,20 @@ export default function ChatWindow() {
   const [isParticipantTyping, setIsParticipantTyping] = useState(false)
   const [isSocketReady, setIsSocketReady] = useState(false)
   const messagesBodyRef = useRef<HTMLDivElement>(null)
+  const isLoadingOlderRef = useRef(false)
+  const preservedScrollRef = useRef<{ height: number; top: number } | null>(null)
+  const wasAtBottomRef = useRef(true)
   const socketRef = useRef<Socket | null>(null)
-  const { messages, appendMessage, loadOlderMessages, hasMore, sendText, sendVoice, sendCircle } =
-    useChatMessagesController(selectedChatId)
+  const {
+    messages,
+    appendMessage,
+    loadOlderMessages,
+    hasMore,
+    sendText,
+    sendVoice,
+    sendCircle,
+    sendSticker,
+  } = useChatMessagesController(selectedChatId)
   const {
     isRecording,
     setIsRecording,
@@ -98,7 +121,7 @@ export default function ChatWindow() {
       }
     }
 
-    void resolveChatFromRoute(chatKey).then((chat) => {
+    void getChatByRouteKey(chatKey).then((chat) => {
       if (isCurrent && chat) openChat(chat)
     })
 
@@ -129,7 +152,9 @@ export default function ChatWindow() {
     }
 
     void markChatRead(selectedChat.id)
-      .then(() => window.dispatchEvent(new Event('chat-read')))
+      .then(() =>
+        window.dispatchEvent(new CustomEvent('chat-read', { detail: selectedChat.id })),
+      )
       .catch(() => undefined)
   }, [selectedChat])
 
@@ -137,7 +162,14 @@ export default function ChatWindow() {
     const body = messagesBodyRef.current
     if (!body || messages.length === 0) return
 
-    body.scrollTop = body.scrollHeight
+    const preservedScroll = preservedScrollRef.current
+    if (preservedScroll) {
+      body.scrollTop = body.scrollHeight - preservedScroll.height + preservedScroll.top
+      preservedScrollRef.current = null
+      return
+    }
+
+    if (wasAtBottomRef.current) body.scrollTop = body.scrollHeight
   }, [messages])
 
   useEffect(() => {
@@ -158,12 +190,10 @@ export default function ChatWindow() {
     socket.on('message:new', (message: ChatMessage) => {
       if (message.chatId !== selectedChatId) return
       appendMessage(message)
-      window.dispatchEvent(new Event('chat-message-sent'))
     })
     socket.on('message:update', (message: ChatMessage) => {
       if (message.chatId !== selectedChatId) return
       appendMessage(message)
-      window.dispatchEvent(new Event('chat-message-sent'))
     })
     socket.on('presence:list', (onlineUserIds: string[]) => {
       setIsParticipantOnline(Boolean(participantId && onlineUserIds.includes(participantId)))
@@ -244,7 +274,6 @@ export default function ChatWindow() {
     if (!selectedChat || !value.trim()) return
 
     await sendText(value)
-    window.dispatchEvent(new Event('chat-message-sent'))
     setValue('')
     chatInputRef.current?.clear()
   }
@@ -253,14 +282,17 @@ export default function ChatWindow() {
     if (!selectedChat) return
 
     await sendVoice(blob, duration, waveform)
-    window.dispatchEvent(new Event('chat-message-sent'))
   }
 
   const handleCircleRecorded = async (blob: Blob, duration: number) => {
     if (!selectedChat) return
 
     await sendCircle(blob, duration)
-    window.dispatchEvent(new Event('chat-message-sent'))
+  }
+
+  const handleStickerSelect = async (stickerId: string) => {
+    if (!selectedChat) return
+    await sendSticker(stickerId)
   }
 
   const handleMediaEnded = (messageId: string) => {
@@ -284,6 +316,26 @@ export default function ChatWindow() {
     } catch {
       // Unknown usernames remain ordinary non-actionable message text.
     }
+  }
+
+  const visibleMessages = messages.filter((message) => message.chatId === selectedChat?.id)
+
+  const handleMessagesScroll = () => {
+    const body = messagesBodyRef.current
+    if (!body) return
+
+    wasAtBottomRef.current = body.scrollHeight - body.scrollTop - body.clientHeight <= 72
+    if (body.scrollTop > 72 || !hasMore || isLoadingOlderRef.current) return
+
+    isLoadingOlderRef.current = true
+    preservedScrollRef.current = { height: body.scrollHeight, top: body.scrollTop }
+    void loadOlderMessages()
+      .catch(() => {
+        preservedScrollRef.current = null
+      })
+      .finally(() => {
+        isLoadingOlderRef.current = false
+      })
   }
 
   return (
@@ -430,37 +482,41 @@ export default function ChatWindow() {
             </button>
           </div>
         )}
-      <div className="chat-window__body" ref={messagesBodyRef}>
-        {hasMore && (
-          <div className="chat-window__load-more">
-            <button type="button" onClick={() => void loadOlderMessages()}>
-              Загрузить ещё
-            </button>
-          </div>
-        )}
-        {messages
-          .filter((message) => message.chatId === selectedChat?.id)
-          .map((message) => (
-            <Message
-              key={message.id}
-              className={
-                selectedChat?.type !== 'saved_messages' && message.senderId === user?.id
-                  ? 'message--outgoing'
-                  : 'message--incoming'
-              }
-              message={{
-                uuid: message.id,
-                type: message.type,
-                content: message.content as ChatMessageView['content'],
-                createdAt: new Date(message.createdAt),
-                updated: message.edited,
-                watched: true,
-              }}
-              onMention={message.type === 'text' ? handleMention : undefined}
-              onMediaEnded={handleMediaEnded}
-              autoPlay={autoPlayMessageId === message.id}
-            />
-          ))}
+      <div className="chat-window__body" ref={messagesBodyRef} onScroll={handleMessagesScroll}>
+        {visibleMessages.map((message, index) => {
+          const messageDate = new Date(message.createdAt)
+          const previousMessageDate =
+            index > 0 ? new Date(visibleMessages[index - 1].createdAt) : null
+          const startsNewDay =
+            !previousMessageDate ||
+            getMessageDateKey(messageDate) !== getMessageDateKey(previousMessageDate)
+
+          return (
+            <Fragment key={message.id}>
+              {startsNewDay && (
+                <div className="chat-window__date-divider">{formatMessageDate(messageDate)}</div>
+              )}
+              <Message
+                className={
+                  selectedChat?.type !== 'saved_messages' && message.senderId === user?.id
+                    ? 'message--outgoing'
+                    : 'message--incoming'
+                }
+                message={{
+                  uuid: message.id,
+                  type: message.type,
+                  content: message.content as ChatMessageView['content'],
+                  createdAt: messageDate,
+                  updated: message.edited,
+                  watched: true,
+                }}
+                onMention={message.type === 'text' ? handleMention : undefined}
+                onMediaEnded={handleMediaEnded}
+                autoPlay={autoPlayMessageId === message.id}
+              />
+            </Fragment>
+          )
+        })}
       </div>
       <footer className="chat-window__footer">
         <ChatForm
@@ -473,6 +529,7 @@ export default function ChatWindow() {
           chatInputRef={chatInputRef}
           handleToggleRecording={handleToggleRecording}
           handleEmojiSelect={handleEmojiSelect}
+          handleStickerSelect={handleStickerSelect}
           addFileButton={true}
           voiceButton={true}
           onSend={handleSendMessage}

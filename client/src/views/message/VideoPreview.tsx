@@ -43,9 +43,7 @@ function getEmbedUrl(video: VideoLink): string {
 export default function VideoPreview({ video }: { video: VideoLink }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [metadata, setMetadata] = useState<VideoMetadata | null>(null)
-  const [thumbnailSize, setThumbnailSize] = useState<'maxresdefault' | 'hqdefault'>(
-    'maxresdefault'
-  )
+  const [thumbnailSize, setThumbnailSize] = useState<'maxresdefault' | 'hqdefault'>('maxresdefault')
   const [thumbnailAvailable, setThumbnailAvailable] = useState(true)
   const [isDownloading, setIsDownloading] = useState(false)
   const [downloadError, setDownloadError] = useState<string | null>(null)
@@ -56,16 +54,16 @@ export default function VideoPreview({ video }: { video: VideoLink }) {
     const metadataRequest = getVideoPreviewMetadata(
       video.provider,
       video.id,
-      abortController.signal,
+      abortController.signal
     ).catch(() => null)
     const oEmbedRequest =
       video.provider === 'youtube'
         ? fetch(
             `https://www.youtube.com/oembed?url=${encodeURIComponent(`https://www.youtube.com/watch?v=${video.id}`)}&format=json`,
-            { signal: abortController.signal },
+            { signal: abortController.signal }
           )
             .then((response) =>
-              response.ok ? (response.json() as Promise<YouTubeOEmbedMetadata>) : null,
+              response.ok ? (response.json() as Promise<YouTubeOEmbedMetadata>) : null
             )
             .catch(() => null)
         : Promise.resolve(null)
@@ -166,9 +164,7 @@ export default function VideoPreview({ video }: { video: VideoLink }) {
                 <Download size={17} />
               )}
               <span>
-                {metadata?.durationSeconds
-                  ? formatDuration(metadata.durationSeconds)
-                  : 'Видео'}
+                {metadata?.durationSeconds ? formatDuration(metadata.durationSeconds) : 'Видео'}
                 <br />
                 {metadata?.fileSizeBytes
                   ? formatFileSize(metadata.fileSizeBytes)

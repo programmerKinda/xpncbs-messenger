@@ -2,6 +2,7 @@ import {
   type MessageCallContent,
   type MessageCircleContent,
   type MessageProps,
+  type MessageStickerContent,
   type MessageVoiceContent,
 } from '@/models/message'
 import { formatTime } from '@/utils/formatTime'
@@ -35,6 +36,8 @@ const Message: React.FC<MessageProps> = ({
         })
       case 'file':
         return MessageContent.file({ content: message.content as string })
+      case 'sticker':
+        return MessageContent.sticker({ content: message.content as MessageStickerContent })
       case 'call': {
         const callContent = message.content as MessageCallContent
         const normalizedContent: MessageCallContent = {

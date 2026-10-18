@@ -38,7 +38,7 @@ export interface ChatListItem {
   lastMessage: {
     id: string
     senderId: string
-    type: 'text' | 'voice' | 'circle' | 'file' | 'call'
+    type: 'text' | 'voice' | 'circle' | 'file' | 'call' | 'sticker'
     content: string | Record<string, unknown>
     createdAt: string
   } | null
@@ -48,10 +48,20 @@ export interface ChatMessage {
   id: string
   chatId: string
   senderId: string
-  type: 'text' | 'voice' | 'circle' | 'file' | 'call'
+  type: 'text' | 'voice' | 'circle' | 'file' | 'call' | 'sticker'
   content: string | Record<string, unknown>
   edited: boolean
   createdAt: string
+}
+
+export interface StickerPack {
+  id: string
+  name: string
+  stickers: Array<{
+    id: string
+    title: string
+    url: string
+  }>
 }
 
 export type CallDirection = 'incoming' | 'outgoing'

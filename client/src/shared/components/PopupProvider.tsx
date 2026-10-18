@@ -1,5 +1,6 @@
 import React, { useRef } from 'react'
 import { usePopupStore } from '@/controllers/popupController'
+import { useDropdownStore } from '@/controllers/dropdownController'
 import { type Placement, type Align } from '@/models/tooltip'
 interface PopupProviderProps {
   children: React.ReactElement<any>
@@ -26,6 +27,7 @@ export const PopupProvider: React.FC<PopupProviderProps> = ({
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
+    useDropdownStore.getState().closeAll()
     if (children.props.onClick) {
       children.props.onClick(e)
     }

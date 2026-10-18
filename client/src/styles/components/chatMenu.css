@@ -132,7 +132,7 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .chat-menu {
     position: absolute;
     top: 0;
@@ -154,7 +154,7 @@
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 768px) {
   .App {
     position: relative;
     padding-bottom: 0;

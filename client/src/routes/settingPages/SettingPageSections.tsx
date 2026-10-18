@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Bell,
   Check,
@@ -11,6 +11,16 @@ import {
   SlidersHorizontal,
   Volume2,
 } from 'lucide-react'
+import {
+  getChatBackground,
+  getTheme,
+  setChatBackground,
+  setTheme,
+  type AppTheme,
+  type ChatBackground,
+} from '@/utils/theme'
+import DropdownWithArrow from '@/shared/components/dropdown/DropdownWithArrow'
+import { getAuthSessions, revokeAuthSession, type AuthSession } from '@/services/authApi'
 
 type SettingPageProps = {
   eyebrow: string
@@ -97,13 +107,31 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (value: boo
   )
 }
 
-function SelectControl({ value, options }: { value: string; options: string[] }) {
+function SelectControl({
+  id,
+  value,
+  options,
+  onChange,
+}: {
+  id: string
+  value: string
+  options: string[]
+  onChange?: (value: string) => void
+}) {
   return (
-    <select className="setting-select" defaultValue={value}>
-      {options.map((option) => (
-        <option key={option}>{option}</option>
+    <DropdownWithArrow
+      id={id}
+      items={options.map((option) => (
+        <span className="setting-dropdown-option" key={option}>
+          {option}
+        </span>
       ))}
-    </select>
+      valueSelector=".setting-dropdown-option"
+      defaultValue={value}
+      onChange={onChange}
+      buttonClassName="setting-select"
+      wrapClassname="setting-select-dropdown"
+    />
   )
 }
 
@@ -158,7 +186,11 @@ export function SettingPageChats() {
           <Toggle checked={true} onChange={() => undefined} />
         </SettingRow>
         <SettingRow title="Размер текста">
-          <SelectControl value="Средний" options={['Маленький', 'Средний', 'Большой']} />
+          <SelectControl
+            id="settings-font-size"
+            value="Средний"
+            options={['Маленький', 'Средний', 'Большой']}
+          />
         </SettingRow>
       </SettingGroup>
     </SettingPageShell>
@@ -211,7 +243,11 @@ export function SettingPageNotifications() {
         >
           <div className="setting-control-with-icon">
             <Volume2 size={17} />
-            <SelectControl value="Soft pop" options={['Soft pop', 'Glass', 'None']} />
+            <SelectControl
+              id="settings-notification-sound"
+              value="Soft pop"
+              options={['Soft pop', 'Glass', 'None']}
+            />
           </div>
         </SettingRow>
       </SettingGroup>
@@ -255,6 +291,19 @@ export function SettingPageHotKeys() {
 
 export function SettingPageAppearance() {
   const [animations, setAnimations] = useState(true)
+  const [theme, updateTheme] = useState<AppTheme>(getTheme)
+  const [chatBackground, updateChatBackground] = useState<ChatBackground>(getChatBackground)
+
+  const handleThemeChange = (nextTheme: AppTheme) => {
+    updateTheme(nextTheme)
+    setTheme(nextTheme)
+  }
+
+  const handleChatBackgroundChange = (value: string) => {
+    const nextBackground = value === 'Без фона' ? 'none' : 'pattern'
+    updateChatBackground(nextBackground)
+    setChatBackground(nextBackground)
+  }
 
   return (
     <SettingPageShell
@@ -264,8 +313,13 @@ export function SettingPageAppearance() {
       icon={<Palette size={27} />}
     >
       <SettingGroup title="Тема">
-        <SettingRow title="Цветовая схема" description="Настройка темы устройства появится позже">
-          <SelectControl value="Светлая" options={['Светлая', 'Системная', 'Тёмная']} />
+        <SettingRow title="Цветовая схема" description="Выберите светлое или тёмное оформление">
+          <SelectControl
+            id="settings-theme"
+            value={theme === 'dark' ? 'Тёмная' : 'Светлая'}
+            options={['Светлая', 'Тёмная']}
+            onChange={(value) => handleThemeChange(value === 'Тёмная' ? 'dark' : 'light')}
+          />
         </SettingRow>
         <SettingRow title="Акцентный цвет">
           <div className="setting-swatches">
@@ -302,8 +356,13 @@ export function SettingPageAppearance() {
         >
           <Toggle checked={true} onChange={() => undefined} />
         </SettingRow>
-        <SettingRow title="Фон чатов">
-          <SelectControl value="Сетка" options={['Сетка', 'Однотонный', 'Мягкий градиент']} />
+        <SettingRow title="Фон чатов" description="Показывать рисунок в переписке">
+          <SelectControl
+            id="settings-chat-background"
+            value={chatBackground === 'none' ? 'Без фона' : 'Сетка'}
+            options={['Без фона', 'Сетка']}
+            onChange={handleChatBackgroundChange}
+          />
         </SettingRow>
       </SettingGroup>
     </SettingPageShell>
@@ -351,7 +410,11 @@ export function SettingPageData() {
           title="Удаление старых медиа"
           description="Автоматически очищать файлы старше 30 дней"
         >
-          <SelectControl value="Никогда" options={['Никогда', '30 дней', '90 дней']} />
+          <SelectControl
+            id="settings-media-retention"
+            value="Никогда"
+            options={['Никогда', '30 дней', '90 дней']}
+          />
         </SettingRow>
       </SettingGroup>
     </SettingPageShell>
@@ -368,18 +431,27 @@ export function SettingPageLanguage() {
     >
       <SettingGroup title="Язык">
         <SettingRow title="Язык приложения" description="Перевод интерфейса">
-          <SelectControl value="Русский" options={['Русский', 'English', 'Українська']} />
+          <SelectControl
+            id="settings-language"
+            value="Русский"
+            options={['Русский', 'English', 'Українська']}
+          />
         </SettingRow>
       </SettingGroup>
       <SettingGroup title="Формат">
         <SettingRow title="Часовой пояс" description="Время сообщений и уведомлений">
           <SelectControl
+            id="settings-timezone"
             value="Москва (UTC+3)"
             options={['Москва (UTC+3)', 'Лондон (UTC+0)', 'Нью-Йорк (UTC-5)']}
           />
         </SettingRow>
         <SettingRow title="Формат времени">
-          <SelectControl value="24 часа" options={['24 часа', '12 часов']} />
+          <SelectControl
+            id="settings-time-format"
+            value="24 часа"
+            options={['24 часа', '12 часов']}
+          />
         </SettingRow>
       </SettingGroup>
     </SettingPageShell>
@@ -418,6 +490,75 @@ export function SettingPageAccessibility() {
 }
 
 export function SettingPageDevices() {
+  const [sessions, setSessions] = useState<AuthSession[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [revokingId, setRevokingId] = useState<string | null>(null)
+
+  useEffect(() => {
+    let isMounted = true
+    getAuthSessions()
+      .then((result) => {
+        if (isMounted) setSessions(result)
+      })
+      .catch(() => {
+        if (isMounted) setError('Не удалось загрузить список устройств.')
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false)
+      })
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  const handleRevoke = async (sessionId: string) => {
+    setRevokingId(sessionId)
+    setError('')
+    try {
+      await revokeAuthSession(sessionId)
+      setSessions((current) => current.filter((session) => session.id !== sessionId))
+    } catch {
+      setError('Не удалось завершить сеанс. Попробуйте ещё раз.')
+    } finally {
+      setRevokingId(null)
+    }
+  }
+
+  const formatActivity = (date: string) =>
+    new Intl.DateTimeFormat('ru-RU', { dateStyle: 'medium', timeStyle: 'short' }).format(
+      new Date(date)
+    )
+
+  const renderSession = (session: AuthSession) => (
+    <div className="setting-device-row" key={session.id}>
+      <span
+        className={`setting-device-row__dot ${session.isCurrent ? '' : 'setting-device-row__dot--muted'}`}
+      />
+      <div>
+        <strong>{getDeviceLabel(session.userAgent)}</strong>
+        <p>
+          {session.isCurrent
+            ? 'Это устройство · Сейчас активно'
+            : `Последняя активность ${formatActivity(session.lastActiveAt)}`}
+          {session.ipAddress ? ` · ${session.ipAddress}` : ''}
+        </p>
+      </div>
+      {session.isCurrent ? (
+        <span className="setting-device-row__current">Активен</span>
+      ) : (
+        <button
+          type="button"
+          className="setting-outline-button"
+          disabled={revokingId === session.id}
+          onClick={() => void handleRevoke(session.id)}
+        >
+          {revokingId === session.id ? 'Завершение…' : 'Завершить'}
+        </button>
+      )}
+    </div>
+  )
+
   return (
     <SettingPageShell
       eyebrow="Контроль доступа"
@@ -425,40 +566,60 @@ export function SettingPageDevices() {
       description="Проверьте, где открыт ваш аккаунт, и завершите лишние сеансы."
       icon={<HardDrive size={27} />}
     >
-      <SettingGroup title="Текущий сеанс">
-        <div className="setting-device-row">
-          <span className="setting-device-row__dot" />
-          <div>
-            <strong>Это устройство</strong>
-            <p>Windows · Сейчас активен</p>
-          </div>
-          <span className="setting-device-row__current">Активен</span>
-        </div>
-      </SettingGroup>
-      <SettingGroup title="Другие сеансы">
-        <div className="setting-device-row">
-          <span className="setting-device-row__dot setting-device-row__dot--muted" />
-          <div>
-            <strong>Chrome на Android</strong>
-            <p>Последняя активность 2 дня назад</p>
-          </div>
-          <button type="button" className="setting-outline-button">
-            Завершить
-          </button>
-        </div>
-        <div className="setting-device-row">
-          <span className="setting-device-row__dot setting-device-row__dot--muted" />
-          <div>
-            <strong>Safari на iPhone</strong>
-            <p>Последняя активность 5 дней назад</p>
-          </div>
-          <button type="button" className="setting-outline-button">
-            Завершить
-          </button>
-        </div>
-      </SettingGroup>
+      {error && (
+        <p role="alert" className="setting-catalog__note">
+          {error}
+        </p>
+      )}
+      {isLoading ? (
+        <SettingGroup title="Сеансы">
+          <p className="setting-catalog__note">Загрузка устройств…</p>
+        </SettingGroup>
+      ) : (
+        <>
+          <SettingGroup title="Текущий сеанс">
+            {sessions.filter((session) => session.isCurrent).map(renderSession)}
+            {!sessions.some((session) => session.isCurrent) && (
+              <p className="setting-catalog__note">Текущий сеанс не найден.</p>
+            )}
+          </SettingGroup>
+          <SettingGroup title="Другие сеансы">
+            {sessions.filter((session) => !session.isCurrent).map(renderSession)}
+            {!sessions.some((session) => !session.isCurrent) && (
+              <p className="setting-catalog__note">Других активных устройств нет.</p>
+            )}
+          </SettingGroup>
+        </>
+      )}
     </SettingPageShell>
   )
+}
+
+function getDeviceLabel(userAgent: string | null) {
+  if (!userAgent) return 'Неизвестное устройство'
+  const browser = /Edg\//.test(userAgent)
+    ? 'Microsoft Edge'
+    : /OPR\//.test(userAgent)
+      ? 'Opera'
+      : /Firefox\//.test(userAgent)
+        ? 'Firefox'
+        : /Chrome\//.test(userAgent)
+          ? 'Google Chrome'
+          : /Safari\//.test(userAgent)
+            ? 'Safari'
+            : 'Браузер'
+  const platform = /iPhone|iPad|iPod/.test(userAgent)
+    ? 'iOS'
+    : /Android/.test(userAgent)
+      ? 'Android'
+      : /Windows/.test(userAgent)
+        ? 'Windows'
+        : /Mac OS X/.test(userAgent)
+          ? 'macOS'
+          : /Linux/.test(userAgent)
+            ? 'Linux'
+            : 'устройство'
+  return `${browser} · ${platform}`
 }
 
 export function SettingPageAdvanced() {

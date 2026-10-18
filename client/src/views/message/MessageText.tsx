@@ -87,10 +87,7 @@ export const MessageText: React.FC<{
             ))}
           </div>
           {videoLinks.map((video) => (
-            <VideoPreview
-              key={`${video.provider}:${video.id}`}
-              video={video}
-            />
+            <VideoPreview key={`${video.provider}:${video.id}`} video={video} />
           ))}
         </>
       )}
